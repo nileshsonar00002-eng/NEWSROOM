@@ -148,7 +148,7 @@ export function renderStorySection(container, onJoinClick) {
         <!-- Hero Section Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 reveal-on-scroll">
           <h2 class="font-heading font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-            WHY THE SAHYADRI <span class="text-gradient-emerald">MATTERS</span>
+            WHY THE SAHYADRI <span class="text-[#00FF87]">MATTERS</span>
           </h2>
 
           <p class="text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto font-sans">

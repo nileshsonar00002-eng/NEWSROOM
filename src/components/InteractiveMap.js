@@ -30,7 +30,7 @@ export function renderInteractiveMap(container, supporters = [], onJoinClick) {
             <span>CITIZEN PARTICIPATION RADAR</span>
           </div>
           <h2 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight">
-            Voices Across <span class="text-gradient-emerald">India</span>
+            Voices Across <span class="text-[#00FF87]">India</span>
           </h2>
           <p class="text-base sm:text-lg text-slate-300">
             Real supporters standing united for Maharashtra’s Western Ghats. All locations mapped strictly at city-level to protect participant privacy.

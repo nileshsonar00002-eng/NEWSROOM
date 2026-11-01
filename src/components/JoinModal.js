@@ -95,7 +95,7 @@ export function openJoinModal(onSuccessCallback) {
             <span>PUBLIC AWARENESS PLEDGE</span>
           </div>
           <h2 id="join-modal-title" class="font-heading font-black text-xl sm:text-2xl text-white tracking-tight text-center">
-            Stand With <span class="text-gradient-emerald">Sahyadri</span>
+            Stand With <span class="text-[#00FF87]">Sahyadri</span>
           </h2>
           <p class="text-[11px] sm:text-xs text-slate-300 leading-normal text-center max-w-xs sm:max-w-sm mx-auto">
             Enter your name to stand with the movement. GPS location requires your explicit permission.
@@ -510,7 +510,7 @@ function showAlreadyJoinedModal(onSuccessCallback) {
           <span>DEVICE ALREADY REGISTERED</span>
         </div>
         <h2 id="already-joined-title" class="font-heading font-black text-xl sm:text-2xl text-white tracking-tight">
-          Already Part Of The <span class="text-gradient-emerald">Movement!</span>
+          Already Part Of The <span class="text-[#00FF87]">Movement!</span>
         </h2>
         <p class="text-[11px] sm:text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">
           Aap is device se pehle hi Sahyadri movement ko support kar chuke hain. Spam aur duplicate entries rokne ke liye ek device se sirf ek hi registration allowed hai.

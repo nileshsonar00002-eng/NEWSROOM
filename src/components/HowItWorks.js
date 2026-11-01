@@ -17,7 +17,7 @@ export function renderHowItWorks(container, onJoinClick, onShareClick) {
             <span>THREE-STEP ACTION</span>
           </div>
           <h2 class="font-heading font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-            HOW THE MOVEMENT <span class="text-gradient-emerald">WORKS</span>
+            HOW THE MOVEMENT <span class="text-[#00FF87]">WORKS</span>
           </h2>
           <p class="text-xs sm:text-base text-slate-300 leading-relaxed font-sans">
             A peaceful, transparent framework to unite citizens for responsible environmental awareness.

@@ -48,7 +48,7 @@ const heroEl = createMockElement('hero-mount');
 renderHero(heroEl, () => {}, { total: 108, uniqueCities: 14 });
 assert.ok(heroEl.innerHTML.includes('A MOVEMENT FOR OUR NATURAL HERITAGE'), 'Hero must contain eyebrow');
 assert.ok(heroEl.innerHTML.includes('THE SAHYADRI'), 'Hero must contain main headline');
-assert.ok(heroEl.innerHTML.includes('NEEDS US.'), 'Hero must contain highlight headline');
+assert.ok(heroEl.innerHTML.includes('NEEDS') && heroEl.innerHTML.includes('>US.</span>'), 'Hero must contain highlight headline with solid green US.');
 assert.ok(heroEl.innerHTML.includes('From every corner of India, we can stand together for the future of our forests.'), 'Hero must contain exact supporting text');
 assert.ok(heroEl.innerHTML.includes('hero-google-map-target'), 'Hero must contain google map target container');
 assert.ok(heroEl.innerHTML.includes('hero-map-fullscreen-btn'), 'Hero must contain fullscreen map button');
@@ -98,7 +98,7 @@ console.log('✓ Fullscreen Map view properly displays the live counter card and
 // 3. Movement Counter
 const counterEl = createMockElement('counter-mount');
 renderMovementCounter(counterEl, { total: 42, uniqueCities: 8, isLive: true });
-assert.ok(counterEl.innerHTML.includes('ONE MOVEMENT. <span class="text-gradient-emerald">MANY VOICES.</span>'), 'Counter must contain section title');
+assert.ok(counterEl.innerHTML.includes('ONE MOVEMENT. MANY <span class="text-[#00FF87]">VOICES.</span>'), 'Counter must contain section title with solid green VOICES.');
 assert.ok(counterEl.innerHTML.includes('325+'), 'Counter must feature 325+ threatened species stat');
 assert.ok(counterEl.innerHTML.includes('THREATENED SPECIES'), 'Counter must feature THREATENED SPECIES label');
 assert.ok(counterEl.innerHTML.includes('54%'), 'Counter must feature 54% endemic tree species stat');
@@ -130,7 +130,7 @@ console.log('✓ Interactive Map rendered properly');
 // 5. Issue Section
 const issueEl = createMockElement('issue-mount');
 renderIssueSection(issueEl);
-assert.ok(issueEl.innerHTML.includes('32,490') && issueEl.innerHTML.includes('TREES'), 'Issue must contain 32,490 TREES headline');
+assert.ok(issueEl.innerHTML.includes('32,490') && issueEl.innerHTML.includes('TREES AT') && issueEl.innerHTML.includes('>RISK</span>'), 'Issue must contain 32,490 TREES AT RISK headline with solid green RISK');
 assert.ok(issueEl.innerHTML.includes('issue-tree-counter'), 'Issue must contain animated tree counter element');
 assert.ok(issueEl.innerHTML.includes('A reported 32,490 trees were authorised for removal for the Saidongar-I Karjat pumped-storage project.'), 'Must contain factual description');
 assert.ok(issueEl.innerHTML.includes('sahyadri-tree-hug.jpg'), 'Must contain person hugging tree image');
@@ -148,7 +148,7 @@ console.log('✓ Issue & Fact Card component rendered properly with emotional tr
 // 6. Story Section
 const storyEl = createMockElement('story-mount');
 renderStorySection(storyEl, () => {});
-assert.ok(storyEl.innerHTML.includes('WHY THE SAHYADRI <span class="text-gradient-emerald">MATTERS</span>'), 'Story must contain header');
+assert.ok(storyEl.innerHTML.includes('WHY THE SAHYADRI <span class="text-[#00FF87]">MATTERS</span>'), 'Story must contain header with solid green MATTERS');
 assert.ok(storyEl.innerHTML.includes('From sustaining rivers and influencing regional rainfall to sheltering extraordinary biodiversity, the Sahyadri is vital to life across the Western Ghats.'), 'Must contain exact required refined introduction');
 assert.ok(storyEl.innerHTML.includes('Water, Rivers & Catchments'), 'Must contain Water, Rivers & Catchments card');
 assert.ok(storyEl.innerHTML.includes('Natural & Cultural Heritage'), 'Must contain Natural & Cultural Heritage card');

@@ -13,7 +13,7 @@ export function renderIssueSection(container) {
         <div class="relative text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 reveal-on-scroll">
           <!-- HEADING -->
           <h2 class="font-heading font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-            <span id="issue-tree-counter" data-target="32490">32,490</span> TREES <span class="text-gradient-emerald">AT RISK</span>
+            <span id="issue-tree-counter" data-target="32490">32,490</span> TREES AT <span class="text-[#00FF87]">RISK</span>
           </h2>
           
           <!-- SHORT FACTUAL DESCRIPTION -->

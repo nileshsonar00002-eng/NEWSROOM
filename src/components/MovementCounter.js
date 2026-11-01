@@ -40,7 +40,7 @@ export function renderMovementCounter(container, stats = {}) {
         <!-- Section Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 reveal-on-scroll">
           <h2 class="font-heading font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-            ONE MOVEMENT. <span class="text-gradient-emerald">MANY VOICES.</span>
+            ONE MOVEMENT. MANY <span class="text-[#00FF87]">VOICES.</span>
           </h2>
           
           <p class="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed font-sans">

@@ -62,7 +62,7 @@ export function openShareCardModal(supporter = {}) {
           <span>AMPLIFY THE MOVEMENT</span>
         </div>
         <h2 id="share-modal-title" class="font-heading font-black text-xl sm:text-3xl text-white">
-          Your Shareable <span class="text-gradient-emerald">Support Card</span>
+          Your Shareable Support <span class="text-[#00FF87]">Card</span>
         </h2>
         <p class="text-[11px] sm:text-sm text-slate-300">
           Download and share this card to inspire friends, family, and communities across India.

@@ -86,7 +86,7 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
         <div class="lg:hidden text-center space-y-1 mb-5">
           <h1 class="font-heading font-black text-3xl sm:text-4xl tracking-tight leading-[1.08] text-white">
             THE SAHYADRI <br />
-            <span class="text-gradient-emerald">NEEDS US.</span>
+            NEEDS <span class="text-[#00FF87]">US.</span>
           </h1>
         </div>
 
@@ -104,7 +104,7 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
 
               <h1 class="font-heading font-black text-4xl sm:text-5xl xl:text-6xl tracking-tight leading-[1.08] text-white">
                 THE SAHYADRI <br />
-                <span class="text-gradient-emerald">NEEDS US.</span>
+                NEEDS <span class="text-[#00FF87]">US.</span>
               </h1>
             </div>
 
