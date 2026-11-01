@@ -211,6 +211,22 @@ html {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Smooth Fade In + Centered Entrance for Map City Card */
+@keyframes fadeInCenter {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -4px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, 0, 0) scale(1);
+  }
+}
+
+.animate-fadeIn-center {
+  animation: fadeInCenter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 /* Neon Cyan / Blue Glow Utilities */
 .shadow-cyan-glow-sm {
   box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
@@ -564,7 +580,8 @@ button svg {
   .map-headline-left,
   .map-headline-right,
   .hero-line-left,
-  .hero-line-right {
+  .hero-line-right,
+  .animate-fadeIn-center {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

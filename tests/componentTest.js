@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { renderHeader } from '../src/components/Header.js';
 import { renderHero } from '../src/components/Hero.js';
-import { openMaharashtraFullView, closeMaharashtraFullView } from '../src/components/MaharashtraMap.js';
+import { openMaharashtraFullView, closeMaharashtraFullView, showReportDetailsCard } from '../src/components/MaharashtraMap.js';
 import { renderMovementCounter } from '../src/components/MovementCounter.js';
 import { renderInteractiveMap } from '../src/components/InteractiveMap.js';
 import { renderIssueSection } from '../src/components/IssueSection.js';
@@ -96,6 +96,19 @@ assert.ok(!appendedOverlay.innerHTML.includes('MAHARASHTRA & SAHYADRI LIVE MAP')
 assert.ok(!appendedOverlay.innerHTML.includes('Karjat & Western Ghats Spine'), 'Karjat & Western Ghats Spine must be removed');
 closeMaharashtraFullView();
 console.log('✓ Fullscreen Map view properly displays the live counter card and campaign headline in the upper black horizon');
+
+// 2b. Map Marker Report Details Card Centering & Placement
+const testMapContainer = createMockElement('test-map-container');
+const mockViewport = createMockElement('test-viewport');
+mockViewport.className = 'map-3d-viewport';
+testMapContainer.appendChild(mockViewport);
+const detailsCard = showReportDetailsCard(testMapContainer, { name: 'Pimpri-Chinchwad' }, '#00FF87');
+assert.ok(detailsCard, 'Details card must be returned and created');
+assert.ok(detailsCard.className.includes('left-1/2') && detailsCard.className.includes('-translate-x-1/2'), 'Card must be horizontally centered on the map');
+assert.ok(detailsCard.className.includes('top-[48px]'), 'Card must be placed directly below heading pill in hero map');
+assert.ok(detailsCard.className.includes('animate-fadeIn-center'), 'Card must have animate-fadeIn-center class');
+assert.ok(detailsCard.innerHTML.includes('Pimpri-Chinchwad'), 'Card must display city name');
+console.log('✓ Map Marker city card opens in map center directly below heading text');
 
 // 3. Movement Counter
 const counterEl = createMockElement('counter-mount');

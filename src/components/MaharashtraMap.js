@@ -315,22 +315,37 @@ export function createHolographicMarkerSvg({
 }
 
 /**
- * Display interactive Report Details Card when tapping/clicking a holographic marker
+ * Display interactive Report Details Card when tapping/clicking a holographic marker.
+ * Positioned in the horizontal center of the map viewport, directly below the map heading / pill text.
  */
-function showReportDetailsCard(container, city, strokeColor) {
-  if (!container) return;
-  const existing = container.querySelector('.sahyadri-report-details-card');
-  if (existing) existing.remove();
+export function showReportDetailsCard(container, city, strokeColor = '#00FF87') {
+  if (!container || !city) return;
 
+  // Locate the map viewport within container (or overlay) so the card is centered inside the map frame
+  const mapViewport = container.querySelector ? (container.querySelector('.map-3d-viewport') || container) : container;
+
+  // Remove any previously open details cards
+  if (typeof document !== 'undefined') {
+    const existing = document.querySelectorAll('.sahyadri-report-details-card');
+    existing.forEach((el) => el.remove());
+  }
+
+  const isFullscreen = (container.querySelector && !!container.querySelector('#fullview-headline-card')) || container.id === 'maharashtra-fullscreen-overlay';
   const isBlue = strokeColor === '#00E5FF';
 
+  if (typeof document === 'undefined') return;
+
   const card = document.createElement('div');
-  card.className = 'sahyadri-report-details-card absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 sm:w-auto sm:min-w-[150px] max-w-[260px] bg-[#04120A]/95 backdrop-blur-xl border border-emerald-500/35 rounded-2xl px-3.5 py-2.5 shadow-2xl z-30 text-white animate-fadeIn select-none';
+  // Placed in horizontal center (left-1/2 -translate-x-1/2) right below map heading / pill text
+  card.className = `sahyadri-report-details-card absolute left-1/2 -translate-x-1/2 ${
+    isFullscreen ? 'top-[72px] sm:top-[92px]' : 'top-[48px] sm:top-[56px]'
+  } z-30 w-auto min-w-[130px] max-w-[90%] sm:max-w-[280px] bg-[#04120A]/95 backdrop-blur-xl border border-emerald-500/35 rounded-2xl px-3.5 py-2.5 shadow-2xl text-white animate-fadeIn-center select-none pointer-events-auto`;
+
   card.innerHTML = `
     <div class="flex items-center justify-between gap-3">
       <div class="flex items-center gap-2 min-w-0">
         <div class="w-2.5 h-2.5 rounded-full ${isBlue ? 'bg-cyan-400 shadow-[0_0_8px_#00E5FF]' : 'bg-emerald-400 shadow-[0_0_8px_#00FF87]'} animate-pulse shrink-0"></div>
-        <h4 class="font-bold text-sm text-white leading-tight truncate">${escapeHtml(city.name)}</h4>
+        <h4 class="font-bold text-sm text-white leading-tight truncate">${escapeHtml(city.name || city.cityName || '')}</h4>
       </div>
       <button class="report-card-close text-slate-400 hover:text-white p-1 rounded-lg hover:bg-emerald-950/60 transition-colors cursor-pointer text-xs font-bold leading-none shrink-0" title="Close" aria-label="Close report details">✕</button>
     </div>
@@ -342,7 +357,8 @@ function showReportDetailsCard(container, city, strokeColor) {
     card.remove();
   };
 
-  container.appendChild(card);
+  mapViewport.appendChild(card);
+  return card;
 }
 
 /**
