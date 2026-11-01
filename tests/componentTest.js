@@ -13,6 +13,7 @@ import { renderHowItWorks } from '../src/components/HowItWorks.js';
 import { renderFooter, updateFooterVisitorCount } from '../src/components/Footer.js';
 import { openPrivacyModal, closeInfoModal } from '../src/components/InfoModals.js';
 import { openFastPreviewModal, closeFastPreviewModal, AT_RISK_IMAGES } from '../src/components/FastPreviewModal.js';
+import { openShareCardModal, closeShareCardModal } from '../src/components/ShareCardModal.js';
 
 // Mock minimal DOM element
 function createMockElement(id = 'container') {
@@ -76,6 +77,14 @@ global.document = {
   body: {
     appendChild: (el) => { appendedOverlay = el; },
     classList: { add: () => {}, remove: () => {} }
+  }
+};
+global.Image = global.Image || class {
+  constructor() {
+    this.src = '';
+    this.complete = true;
+    this.naturalWidth = 1024;
+    this.naturalHeight = 1024;
   }
 };
 global.window = {
@@ -265,5 +274,16 @@ const indexHtmlContent = fs.readFileSync('index.html', 'utf8');
 assert.ok(!indexHtmlContent.includes('og:image'), 'Must have no photo (og:image) with share link');
 assert.ok(!indexHtmlContent.includes('twitter:image'), 'Must have no photo (twitter:image) with share link');
 console.log('✓ Share link verified with no attached photo');
+
+// 12. Support Certificate Modal
+openShareCardModal({ displayName: 'Citizen Supporter' });
+assert.ok(appendedOverlay, 'Share Certificate modal must be mounted');
+assert.ok(appendedOverlay.innerHTML.includes('Certificate of'), 'Modal must contain Certificate of heading');
+assert.ok(appendedOverlay.innerHTML.includes('certificate-of-support.jpg'), 'Modal must reference certificate-of-support.jpg');
+assert.ok(appendedOverlay.innerHTML.includes('support-card-canvas'), 'Modal must contain canvas for high-res certificate');
+assert.ok(appendedOverlay.innerHTML.includes('btn-download-card'), 'Modal must contain download certificate button');
+assert.ok(appendedOverlay.innerHTML.includes('btn-whatsapp-share'), 'Modal must contain whatsapp share button');
+closeShareCardModal();
+console.log('✓ Support Certificate modal rendered and verified with certificate-of-support.jpg');
 
 console.log('\n🎉 ALL COMPONENT SMOKE TESTS PASSED!');
