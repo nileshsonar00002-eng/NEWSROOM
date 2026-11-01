@@ -253,7 +253,8 @@ renderFooter(mockFooter);
 
 assert.ok(mockHeader.innerHTML.includes('सह्याद्रीचे महत्त्व'), 'Header should render Marathi navigation');
 assert.ok(mockHero.innerHTML.includes('सह्याद्रीला'), 'Hero should render Marathi headline');
-assert.ok(mockIssue.innerHTML.includes('३२,४९० झाडे'), 'IssueSection should render Marathi 32,490 trees headline');
+assert.ok(mockIssue.innerHTML.includes('32,490') && mockIssue.innerHTML.includes('झाडे'), 'IssueSection should render Marathi 32,490 trees headline');
+assert.ok(!mockIssue.innerHTML.includes('32,490 ३२,४९०') && !mockIssue.innerHTML.includes('32,490 32,490'), 'Must not duplicate 32,490 in Marathi headline');
 assert.ok(mockCounter.innerHTML.includes('एक चळवळ. अनेक'), 'MovementCounter should render Marathi headline');
 assert.ok(mockStory.innerHTML.includes('सह्याद्री का'), 'StorySection should render Marathi headline');
 assert.ok(mockFooter.innerHTML.includes('गोपनीयता धोरण'), 'Footer should render Marathi privacy policy link');

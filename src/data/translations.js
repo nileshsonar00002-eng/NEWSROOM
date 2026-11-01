@@ -225,7 +225,7 @@ export const TRANSLATIONS = {
   issue: {
     headlinePrefix: {
       en: "32,490 TREES AT",
-      mr: "३२,४९० झाडे",
+      mr: "32,490 झाडे",
       hi: "32,490 पेड़"
     },
     headlineHighlight: {
@@ -654,7 +654,7 @@ export const TRANSLATIONS = {
   fastPreview: {
     treesAtRiskPrefix: {
       en: "32,490 TREES AT",
-      mr: "३२,४९० झाडे",
+      mr: "32,490 झाडे",
       hi: "32,490 पेड़"
     },
     riskHighlight: {
