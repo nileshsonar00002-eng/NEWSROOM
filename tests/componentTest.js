@@ -53,6 +53,7 @@ assert.ok(heroEl.innerHTML.includes('NEEDS') && heroEl.innerHTML.includes('>US.<
 assert.ok(heroEl.innerHTML.includes('hero-line-left'), 'Hero must contain hero-line-left class for left slide animation');
 assert.ok(heroEl.innerHTML.includes('hero-line-right'), 'Hero must contain hero-line-right class for right slide animation');
 assert.ok(heroEl.innerHTML.includes('From every corner of India, we can stand together for the future of our forests.'), 'Hero must contain exact supporting text');
+assert.ok(heroEl.innerHTML.includes('I STAND WITH SAHYADRI'), 'Hero must contain full CTA button text I STAND WITH SAHYADRI');
 assert.ok(heroEl.innerHTML.includes('hero-google-map-target'), 'Hero must contain google map target container');
 assert.ok(heroEl.innerHTML.includes('hero-map-fullscreen-btn'), 'Hero must contain fullscreen map button');
 assert.ok(heroEl.innerHTML.includes('hero-supporter-count'), 'Hero must contain hero-supporter-count element');
