@@ -4,6 +4,8 @@
  * Supports pristine 1024x1024 high-resolution display, PNG download, and WhatsApp movement sharing.
  */
 
+import { t, getLanguage } from '../utils/i18n.js';
+
 export function openShareCardModal(supporter = {}) {
   closeShareCardModal();
 
@@ -58,13 +60,13 @@ export function openShareCardModal(supporter = {}) {
             <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
-            <span>OFFICIAL CERTIFICATE</span>
+            <span>${t('certificateModal.badge', 'OFFICIAL CERTIFICATE')}</span>
           </div>
           <h2 id="share-modal-title" class="font-heading font-black text-xl sm:text-2xl text-white">
-            Certificate of <span class="text-[#00FF87]">Support</span>
+            ${t('certificateModal.titlePrefix', 'Certificate of')} <span class="text-[#00FF87]">${t('certificateModal.titleHighlight', 'Support')}</span>
           </h2>
           <p class="text-[11px] sm:text-xs text-slate-300">
-            Official verified certificate honoring your pledge for the Western Ghats &amp; Sahyadri forests.
+            ${t('certificateModal.subtitle', 'Official verified certificate honoring your pledge for the Western Ghats & Sahyadri forests.')}
           </p>
         </div>
 
@@ -74,7 +76,7 @@ export function openShareCardModal(supporter = {}) {
           <div id="support-card-loading" class="absolute inset-0 flex items-center justify-center bg-[#04120A] rounded-xl transition-opacity duration-300">
             <div class="flex flex-col items-center gap-2">
               <div class="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin"></div>
-              <span class="text-[11px] font-mono text-emerald-400">Loading Certificate...</span>
+              <span class="text-[11px] font-mono text-emerald-400">${t('certificateModal.loadingText', 'Loading Certificate...')}</span>
             </div>
           </div>
         </div>
@@ -91,7 +93,7 @@ export function openShareCardModal(supporter = {}) {
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              <span>Download Certificate</span>
+              <span>${t('certificateModal.downloadBtn', 'Download Certificate')}</span>
             </button>
 
             <!-- WhatsApp Share Button -->
@@ -103,7 +105,7 @@ export function openShareCardModal(supporter = {}) {
                 <path d="M3 21l1.65 -3.8a9 9 0 1 1 3.4 2.9l-5.05 .9" />
                 <path d="M9.5 9.5a1.5 1.5 0 0 1 1.8 -.4l1.2 .8a1 1 0 0 1 .3 1.1l-.4 .8a7 7 0 0 0 2.8 2.8l.8 -.4a1 1 0 0 1 1.1 .3l.8 1.2a1.5 1.5 0 0 1 -.4 1.8c-.8 .6 -1.8 .8 -2.7 .4c-2.8 -1.2 -5.2 -3.6 -6.4 -6.4c-.4 -.9 -.2 -1.9 .4 -2.7z" />
               </svg>
-              <span>Share on WhatsApp</span>
+              <span>${t('certificateModal.whatsappBtn', 'Share on WhatsApp')}</span>
             </button>
 
           </div>
@@ -186,14 +188,32 @@ export function openShareCardModal(supporter = {}) {
       ? (window.location.origin + window.location.pathname)
       : 'https://savesahyadri.online/';
 
-    const text = encodeURIComponent(
-      `🌿 *Save the Sahyadri — Certificate of Support* 📜\n\n` +
-      `मैंने सह्याद्री के जंगलों, वन्यजीवों और जैव विविधता की रक्षा के लिए अपना संकल्प दर्ज किया है। 💚🌳\n\n` +
-      `32,490 पेड़ों और हमारे पश्चिमी घाटों को बचाने की इस मुहिम से जुड़ें और अपना Certificate of Support प्राप्त करें:\n\n` +
-      `🌐 *Visit & Join the Movement:*\n` +
-      `${siteUrl}\n\n` +
-      `🚩 *हर हर महादेव!* • Save the Sahyadri Movement`
-    );
+    const lang = getLanguage();
+    let msgBody = '';
+    if (lang === 'mr') {
+      msgBody = `🌿 *Save the Sahyadri — सहभाग प्रमाणपत्र* 📜\n\n` +
+        `मी सह्याद्रीची जंगले, वन्यजीव आणि समृद्ध जैवविविधतेच्या रक्षणासाठी माझा संकल्प नोंदवला आहे. 💚🌳\n\n` +
+        `३२,४९० झाडे आणि आपल्या पश्चिम घाटाला वाचवण्याच्या या मोहिमेत सहभागी व्हा आणि आपले प्रमाणपत्र मिळवा:\n\n` +
+        `🌐 *Visit & Join the Movement:*\n` +
+        `${siteUrl}\n\n` +
+        `🚩 *हर हर महादेव!* • Save the Sahyadri Movement`;
+    } else if (lang === 'hi') {
+      msgBody = `🌿 *Save the Sahyadri — Certificate of Support* 📜\n\n` +
+        `मैंने सह्याद्री के जंगलों, वन्यजीवों और जैव विविधता की रक्षा के लिए अपना संकल्प दर्ज किया है। 💚🌳\n\n` +
+        `32,490 पेड़ों और हमारे पश्चिमी घाटों को बचाने की इस मुहिम से जुड़ें और अपना Certificate of Support प्राप्त करें:\n\n` +
+        `🌐 *Visit & Join the Movement:*\n` +
+        `${siteUrl}\n\n` +
+        `🚩 *हर हर महादेव!* • Save the Sahyadri Movement`;
+    } else {
+      msgBody = `🌿 *Save the Sahyadri — Certificate of Support* 📜\n\n` +
+        `I have pledged to stand for the protection of forests, wildlife and the rich biodiversity of the Sahyadri. 💚🌳\n\n` +
+        `Join the movement to protect 32,490 trees and our Western Ghats and receive your Certificate of Support:\n\n` +
+        `🌐 *Visit & Join the Movement:*\n` +
+        `${siteUrl}\n\n` +
+        `🚩 *Har Har Mahadev!* • Save the Sahyadri Movement`;
+    }
+
+    const text = encodeURIComponent(msgBody);
     window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
   });
 

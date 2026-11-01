@@ -1,3 +1,4 @@
+import { t } from '../utils/i18n.js';
 /**
  * SAVE THE SAHYADRI — WHY THE SAHYADRI MATTERS
  * Refined ecological pillars highlighting hydrology, biodiversity, and cultural heritage
@@ -25,8 +26,37 @@ export function renderStorySection(container, onJoinClick) {
     container._cleanupStoryCarousel = null;
   }
 
-  // Focus on the core pillars: Water, Rivers & Catchments and Natural & Cultural Heritage
-  const activePillars = SAHYADRI_PILLARS.slice(2);
+  // Focus on the core pillars: Water, Rivers & Catchments and Natural & Cultural Heritage (Localized)
+  const activePillars = [
+    {
+      id: "pillar-water",
+      title: t('story.pillarWaterTitle'),
+      tagline: t('story.pillarWaterTagline'),
+      description: t('story.pillarWaterDesc'),
+      keyPoints: [
+        t('story.pillarWaterPoint1'),
+        t('story.pillarWaterPoint2'),
+        t('story.pillarWaterPoint3')
+      ],
+      icon: "droplet",
+      image: "/images/story/sahyadri-river.jpg",
+      sourceUrl: "https://whc.unesco.org/en/list/1342/"
+    },
+    {
+      id: "pillar-heritage",
+      title: t('story.pillarHeritageTitle'),
+      tagline: t('story.pillarHeritageTagline'),
+      description: t('story.pillarHeritageDesc'),
+      keyPoints: [
+        t('story.pillarHeritagePoint1'),
+        t('story.pillarHeritagePoint2'),
+        t('story.pillarHeritagePoint3')
+      ],
+      icon: "mountain",
+      image: "/images/story/sahyadri-heritage-fort.jpg",
+      sourceUrl: "https://whc.unesco.org/en/list/1342/"
+    }
+  ];
   
   const pillarCardsHtml = activePillars.map((pillar, index) => {
     let iconSvg = '';
@@ -90,7 +120,7 @@ export function renderStorySection(container, onJoinClick) {
           <div class="space-y-1.5 sm:space-y-2 pt-2.5 sm:pt-4 border-t border-emerald-500/15">
             <div class="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-bold flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              KEY ECOLOGICAL ATTRIBUTES
+              ${t('story.keyAttributesLabel')}
             </div>
             <ul class="space-y-1.5 sm:space-y-2">
               ${pillar.keyPoints.map(kp => `
@@ -106,7 +136,7 @@ export function renderStorySection(container, onJoinClick) {
           <div class="pt-2.5 sm:pt-4 border-t border-emerald-500/15 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] font-mono">
             <span class="text-emerald-400 font-semibold tracking-wider flex items-center gap-1.5">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-              WESTERN GHATS · NATURAL HERITAGE
+              ${t('story.naturalHeritageBadge')}
             </span>
             <a 
               href="${pillar.sourceUrl || 'https://whc.unesco.org/en/list/1342/'}" 
@@ -115,7 +145,7 @@ export function renderStorySection(container, onJoinClick) {
               class="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 flex items-center gap-1 transition-colors"
               title="Official UNESCO World Heritage documentation"
             >
-              <span>Source: UNESCO WHC</span>
+              <span>${t('story.sourceUnescoWhc')}</span>
               <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
               </svg>
@@ -148,11 +178,11 @@ export function renderStorySection(container, onJoinClick) {
         <!-- Hero Section Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 reveal-on-scroll">
           <h2 class="font-heading font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-            WHY THE SAHYADRI <span class="text-[#00FF87]">MATTERS</span>
+            ${t('story.headlinePrefix')} <span class="text-[#00FF87]">${t('story.headlineHighlight')}</span>
           </h2>
 
           <p class="text-xs sm:text-base text-slate-300 leading-relaxed max-w-2xl mx-auto font-sans">
-            From sustaining rivers and influencing regional rainfall to sheltering extraordinary biodiversity, the Sahyadri is vital to life across the Western Ghats.
+            ${t('story.subtitle')}
           </p>
         </div>
 
@@ -202,11 +232,11 @@ export function renderStorySection(container, onJoinClick) {
             </div>
             
             <blockquote class="font-heading font-extrabold text-xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-snug">
-              “Protecting nature is not just about today. It is about what we leave behind.”
+              ${t('story.bannerQuote')}
             </blockquote>
 
             <p class="text-xs sm:text-base text-slate-300 font-medium">
-              Join thousands of conscious citizens taking a stand for Maharashtra’s natural heritage.
+              ${t('story.bannerSubtitle')}
             </p>
 
             <div class="pt-2">

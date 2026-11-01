@@ -17,6 +17,7 @@ import {
 } from '../services/supporterService.js';
 import { escapeHtml } from '../utils/sanitize.js';
 import { openShareCardModal } from './ShareCardModal.js';
+import { t } from '../utils/i18n.js';
 
 let activeLocation = {
   city: '',
@@ -92,13 +93,13 @@ export function openJoinModal(onSuccessCallback) {
         <div class="space-y-1.5 text-center flex flex-col items-center justify-center px-4">
           <div class="inline-flex items-center justify-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 text-[10px] sm:text-xs font-bold border border-emerald-500/30 mx-auto">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            <span>PUBLIC AWARENESS PLEDGE</span>
+            <span>${t('joinModal.badge', 'PUBLIC AWARENESS PLEDGE')}</span>
           </div>
           <h2 id="join-modal-title" class="font-heading font-black text-xl sm:text-2xl text-white tracking-tight text-center">
-            Stand With <span class="text-[#00FF87]">Sahyadri</span>
+            ${t('joinModal.titlePrefix', 'Stand With')} <span class="text-[#00FF87]">${t('joinModal.titleHighlight', 'Sahyadri')}</span>
           </h2>
           <p class="text-[11px] sm:text-xs text-slate-300 leading-normal text-center max-w-xs sm:max-w-sm mx-auto">
-            Enter your name to stand with the movement. GPS location requires your explicit permission.
+            ${t('joinModal.subtitle', 'Enter your name to stand with the movement. GPS location requires your explicit permission.')}
           </p>
         </div>
 
@@ -108,7 +109,7 @@ export function openJoinModal(onSuccessCallback) {
           <!-- Name Input Field (The Only Required Field) -->
           <div class="space-y-1">
             <label for="pledge-name" class="block text-center text-[11px] sm:text-xs font-semibold text-slate-200">
-              Your Name <span class="text-emerald-400">*</span>
+              ${t('joinModal.nameLabel', 'Your Name')} <span class="text-emerald-400">*</span>
             </label>
             <input 
               type="text" 
@@ -118,7 +119,7 @@ export function openJoinModal(onSuccessCallback) {
               minlength="2"
               maxlength="50"
               autofocus
-              placeholder="e.g. Aditya Patil"
+              placeholder="${t('joinModal.namePlaceholder', 'e.g. Aditya Patil')}"
               class="w-full text-center px-3.5 py-2.5 sm:py-3 sm:px-4 rounded-xl bg-[#030905] border border-emerald-500/30 text-white placeholder-slate-500 placeholder:text-center text-xs sm:text-sm focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-colors shadow-inner"
             />
           </div>
@@ -135,7 +136,7 @@ export function openJoinModal(onSuccessCallback) {
                 <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
                 <circle cx="12" cy="10" r="3"/>
               </svg>
-              <span id="btn-request-gps-text">Allow GPS</span>
+              <span id="btn-request-gps-text">${t('joinModal.allowGps', 'Allow GPS')}</span>
             </button>
 
             <!-- Verified Location Details (shown after permission is granted) -->
@@ -157,7 +158,7 @@ export function openJoinModal(onSuccessCallback) {
                 title="Change or re-detect location"
               >
                 <span>↺</span>
-                <span>Change</span>
+                <span>${t('joinModal.changeGps', 'Change')}</span>
               </button>
             </div>
           </div>
@@ -174,7 +175,7 @@ export function openJoinModal(onSuccessCallback) {
                 class="mt-0.5 w-3.5 h-3.5 sm:w-4 sm:h-4 rounded border-emerald-500/40 text-emerald-500 focus:ring-emerald-400 bg-emerald-950/50 shrink-0"
               />
               <span class="text-[10px] sm:text-[11px] text-slate-300 leading-tight sm:leading-relaxed">
-                I support the preservation of the Sahyadri Western Ghats and agree to display my pledge on the movement map.
+                ${t('joinModal.consentLabel', 'I support the preservation of the Sahyadri Western Ghats and agree to display my pledge on the movement map.')}
               </span>
             </label>
           </div>
@@ -190,7 +191,7 @@ export function openJoinModal(onSuccessCallback) {
               class="w-full py-2.5 sm:py-3.5 px-5 rounded-full font-heading font-extrabold text-xs sm:text-sm text-black bg-gradient-to-r from-emerald-400 via-emerald-300 to-emerald-400 hover:from-emerald-300 hover:to-emerald-200 shadow-emerald-glow hover:shadow-emerald-glow-lg transition-all flex items-center justify-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed tracking-wider uppercase"
             >
               <span id="submit-btn-spinner" class="hidden w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
-              <span id="submit-btn-text">JOIN THE MOVEMENT</span>
+              <span id="submit-btn-text">${t('joinModal.submitBtn', 'JOIN THE MOVEMENT')}</span>
             </button>
           </div>
 
@@ -240,11 +241,11 @@ export function openJoinModal(onSuccessCallback) {
         requestBtn.disabled = false;
       }
       if (requestSpinner) requestSpinner.classList.add('hidden');
-      if (requestText) requestText.textContent = 'Allow GPS';
+      if (requestText) requestText.textContent = t('joinModal.allowGps', 'Allow GPS');
     } else if (state === 'requesting' || state === 'geocoding') {
       if (requestBtn) requestBtn.disabled = true;
       if (requestSpinner) requestSpinner.classList.remove('hidden');
-      if (requestText) requestText.textContent = state === 'geocoding' ? 'Detecting City...' : 'Checking GPS...';
+      if (requestText) requestText.textContent = state === 'geocoding' ? t('joinModal.detectingCity', 'Detecting City...') : t('joinModal.checkingGps', 'Checking GPS...');
     } else if (state === 'granted') {
       if (requestBtn) requestBtn.classList.add('hidden');
       if (verifiedDisplay) {
@@ -258,7 +259,7 @@ export function openJoinModal(onSuccessCallback) {
         requestBtn.disabled = false;
       }
       if (requestSpinner) requestSpinner.classList.add('hidden');
-      if (requestText) requestText.textContent = 'Allow GPS (Permission Required)';
+      if (requestText) requestText.textContent = t('joinModal.allowGps', 'Allow GPS');
     }
   }
 
@@ -356,22 +357,22 @@ export function openJoinModal(onSuccessCallback) {
     const consented = form.consented.checked;
 
     if (!name || name.trim().length < 2) {
-      showError('Please enter your name (at least 2 characters).');
+      showError(t('joinModal.nameRequiredError', 'Please enter your name (at least 2 characters).'));
       return;
     }
     if (!consented) {
-      showError('Please confirm the consent box.');
+      showError(t('joinModal.consentRequiredError', 'Please confirm the consent box.'));
       return;
     }
 
     if (activeLocation.permissionChoice === 'requesting') {
-      showError('Detecting your GPS location, please wait a moment...');
+      showError(t('joinModal.checkingGps', 'Detecting your GPS location, please wait a moment...'));
       return;
     }
 
     // MANDATORY GPS PERMISSION CHECK: Cannot join without granting GPS permission
     if (!activeLocation.isDetected || activeLocation.permissionChoice !== 'allowed' || typeof activeLocation.lat !== 'number' || typeof activeLocation.lng !== 'number') {
-      showError('GPS location permission is required to join. Please click "Allow GPS" above.');
+      showError(t('joinModal.gpsRequiredError', 'GPS location permission is required to join. Please click "Allow GPS" above.'));
       if (requestGpsBtn) {
         requestGpsBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
         requestGpsBtn.classList.add('ring-2', 'ring-emerald-400', 'animate-pulse');
@@ -388,20 +389,20 @@ export function openJoinModal(onSuccessCallback) {
   async function finalizePledge(name) {
     // 1-Pledge-Per-Device enforcement check
     if (hasDeviceJoined()) {
-      showError('Aapke is device se pehle hi movement join kiya ja chuka hai. Spam rokne ke liye ek device se sirf ek hi registration allowed hai.');
+      showError(t('joinModal.alreadyRegisteredNotice', 'Aapke is device se pehle hi movement join kiya ja chuka hai. Spam rokne ke liye ek device se sirf ek hi registration allowed hai.'));
       return;
     }
 
     // Strictly verify GPS permission before recording
     if (!activeLocation.isDetected || activeLocation.permissionChoice !== 'allowed' || typeof activeLocation.lat !== 'number' || typeof activeLocation.lng !== 'number') {
-      showError('GPS location permission is required to join. Please click "Allow GPS" first.');
+      showError(t('joinModal.gpsRequiredError', 'GPS location permission is required to join. Please click "Allow GPS" first.'));
       return;
     }
 
     // Set Loading State
     submitBtn.disabled = true;
     submitSpinner.classList.remove('hidden');
-    submitText.textContent = 'RECORDING PLEDGE...';
+    submitText.textContent = t('joinModal.submitting', 'RECORDING PLEDGE...');
 
     try {
       const result = await registerSupporter({
@@ -434,7 +435,7 @@ export function openJoinModal(onSuccessCallback) {
       showError(err.message || 'Unable to record pledge. Please try again.');
       submitBtn.disabled = false;
       submitSpinner.classList.add('hidden');
-      submitText.textContent = 'JOIN THE MOVEMENT';
+      submitText.textContent = t('joinModal.submitBtn', 'JOIN THE MOVEMENT');
     }
   }
 
@@ -507,20 +508,20 @@ function showAlreadyJoinedModal(onSuccessCallback) {
       <div class="space-y-1.5 px-2">
         <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 text-[10px] sm:text-xs font-bold border border-emerald-500/30 mx-auto">
           <span>✓</span>
-          <span>DEVICE ALREADY REGISTERED</span>
+          <span>${t('joinModal.deviceAlreadyRegistered', 'DEVICE ALREADY REGISTERED')}</span>
         </div>
         <h2 id="already-joined-title" class="font-heading font-black text-xl sm:text-2xl text-white tracking-tight">
-          Already Part Of The <span class="text-[#00FF87]">Movement!</span>
+          ${t('joinModal.alreadyJoinedTitle', "You're Already Part of the Movement!")}
         </h2>
         <p class="text-[11px] sm:text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">
-          Aap is device se pehle hi Sahyadri movement ko support kar chuke hain. Spam aur duplicate entries rokne ke liye ek device se sirf ek hi registration allowed hai.
+          ${t('joinModal.alreadyRegisteredNotice', 'You have already supported the Sahyadri movement from this device. To prevent spam, only one registration is allowed per device.')}
         </p>
       </div>
 
       <!-- Verified Supporter Details Card -->
       <div class="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-[#030905] border border-emerald-500/20 text-center space-y-1">
         <div class="text-[10px] font-mono text-emerald-400 uppercase tracking-widest font-bold">
-          Verified Supporter
+          ${t('joinModal.verifiedSupporter', 'Verified Supporter')}
         </div>
         <div class="text-sm sm:text-base font-heading font-black text-white truncate">
           ${escapeHtml(saved.displayName || 'Concerned Citizen')}
@@ -540,14 +541,14 @@ function showAlreadyJoinedModal(onSuccessCallback) {
             <path d="m3 11 18-5v12L3 14v-3z" />
             <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6" />
           </svg>
-          <span>VIEW / SHARE YOUR SUPPORT CARD</span>
+          <span>${t('joinModal.viewCardBtn', 'VIEW / SHARE YOUR SUPPORT CARD')}</span>
         </button>
 
         <button 
           id="btn-close-already-joined" 
           class="w-full py-2 px-4 rounded-xl text-xs font-semibold text-slate-400 hover:text-white bg-slate-900/60 hover:bg-slate-800/80 border border-slate-700/60 transition-colors cursor-pointer"
         >
-          Close
+          ${t('common.close', 'Close')}
         </button>
       </div>
 
@@ -604,21 +605,21 @@ function showSuccessView(modalContainer, supporterData, onSuccessCallback) {
       <div class="space-y-2">
         <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950 text-emerald-400 text-xs font-bold border border-emerald-500/30">
           <span>✓</span>
-          <span>PLEDGE VERIFIED & RECORDED</span>
+          <span>${t('joinModal.verifiedEntry', 'PLEDGE VERIFIED & RECORDED')}</span>
         </div>
         <h2 class="font-heading font-black text-2xl sm:text-3xl text-white">
-          Thank You, ${escapeHtml(supporterData.displayName)}!
+          ${t('joinModal.successTitle', 'Thank You,')} ${escapeHtml(supporterData.displayName)}!
         </h2>
         <p class="text-sm text-slate-300 max-w-sm mx-auto">
-          Your voice is now officially connected from <strong>${escapeHtml(supporterData.city)}, ${escapeHtml(supporterData.state)}</strong> to the Sahyadri movement!
+          ${t('joinModal.successSubtitle', { city: escapeHtml(supporterData.city), state: escapeHtml(supporterData.state) })}
         </p>
       </div>
 
       <!-- Verified Certificate Badge Card -->
       <div class="p-4 rounded-2xl bg-[#030905] border border-emerald-500/30 text-left font-mono text-xs space-y-1.5 text-slate-300">
         <div class="flex justify-between items-center text-[10px] text-emerald-400 uppercase tracking-widest font-bold">
-          <span>Citizen Supporter ID</span>
-          <span>Verified Entry</span>
+          <span>${t('joinModal.citizenSupporterId', 'Citizen Supporter ID')}</span>
+          <span>${t('joinModal.verifiedEntry', 'Verified Entry')}</span>
         </div>
         <div class="text-white font-bold text-sm tracking-wider">
           ${escapeHtml(supporterId)}
@@ -632,7 +633,7 @@ function showSuccessView(modalContainer, supporterData, onSuccessCallback) {
             <span>${escapeHtml(supporterData.city)}, ${escapeHtml(supporterData.state)}</span>
           </span>
           <span class="text-emerald-400 flex items-center gap-1.5">
-            <span>Connected to Hub</span>
+            <span>${t('joinModal.connectedToHub', 'Connected to Hub')}</span>
             <img src="/images/logo.png" alt="" class="w-4 h-4 rounded-full object-cover border border-emerald-500/40 inline shrink-0" />
           </span>
         </div>
@@ -649,14 +650,14 @@ function showSuccessView(modalContainer, supporterData, onSuccessCallback) {
             <polyline points="16 6 12 2 8 6" />
             <line x1="12" x2="12" y1="2" y2="15" />
           </svg>
-          <span>Share Badge</span>
+          <span>${t('joinModal.shareBadgeBtn', 'View / Share Certificate')}</span>
         </button>
 
         <button 
           id="btn-close-success-modal" 
           class="flex-1 py-3 px-4 rounded-full font-heading font-semibold text-sm text-slate-300 hover:text-white bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-500/30 transition-all cursor-pointer"
         >
-          Close & View Map
+          ${t('joinModal.closeViewMap', 'Close & View Map')}
         </button>
       </div>
 

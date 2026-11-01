@@ -4,6 +4,8 @@
  * with forest protection, cinematic imagery, and verified context.
  */
 
+import { t } from '../utils/i18n.js';
+
 export function renderIssueSection(container) {
   container.innerHTML = `
     <section id="issue" class="relative py-12 sm:py-16 lg:py-20 bg-[#030805]">
@@ -13,12 +15,12 @@ export function renderIssueSection(container) {
         <div class="relative text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 reveal-on-scroll">
           <!-- HEADING -->
           <h2 class="font-heading font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-            <span id="issue-tree-counter" data-target="32490">32,490</span> TREES AT <span class="text-[#00FF87]">RISK</span>
+            <span id="issue-tree-counter" data-target="32490">32,490</span> ${t('issue.headlinePrefix').replace('32,490 ', '')} <span class="text-[#00FF87]">${t('issue.headlineHighlight')}</span>
           </h2>
           
           <!-- SHORT FACTUAL DESCRIPTION -->
           <p class="text-xs sm:text-base text-slate-200 leading-relaxed max-w-2xl mx-auto font-sans">
-            A reported 32,490 trees were authorised for removal for the Saidongar-I Karjat pumped-storage project.
+            ${t('issue.description')}
           </p>
 
         </div>
@@ -38,7 +40,7 @@ export function renderIssueSection(container) {
                   <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
                   <circle cx="12" cy="10" r="3"/>
                 </svg>
-                <span>SAHYADRI RANGE</span>
+                <span>${t('issue.locationBadge')}</span>
               </div>
               <img 
                 src="/images/sahyadri-tree-hug.jpg" 
@@ -57,16 +59,16 @@ export function renderIssueSection(container) {
             <!-- Emotional Headline -->
             <div class="space-y-1 sm:space-y-2">
               <div class="font-heading font-black text-xl sm:text-3xl lg:text-4xl text-white tracking-tight leading-tight">
-                50–100 YEARS TO GROW.
+                ${t('issue.yearsToGrow')}
               </div>
               <div class="font-heading font-black text-xl sm:text-3xl lg:text-4xl text-[#00FF87] tracking-tight leading-tight drop-shadow-[0_0_20px_rgba(0,255,135,0.35)]">
-                JUST MINUTES TO CUT?
+                ${t('issue.minutesToCut')}
               </div>
             </div>
 
             <!-- Supporting Message -->
             <p class="text-xs sm:text-base lg:text-lg text-slate-200 leading-relaxed max-w-2xl mx-auto font-sans">
-              A tree is more than timber. It can be a home for wildlife, part of a living ecosystem, and a legacy for generations to come.
+              ${t('issue.emotionalBody')}
             </p>
 
             <!-- Subtle Leaf Divider -->
@@ -81,7 +83,7 @@ export function renderIssueSection(container) {
             <!-- Strong Closing Statement in Neon Green -->
             <div class="pt-1">
               <span class="font-heading font-black text-xs sm:text-base lg:text-lg text-[#00FF87] tracking-wider uppercase drop-shadow-[0_0_15px_rgba(0,255,135,0.25)]">
-                WHAT WE PROTECT TODAY, TOMORROW WILL INHERIT.
+                ${t('issue.closingCallout')}
               </span>
             </div>
 
@@ -89,7 +91,7 @@ export function renderIssueSection(container) {
 
           <!-- Readable Factual Disclaimer Footnote -->
           <div class="relative z-10 pt-3 sm:pt-4 flex items-center justify-center gap-2 text-[11px] sm:text-xs text-slate-400 max-w-2xl mx-auto text-center leading-normal">
-            <span>Reported figure. The current on-ground status and the age of affected trees require independent confirmation.</span>
+            <span>${t('issue.factualDisclaimer')}</span>
           </div>
 
         </div>
@@ -101,49 +103,24 @@ export function renderIssueSection(container) {
               <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
               <circle cx="12" cy="10" r="3"/>
             </svg>
-            <span>Regional Watershed Context — Raigad District</span>
+            <span>${t('issue.watershedBadge')}</span>
           </div>
-          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            Karjat lies at the vital geological interface between the low-lying Konkan coast and the Western Ghats escarpment. It forms the critical catchment for the <strong>Pej and Ulhas river basins</strong>, adjoining the Matheran Eco-Sensitive Zone. Any large-scale canopy removal directly impacts slope stability and regional water security for millions downstream.
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans">
+            ${t('issue.watershedBody')}
           </p>
         </div>
 
       </div>
     </section>
   `;
-
 }
 
 export function openNewsSection() {
-  const mount = document.getElementById('sahyadri-issue-mount');
-  if (mount) {
-    mount.classList.remove('hidden');
-    requestAnimationFrame(() => {
-      const issueSection = document.getElementById('issue');
-      if (issueSection) {
-        issueSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
+  const newsEl = document.getElementById('news') || document.getElementById('issue');
+  if (newsEl) {
+    newsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
-export function closeNewsSection() {
-  const mount = document.getElementById('sahyadri-issue-mount');
-  if (mount) {
-    mount.classList.add('hidden');
-    const header = document.getElementById('sahyadri-header-mount');
-    if (header) {
-      header.scrollIntoView({ behavior: 'smooth' });
-    }
-  }
-}
-
-export function toggleNewsSection() {
-  const mount = document.getElementById('sahyadri-issue-mount');
-  if (!mount) return;
-  if (mount.classList.contains('hidden')) {
-    openNewsSection();
-  } else {
-    closeNewsSection();
-  }
-}
+export function closeNewsSection() {}
+export function toggleNewsSection() { openNewsSection(); }

@@ -25,6 +25,7 @@ import {
 } from '../data/maharashtraGeoData.js';
 import { SAHYADRI_CORRIDOR_COORDS } from '../data/sahyadriData.js';
 import { escapeHtml } from '../utils/sanitize.js';
+import { t } from '../utils/i18n.js';
 
 const SVG_WIDTH = 1000;
 const SVG_HEIGHT = 640;
@@ -737,7 +738,7 @@ export function openMaharashtraFullView(supporters = []) {
           <div class="w-4 h-4 rounded-full overflow-hidden bg-[#05392e] border border-black/20 flex items-center justify-center shrink-0 shadow-sm">
             <img src="/images/logo.png" alt="Save the Sahyadri Logo" class="w-full h-full object-cover" />
           </div>
-          <span>PLEDGE</span>
+          <span>${t('fullscreenMap.pledgeBtn', 'PLEDGE')}</span>
           <span>→</span>
         </button>
 
@@ -749,7 +750,7 @@ export function openMaharashtraFullView(supporters = []) {
           class="px-3.5 sm:px-4 py-2 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-500/35 text-slate-200 hover:text-white text-xs font-heading font-bold flex items-center gap-1.5 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer active:scale-95 shadow-md"
         >
           <span class="text-sm font-bold text-emerald-400">✕</span>
-          <span>Exit</span>
+          <span>${t('fullscreenMap.exitBtn', 'Exit')}</span>
           <span class="hidden sm:inline text-slate-400 font-normal font-sans">(Esc)</span>
         </button>
       </div>
@@ -765,10 +766,10 @@ export function openMaharashtraFullView(supporters = []) {
       <div id="fullview-headline-card" class="absolute top-4 sm:top-6 lg:top-7 inset-x-0 mx-auto w-full max-w-2xl px-4 z-30 pointer-events-none text-center select-none overflow-hidden">
         <div class="inline-flex flex-col items-center justify-center space-y-0.5 sm:space-y-1">
           <div class="map-headline-left font-heading font-black text-sm sm:text-lg lg:text-xl text-white tracking-wider uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
-            32,490 TREES AT RISK?
+            ${t('fullscreenMap.headlineLine1', '32,490 TREES AT RISK?')}
           </div>
           <div class="map-headline-right font-heading font-black text-xs sm:text-sm lg:text-base text-[#00FF87] tracking-wider uppercase drop-shadow-[0_0_16px_rgba(0,255,135,0.45)]">
-            INDIA CONNECTS TO SAVE SAHYADRI.
+            ${t('fullscreenMap.headlineLine2', 'INDIA CONNECTS TO SAVE SAHYADRI.')}
           </div>
         </div>
       </div>
@@ -784,8 +785,8 @@ export function openMaharashtraFullView(supporters = []) {
       <!-- Loading Overlay -->
       <div id="fullview-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-[#030905]/90 z-20 transition-opacity duration-300">
         <div class="w-12 h-12 border-3 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin mb-4"></div>
-        <p class="text-sm font-heading font-bold text-emerald-400">Loading Dark Theme Google Map...</p>
-        <p class="text-xs text-slate-400 mt-1 font-mono">Deep forest aesthetic & neon arcs</p>
+        <p class="text-sm font-heading font-bold text-emerald-400">${t('fullscreenMap.loadingTitle', 'Loading Dark Theme Google Map...')}</p>
+        <p class="text-xs text-slate-400 mt-1 font-mono">${t('fullscreenMap.loadingSubtitle', 'Deep forest aesthetic & neon arcs')}</p>
       </div>
 
       <!-- Floating Live Stats Panel in Fullscreen (Bottom-Left HUD) -->
@@ -795,19 +796,19 @@ export function openMaharashtraFullView(supporters = []) {
         
         <div class="space-y-0.5 min-w-0">
           <div class="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-[#00FF87] truncate">
-            PEOPLE UNITED FOR SAHYADRI
+            ${t('fullscreenMap.statsHeading', 'PEOPLE UNITED FOR SAHYADRI')}
           </div>
           <div id="fullview-stats-members-count" class="hero-stats-members-count text-2xl sm:text-3xl font-heading font-black text-white tracking-tight leading-tight">
             ${totalCount.toLocaleString('en-IN')}
           </div>
           <div class="text-[9px] sm:text-[10px] text-slate-400 uppercase font-semibold tracking-wider">
-            MEMBERS JOINED
+            ${t('fullscreenMap.membersJoined', 'MEMBERS JOINED')}
           </div>
           
           <div class="pt-1.5 border-t border-emerald-500/20 flex flex-col gap-0.5">
             <div class="flex items-center gap-1.5 text-[8.5px] sm:text-[9px] text-[#00FF87] font-bold">
               <span class="w-1.5 h-1.5 rounded-full bg-[#00FF87] animate-pulse shrink-0"></span>
-              <span class="truncate">LAST JOINED:</span>
+              <span class="truncate">${t('fullscreenMap.lastJoined', 'LAST JOINED:')}</span>
             </div>
             <div id="fullview-stats-last-city" class="hero-stats-last-city text-[10px] sm:text-[11px] font-bold text-white uppercase tracking-tight truncate">
               ${lastJoinedText}

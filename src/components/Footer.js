@@ -1,3 +1,4 @@
+import { t } from '../utils/i18n.js';
 /**
  * SAVE THE SAHYADRI — FOOTER
  * Clean, transparent footer with movement links, privacy policy, and campaign disclaimer.
@@ -30,7 +31,7 @@ export function renderFooter(container, onJoinClick) {
             </div>
 
             <p class="text-xs text-slate-300 leading-relaxed max-w-sm">
-              An independent, peaceful public awareness movement to protect the fragile forest ecosystems, wildlife corridors, and water catchments of Maharashtra’s Western Ghats.
+              ${t('footer.manifesto')}
             </p>
 
             <div class="pt-1">
@@ -38,7 +39,7 @@ export function renderFooter(container, onJoinClick) {
                 id="footer-join-btn" 
                 class="px-5 py-2.5 rounded-full text-xs font-heading font-bold text-black bg-gradient-to-r from-emerald-400 to-emerald-300 hover:from-emerald-300 shadow-emerald-glow transition-all cursor-pointer"
               >
-                Stand With Sahyadri
+                ${t('footer.standBtn')}
               </button>
             </div>
           </div>
@@ -49,9 +50,9 @@ export function renderFooter(container, onJoinClick) {
               Movement
             </h4>
             <ul class="space-y-2 text-xs">
-              <li><a href="#hero" class="hover:text-emerald-300 transition-colors">Home Overview</a></li>
-              <li><a href="#issue" id="footer-issue-link" class="hover:text-emerald-300 transition-colors cursor-pointer">The Issue in Karjat</a></li>
-              <li><a href="#story" class="hover:text-emerald-300 transition-colors">Why Sahyadri Matters</a></li>
+              <li><a href="#hero" class="hover:text-emerald-300 transition-colors">${t('footer.homeOverview')}</a></li>
+              <li><a href="#issue" id="footer-issue-link" class="hover:text-emerald-300 transition-colors cursor-pointer">${t('footer.issueKarjat')}</a></li>
+              <li><a href="#story" class="hover:text-emerald-300 transition-colors">${t('footer.whySahyadri')}</a></li>
             </ul>
           </div>
 
@@ -61,7 +62,7 @@ export function renderFooter(container, onJoinClick) {
               Transparency
             </h4>
             <ul class="space-y-2 text-xs">
-              <li><button id="footer-link-privacy" class="hover:text-emerald-300 transition-colors cursor-pointer text-left">Privacy Policy</button></li>
+              <li><button id="footer-link-privacy" class="hover:text-emerald-300 transition-colors cursor-pointer text-left">${t('footer.privacyPolicy')}</button></li>
             </ul>
           </div>
 
@@ -70,10 +71,10 @@ export function renderFooter(container, onJoinClick) {
         <!-- Mandatory Independent Awareness Disclaimer -->
         <div class="p-4 sm:p-5 rounded-2xl bg-[#06150E] border border-emerald-500/20 text-[11px] text-slate-300 leading-relaxed space-y-2">
           <div class="font-bold text-slate-300 uppercase tracking-wider text-[10px] text-emerald-400">
-            Official Campaign Disclaimer
+            ${t('footer.disclaimerHeading')}
           </div>
           <p>
-            SAVE THE SAHYADRI is an independent, non-partisan, non-commercial public environmental awareness platform created by concerned citizens to advocate for the preservation of Maharashtra's Western Ghats. This initiative does not represent or claim affiliation with any registered non-governmental organization (NGO), commercial enterprise, or government department. No financial contributions, donations, or grants are solicited or accepted.
+            ${t('footer.disclaimerText')}
           </p>
         </div>
 
@@ -81,23 +82,23 @@ export function renderFooter(container, onJoinClick) {
         <div class="hidden md:flex items-center justify-center -mb-2">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/25 border border-emerald-500/15 text-[11px] text-slate-400/80 hover:text-slate-300 opacity-65 hover:opacity-90 transition-all">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400/60 animate-pulse"></span>
-            <span class="font-heading font-medium text-[9px] tracking-wider uppercase text-slate-400/70">TOTAL VISITORS:</span>
+            <span class="font-heading font-medium text-[9px] tracking-wider uppercase text-slate-400/70">${t('footer.totalVisitorsLabel')}</span>
             <strong id="footer-total-visitors-desktop" class="footer-total-visitors-val text-emerald-400/75 font-mono font-medium text-xs">...</strong>
           </div>
         </div>
 
         <!-- Bottom Copyright, Mobile Visitors & Credit -->
         <div class="pt-6 border-t border-emerald-500/15 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© ${new Date().getFullYear()} Save the Sahyadri • Dedicated to the living forests of the Western Ghats.</p>
+          <p>${t('footer.copyrightText', { year: new Date().getFullYear() })}</p>
 
           <!-- Mobile Live Total Visitors Counter (Position preserved for mobile view, faint/subtle) -->
           <div class="md:hidden inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/25 border border-emerald-500/15 text-[11px] text-slate-400/80 opacity-65">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400/60 animate-pulse"></span>
-            <span class="font-heading font-medium text-[9px] tracking-wider uppercase text-slate-400/70">TOTAL VISITORS:</span>
+            <span class="font-heading font-medium text-[9px] tracking-wider uppercase text-slate-400/70">${t('footer.totalVisitorsLabel')}</span>
             <strong id="footer-total-visitors" class="footer-total-visitors-val text-emerald-400/75 font-mono font-medium text-xs">...</strong>
           </div>
 
-          <p class="text-emerald-500/70 font-mono text-[11px]">Earth • Forests • Water • Future</p>
+          <p class="text-emerald-500/70 font-mono text-[11px]">${t('footer.tagline')}</p>
         </div>
 
       </div>

@@ -23,6 +23,8 @@ export const AT_RISK_IMAGES = [
   '/images/at-risk/12.PNG'
 ];
 
+import { t } from '../utils/i18n.js';
+
 let previewTimeout = null;
 let cycleInterval = null;
 let countdownInterval = null;
@@ -124,10 +126,10 @@ export function openFastPreviewModal(onPledgeClick) {
       <!-- Main Heading: 32,490 TREES AT RISK (No gradient, only RISK in solid green) -->
       <div class="mb-2 sm:mb-2.5">
         <h2 class="font-heading font-black text-xl sm:text-2xl text-white tracking-tight uppercase leading-tight drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)]">
-          32,490 TREES AT <span class="text-[#00FF87]">RISK</span>
+          ${t('fastPreview.treesAtRiskPrefix', '32,490 TREES AT')} <span class="text-[#00FF87]">${t('fastPreview.riskHighlight', 'RISK')}</span>
         </h2>
         <p class="text-[11px] sm:text-xs text-slate-400 font-mono mt-0.5">
-          Karjat Biodiversity Corridor • Western Ghats
+          ${t('fastPreview.corridorSubtitle', 'Karjat Biodiversity Corridor • Western Ghats')}
         </p>
       </div>
 
@@ -155,7 +157,7 @@ export function openFastPreviewModal(onPledgeClick) {
         <div class="absolute bottom-0 inset-x-0 p-2.5 sm:p-3 bg-gradient-to-t from-black/95 via-black/70 to-transparent z-20 text-left">
           <p class="text-[11px] sm:text-xs text-white font-medium drop-shadow-md flex items-center gap-1.5">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
-            <span>Trees marked for felling in ancient forest zone</span>
+            <span>${t('fastPreview.photoCaption', 'Trees marked for felling in ancient forest zone')}</span>
           </p>
         </div>
       </div>
@@ -166,14 +168,14 @@ export function openFastPreviewModal(onPledgeClick) {
           id="fast-preview-skip-btn"
           class="px-3.5 py-1.5 rounded-none bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-500/25 text-slate-400 hover:text-slate-200 text-xs font-mono transition-all cursor-pointer"
         >
-          Skip (Esc)
+          ${t('fastPreview.skipBtn', 'Skip (Esc)')}
         </button>
 
         <button 
           id="fast-preview-pledge-btn"
           class="btn-nature-cta flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-none bg-gradient-to-r from-emerald-500 to-emerald-400 hover:from-emerald-400 hover:to-emerald-300 text-black font-heading font-extrabold text-xs tracking-wider uppercase shadow-emerald-glow-sm transition-all cursor-pointer active:scale-95"
         >
-          <span>I STAND WITH SAHYADRI</span>
+          <span>${t('fastPreview.pledgeCta', 'I STAND WITH SAHYADRI')}</span>
           <span>→</span>
         </button>
       </div>

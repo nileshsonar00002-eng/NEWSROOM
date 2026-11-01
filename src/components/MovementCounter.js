@@ -1,3 +1,4 @@
+import { t } from '../utils/i18n.js';
 /**
  * SAVE THE SAHYADRI — MOVEMENT & CONSERVATION STATISTICS
  * Official UNESCO World Heritage verified ecological data & live citizen movement counters.
@@ -40,11 +41,11 @@ export function renderMovementCounter(container, stats = {}) {
         <!-- Section Header -->
         <div class="text-center max-w-3xl mx-auto space-y-3 sm:space-y-4 reveal-on-scroll">
           <h2 class="font-heading font-black text-2xl sm:text-4xl lg:text-5xl text-white tracking-tight leading-tight">
-            ONE MOVEMENT. MANY <span class="text-[#00FF87]">VOICES.</span>
+            ${t('counter.headlinePrefix')} <span class="text-[#00FF87]">${t('counter.headlineHighlight')}</span>
           </h2>
           
           <p class="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed font-sans">
-            Verified ecological metrics from the Sahyadri Western Ghats — an irreplaceable global biodiversity sanctuary whose critical corridors demand urgent protection.
+            ${t('counter.subtitle')}
           </p>
         </div>
 
@@ -76,12 +77,12 @@ export function renderMovementCounter(container, stats = {}) {
 
                 <!-- Stat Title -->
                 <div class="text-[11px] xs:text-xs sm:text-sm font-bold text-white uppercase tracking-wider leading-snug line-clamp-2">
-                  THREATENED SPECIES
+                  ${t('counter.card1Title')}
                 </div>
 
                 <!-- Description (14px comfortable reading on mobile) -->
                 <p class="text-[13.5px] xs:text-[14px] sm:text-sm text-slate-300 leading-[1.6] sm:leading-relaxed pt-0.5 sm:pt-1 font-sans">
-                  Globally threatened species recorded in the Western Ghats, according to UNESCO's listing information.
+                  ${t('counter.card1Desc')}
                 </p>
               </div>
             </div>
@@ -106,12 +107,12 @@ export function renderMovementCounter(container, stats = {}) {
 
                 <!-- Stat Title -->
                 <div class="text-[11px] xs:text-xs sm:text-sm font-bold text-white uppercase tracking-wider leading-snug line-clamp-2">
-                  ENDEMIC TREE SPECIES
+                  ${t('counter.card2Title')}
                 </div>
 
                 <!-- Description (14px comfortable reading on mobile) -->
                 <p class="text-[13.5px] xs:text-[14px] sm:text-sm text-slate-300 leading-[1.6] sm:leading-relaxed pt-0.5 sm:pt-1 font-sans">
-                  352 of nearly 650 tree species cited by UNESCO's description are endemic.
+                  ${t('counter.card2Desc')}
                 </p>
               </div>
             </div>
@@ -136,12 +137,12 @@ export function renderMovementCounter(container, stats = {}) {
 
                 <!-- Stat Title -->
                 <div class="text-[11px] xs:text-xs sm:text-sm font-bold text-white uppercase tracking-wider leading-snug line-clamp-2">
-                  BIODIVERSITY HOTSPOTS
+                  ${t('counter.card3Title')}
                 </div>
 
                 <!-- Description (14px comfortable reading on mobile) -->
                 <p class="text-[13.5px] xs:text-[14px] sm:text-sm text-slate-300 leading-[1.6] sm:leading-relaxed pt-0.5 sm:pt-1 font-sans">
-                  The Western Ghats–Sri Lanka region is recognised as one of the world's eight biodiversity hotspots.
+                  ${t('counter.card3Desc')}
                 </p>
               </div>
             </div>
@@ -166,12 +167,12 @@ export function renderMovementCounter(container, stats = {}) {
 
                 <!-- Stat Title -->
                 <div class="text-[11px] xs:text-xs sm:text-sm font-bold text-white uppercase tracking-wider leading-snug line-clamp-2">
-                  UNESCO WORLD HERITAGE
+                  ${t('counter.card4Title')}
                 </div>
 
                 <!-- Description (14px comfortable reading on mobile) -->
                 <p class="text-[13.5px] xs:text-[14px] sm:text-sm text-slate-300 leading-[1.6] sm:leading-relaxed pt-0.5 sm:pt-1 font-sans">
-                  The Western Ghats property was inscribed on the UNESCO World Heritage List in 2012.
+                  ${t('counter.card4Desc')}
                 </p>
               </div>
             </div>
@@ -220,7 +221,7 @@ export function renderMovementCounter(container, stats = {}) {
             rel="noopener noreferrer" 
             class="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-400 font-medium transition-colors"
           >
-            <span>Source: UNESCO — Western Ghats</span>
+            <span>${t('counter.unescoSource')}</span>
             <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
               <polyline points="15 3 21 3 21 9" />

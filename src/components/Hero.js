@@ -1,72 +1,52 @@
 /**
- * SAVE THE SAHYADRI — HOMEPAGE HERO WITH REAL ORIGINAL GOOGLE MAPS
- * 
- * - Original Real Google Map loaded with actual natural colors (Terrain / Roadmap / Satellite).
- * - Sahyadri / Karjat central focal hub (18.9102° N, 73.3283° E).
- * - Curved neon blue (#00E5FF) and neon green (#00FF87) connection lines converging on Sahyadri.
- * - Floating stats card: "PEOPLE UNITED FOR SAHYADRI", total count, "LAST JOINED FROM: ...".
- * - "JOIN THE MOVEMENT" CTA pill button.
- * - "Full View ↗" expanding into a full-screen Google Maps overlay.
+ * SAVE THE SAHYADRI — HERO SECTION
+ * High-impact hero combining natural imagery with an authentic Google Maps 3D Viewport.
+ * Includes localized headings, animated opposing line reveals, and live supporters counter.
  */
 
 import { renderHeroMaharashtraMap, openMaharashtraFullView } from './MaharashtraMap.js';
+import { t } from '../utils/i18n.js';
 
 let currentSupportersList = [];
 let heroMapContainer = null;
 let savedOnJoinClick = null;
 
 export function renderHero(container, onJoinClick, supportersData = {}) {
-  const totalCount = typeof supportersData.total === 'number'
-    ? supportersData.total
-    : (supportersData.supporters ? supportersData.supporters.length : 0);
-  const uniqueCities = supportersData.uniqueCities || 0;
-  currentSupportersList = supportersData.supporters || [];
-  const latestSupporter = currentSupportersList.length > 0 ? currentSupportersList[0] : null;
-  const lastJoinedText = latestSupporter
-    ? `${latestSupporter.city || 'MUMBAI'}, ${latestSupporter.state || 'MAHARASHTRA'}`.toUpperCase()
-    : 'MUMBAI, MAHARASHTRA';
   heroMapContainer = container;
   savedOnJoinClick = onJoinClick;
 
+  const totalCount = typeof supportersData.total === 'number' 
+    ? supportersData.total 
+    : (Array.isArray(supportersData) ? supportersData.length : 0);
+
+  currentSupportersList = supportersData.supporters || (Array.isArray(supportersData) ? supportersData : []);
+
   container.innerHTML = `
-    <section id="hero" class="relative min-h-[92vh] flex items-center justify-center overflow-hidden py-10 sm:py-14 lg:py-20">
+    <section id="hero" class="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center pt-8 pb-10 sm:py-16 overflow-hidden bg-[#030805]">
       
-      <!-- High-Resolution Ancient Sahyadri Heritage Tree Background -->
-      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
+      <!-- Forest Canopy Visual Layer (Atmospheric Background) -->
+      <div class="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
         <img 
           src="/images/sahyadri-tree-hero.jpg" 
-          alt="Majestic Sahyadri Forest Heritage Tree" 
-          class="w-full h-full object-cover object-center lg:object-[50%_35%] select-none scale-100"
+          alt="Majestic living ancient tree canopy of Sahyadri Western Ghats" 
+          class="w-full h-full object-cover object-center opacity-35 filter brightness-90 contrast-110"
           loading="eager"
-          decoding="async"
         />
-
-        <!-- Forest Green Atmosphere & Contrast Overlays: ensures readable text while the majestic tree is clearly visible behind 'THE SAHYADRI NEEDS US' -->
-        <!-- 1. Ambient forest tint unifying photo with dark theme without obscuring foliage -->
-        <div class="absolute inset-0 bg-[#031309]/30 mix-blend-multiply"></div>
-
-        <!-- 2. Desktop directional gradient: deeper behind text on left, soft and transparent across the tree in center/right -->
-        <div class="hidden lg:block absolute inset-0 bg-gradient-to-r from-[#030805]/85 via-[#030805]/45 to-[#030805]/15"></div>
-
-        <!-- 3. Mobile directional gradient: darker top/bottom for text contrast, open in center for tree visibility -->
-        <div class="lg:hidden absolute inset-0 bg-gradient-to-b from-[#030805]/80 via-[#030805]/35 to-[#030805]/85"></div>
-
-        <!-- 4. Seamless bottom fade into page background (#030805) -->
-        <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#030805] via-[#030805]/75 to-transparent"></div>
-
-        <!-- 5. Seamless top fade from navigation bar -->
-        <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#030805]/80 to-transparent"></div>
-
-        <!-- Living Forest Atmospheric Effects: Drifting mist, sunlight shimmer, floating nature spores -->
-        <div class="forest-mist-layer forest-mist-1"></div>
-        <div class="forest-mist-layer forest-mist-2"></div>
-        <div class="forest-sun-shimmer"></div>
-        <div class="absolute inset-0 overflow-hidden pointer-events-none">
-          <div class="nature-spore w-1.5 h-1.5 top-[25%] left-[20%] [animation-delay:0s]"></div>
-          <div class="nature-spore w-2 h-2 top-[55%] left-[45%] [animation-delay:3s]"></div>
-          <div class="nature-spore w-1 h-1 top-[40%] left-[75%] [animation-delay:7s]"></div>
-          <div class="nature-spore w-1.5 h-1.5 top-[70%] left-[30%] [animation-delay:11s]"></div>
-          <div class="nature-spore w-2 h-2 top-[35%] left-[60%] [animation-delay:5s]"></div>
+        <!-- Deep Forest Vignette Gradient Overlays -->
+        <div class="absolute inset-0 bg-gradient-to-b from-[#030805]/80 via-[#030805]/65 to-[#030805]"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-[#030805]/95 via-transparent to-[#030805]/95"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#030805_80%)]"></div>
+        
+        <!-- Living Forest Subtle Atmospheric Shimmer & Mist -->
+        <div class="absolute inset-0 pointer-events-none">
+          <div class="forest-mist-1"></div>
+          <div class="forest-mist-2"></div>
+          <div class="forest-sun-shimmer"></div>
+          
+          <!-- Subtle Floating Nature Spores -->
+          <div class="nature-spore w-1 h-1 top-[25%] left-[20%] [animation-delay:0s]"></div>
+          <div class="nature-spore w-1.5 h-1.5 top-[40%] left-[60%] [animation-delay:3s]"></div>
+          <div class="nature-spore w-1 h-1 top-[70%] left-[30%] [animation-delay:6s]"></div>
           <div class="nature-spore w-1 h-1 top-[65%] left-[85%] [animation-delay:9s]"></div>
         </div>
       </div>
@@ -85,8 +65,8 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
         <!-- Mobile Main Headline (Visible ONLY in mobile view, right below menu bar) -->
         <div class="lg:hidden text-center space-y-1 mb-5">
           <h1 class="font-heading font-black text-3xl sm:text-4xl tracking-tight leading-[1.08] text-white">
-            <span class="hero-line-left block">THE SAHYADRI</span>
-            <span class="hero-line-right block">NEEDS <span class="text-[#00FF87]">US.</span></span>
+            <span class="hero-line-left block">${t('hero.headlineLine1')}</span>
+            <span class="hero-line-right block">${t('hero.headlineLine2Prefix')} <span class="text-[#00FF87]">${t('hero.headlineLine2Highlight')}</span></span>
           </h1>
         </div>
 
@@ -99,18 +79,18 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
             <div class="hidden lg:block space-y-4 w-full">
               <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm font-semibold tracking-wider uppercase shadow-emerald-glow-sm">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>A MOVEMENT FOR OUR NATURAL HERITAGE</span>
+                <span>${t('hero.eyebrow')}</span>
               </div>
 
               <h1 class="font-heading font-black text-4xl sm:text-5xl xl:text-6xl tracking-tight leading-[1.08] text-white">
-                <span class="hero-line-left block">THE SAHYADRI</span>
-                <span class="hero-line-right block">NEEDS <span class="text-[#00FF87]">US.</span></span>
+                <span class="hero-line-left block">${t('hero.headlineLine1')}</span>
+                <span class="hero-line-right block">${t('hero.headlineLine2Prefix')} <span class="text-[#00FF87]">${t('hero.headlineLine2Highlight')}</span></span>
               </h1>
             </div>
 
             <!-- Supporting Text -->
             <p class="text-base sm:text-lg lg:text-xl text-slate-300 font-normal leading-relaxed max-w-xl mx-auto lg:mx-0">
-              “From every corner of India, we can stand together for the future of our forests.”
+              ${t('hero.supportingQuote')}
             </p>
 
             <!-- Action CTAs -->
@@ -122,7 +102,7 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
                 <svg class="w-4 h-4 text-black shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 5v14M5 12h14" />
                 </svg>
-                <span>I STAND WITH SAHYADRI</span>
+                <span>${t('hero.cta')}</span>
               </button>
             </div>
 
@@ -131,7 +111,7 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
               <svg class="w-4 h-4 text-emerald-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
               </svg>
-              <span>100% Peaceful Awareness • Privacy Protected</span>
+              <span>${t('hero.trustNote')}</span>
             </div>
 
           </div>
@@ -155,23 +135,23 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
                 <!-- 3. Loading Indicator -->
                 <div id="hero-map-loader" class="absolute inset-0 flex flex-col items-center justify-center bg-[#071318]/90 z-20 transition-opacity">
                   <div class="w-10 h-10 border-3 border-emerald-500/30 border-t-emerald-400 rounded-full animate-spin mb-3"></div>
-                  <p class="text-xs font-heading font-bold text-emerald-400">Loading Satellite Movement Map...</p>
-                  <p class="text-[10px] text-slate-400 mt-0.5 font-mono">Authentic natural colors & neon arcs</p>
+                  <p class="text-xs font-heading font-bold text-emerald-400">${t('hero.loadingMapTitle')}</p>
+                  <p class="text-[10px] text-slate-400 mt-0.5 font-mono">${t('hero.loadingMapSubtitle')}</p>
                 </div>
 
-                <!-- Floating Centered Movement Supporters Counter Card (Cities removed, shifted to center of map) -->
+                <!-- Floating Centered Movement Supporters Counter Card -->
                 <div class="absolute top-2.5 sm:top-3.5 left-1/2 -translate-x-1/2 z-20 pointer-events-auto inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-[#06150E]/90 hover:bg-[#06150E] border border-emerald-500/35 text-[11px] sm:text-xs text-slate-300 backdrop-blur-md shadow-lg shadow-emerald-950/40 whitespace-nowrap max-w-[92%] transition-all">
                   <div class="flex items-center gap-1.5">
                     <svg class="w-3.5 h-3.5 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
                       <circle cx="12" cy="10" r="3"/>
                     </svg>
-                    <span class="font-semibold text-white">Karjat & Western Ghats</span>
+                    <span class="font-semibold text-white">${t('hero.mapHubLabel')}</span>
                   </div>
                   <span class="text-emerald-500/40">•</span>
                   <div class="flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span>Supporters: <strong id="hero-supporter-count" class="text-emerald-400 font-bold">${totalCount.toLocaleString('en-IN')}</strong></span>
+                    <span>${t('hero.mapSupportersPrefix')} <strong id="hero-supporter-count" class="text-emerald-400 font-bold">${totalCount.toLocaleString('en-IN')}</strong></span>
                   </div>
                 </div>
 
@@ -179,8 +159,8 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
                 <div class="absolute top-3 right-3 sm:top-4 sm:right-4 flex flex-col gap-1.5 z-20 pointer-events-auto">
                   <button 
                     id="hero-map-zoom-in"
-                    aria-label="Zoom in"
-                    title="Zoom In (+)"
+                    aria-label="${t('hero.zoomInTitle')}"
+                    title="${t('hero.zoomInTitle')}"
                     class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#071318]/90 hover:bg-emerald-900/80 border border-emerald-500/35 hover:border-emerald-400 text-emerald-300 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-md backdrop-blur-sm active:scale-95"
                   >
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -189,8 +169,8 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
                   </button>
                   <button 
                     id="hero-map-zoom-out"
-                    aria-label="Zoom out"
-                    title="Zoom Out (−)"
+                    aria-label="${t('hero.zoomOutTitle')}"
+                    title="${t('hero.zoomOutTitle')}"
                     class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#071318]/90 hover:bg-emerald-900/80 border border-emerald-500/35 hover:border-emerald-400 text-emerald-300 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-md backdrop-blur-sm active:scale-95"
                   >
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -199,8 +179,8 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
                   </button>
                   <button 
                     id="hero-map-fullscreen-btn"
-                    aria-label="Full screen view"
-                    title="Full Screen View"
+                    aria-label="${t('hero.fullscreenTitle')}"
+                    title="${t('hero.fullscreenTitle')}"
                     class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#071318]/90 hover:bg-emerald-900/80 border border-emerald-500/35 hover:border-emerald-400 text-emerald-300 hover:text-white flex items-center justify-center transition-all cursor-pointer shadow-md backdrop-blur-sm active:scale-95"
                   >
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -218,7 +198,7 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
                     <div class="w-5 h-5 rounded-full overflow-hidden bg-[#05392e] border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-sm">
                       <img src="/images/logo.png" alt="Save the Sahyadri Logo" class="w-full h-full object-cover" />
                     </div>
-                    <span>JOIN THE MOVEMENT</span>
+                    <span>${t('common.joinMovement')}</span>
                   </button>
                 </div>
 
@@ -233,7 +213,7 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
                   <div class="w-4 h-4 rounded-full overflow-hidden bg-[#05392e] border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-sm">
                     <img src="/images/logo.png" alt="Save the Sahyadri Logo" class="w-full h-full object-cover" />
                   </div>
-                  <span>JOIN THE MOVEMENT</span>
+                  <span>${t('common.joinMovement')}</span>
                 </button>
               </div>
 

@@ -3,6 +3,8 @@
  * Privacy Policy, Terms of Use, Sources Policy, and Data Correction / Removal Form.
  */
 
+import { t, getLanguage } from '../utils/i18n.js';
+
 export function openPrivacyModal() {
   renderInfoModal({
     tag: 'PRIVACY & DATA PROTECTION',
@@ -262,7 +264,7 @@ function renderInfoModal({ tag, title, contentHtml }) {
 
       <div class="pt-4 border-t border-emerald-500/15 flex justify-end">
         <button id="info-modal-done-btn" class="px-5 py-2 rounded-xl font-heading font-bold text-xs text-black bg-emerald-400 hover:bg-emerald-300">
-          Close
+          ${t('common.close', 'Close')}
         </button>
       </div>
     </div>

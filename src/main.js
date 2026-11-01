@@ -10,6 +10,8 @@ import { renderFooter, updateFooterVisitorCount } from './components/Footer';
 import { openJoinModal } from './components/JoinModal';
 import { openShareCardModal } from './components/ShareCardModal';
 import { openFastPreviewModal, preloadAtRiskImages } from './components/FastPreviewModal';
+import { renderLanguageSelector } from './components/LanguageSelector';
+import { onLanguageChange } from './utils/i18n';
 import { subscribeToSupporters } from './services/supporterService';
 import { trackVisitor, subscribeToVisitorCount } from './services/visitorService';
 import { initNatureAnimations } from './utils/natureAnimations';
@@ -25,6 +27,9 @@ class SahyadriApp {
     };
     this.unsubscribeSupporters = null;
     this.unsubscribeVisitors = null;
+    this.unsubscribeLang = null;
+    this.langSelectorCleanup = null;
+    this.lastVisitorCount = 0;
     this.activeAdminApp = null;
   }
 
@@ -69,6 +74,14 @@ class SahyadriApp {
     if (this.unsubscribeVisitors) {
       try { this.unsubscribeVisitors(); } catch (_) {}
       this.unsubscribeVisitors = null;
+    }
+    if (this.unsubscribeLang) {
+      try { this.unsubscribeLang(); } catch (_) {}
+      this.unsubscribeLang = null;
+    }
+    if (this.langSelectorCleanup) {
+      try { this.langSelectorCleanup.destroy(); } catch (_) {}
+      this.langSelectorCleanup = null;
     }
     this.appEl.innerHTML = '';
   }
@@ -133,6 +146,40 @@ class SahyadriApp {
     renderStorySection(mounts.story, handleOpenJoin);
     renderFooter(mounts.footer, handleOpenJoin);
 
+    // Mount premium floating Language Selector (म | हिं | EN) below navbar in top-right corner
+    this.langSelectorCleanup = renderLanguageSelector();
+
+    // Instant reactive language re-render across entire website without page reload
+    this.unsubscribeLang = onLanguageChange(() => {
+      renderHeader(mounts.header, handleOpenJoin);
+      renderHero(mounts.hero, handleOpenJoin, this.currentSupportersData);
+      renderMovementCounter(mounts.counter, this.currentSupportersData);
+      renderIssueSection(mounts.issue);
+      renderStorySection(mounts.story, handleOpenJoin);
+      renderFooter(mounts.footer, handleOpenJoin);
+
+      if (typeof this.lastVisitorCount === 'number') {
+        updateFooterVisitorCount(mounts.footer, this.lastVisitorCount);
+      }
+
+      updateCounterValues(
+        mounts.counter,
+        this.currentSupportersData.total,
+        this.currentSupportersData.uniqueCities
+      );
+
+      const heroSupporters = document.getElementById('hero-supporter-count');
+      const heroCities = document.getElementById('hero-cities-count');
+      if (heroSupporters) {
+        heroSupporters.textContent = typeof this.currentSupportersData.total === 'number' ? this.currentSupportersData.total.toLocaleString('en-IN') : '0';
+      }
+      if (heroCities) {
+        heroCities.textContent = this.currentSupportersData.uniqueCities.toString();
+      }
+
+      initNatureAnimations();
+    });
+
     // Initialize subtle nature animations & scroll reveals
     initNatureAnimations();
 
@@ -147,6 +194,7 @@ class SahyadriApp {
 
     // Subscribe to real-time live visitor counter
     this.unsubscribeVisitors = subscribeToVisitorCount((count) => {
+      this.lastVisitorCount = count;
       updateFooterVisitorCount(mounts.footer, count);
     });
 
