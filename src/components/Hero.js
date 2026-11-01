@@ -24,18 +24,31 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
   container.innerHTML = `
     <section id="hero" class="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center pt-8 pb-10 sm:py-16 overflow-hidden bg-[#030805]">
       
-      <!-- Forest Canopy Visual Layer (Atmospheric Background) -->
-      <div class="absolute inset-0 z-0 pointer-events-none select-none overflow-hidden">
+      <!-- High-Resolution Ancient Sahyadri Heritage Tree Background -->
+      <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
         <img 
           src="/images/sahyadri-tree-hero.jpg" 
-          alt="Majestic living ancient tree canopy of Sahyadri Western Ghats" 
-          class="w-full h-full object-cover object-center opacity-35 filter brightness-90 contrast-110"
+          alt="Majestic Sahyadri Forest Heritage Tree" 
+          class="w-full h-full object-cover object-center lg:object-[50%_35%] select-none scale-100"
           loading="eager"
+          decoding="async"
         />
-        <!-- Deep Forest Vignette Gradient Overlays -->
-        <div class="absolute inset-0 bg-gradient-to-b from-[#030805]/80 via-[#030805]/65 to-[#030805]"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-[#030805]/95 via-transparent to-[#030805]/95"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#030805_80%)]"></div>
+
+        <!-- Forest Green Atmosphere & Contrast Overlays: ensures readable text while the majestic tree is clearly visible behind 'THE SAHYADRI NEEDS US' -->
+        <!-- 1. Ambient forest tint unifying photo with dark theme without obscuring foliage -->
+        <div class="absolute inset-0 bg-[#031309]/30 mix-blend-multiply"></div>
+
+        <!-- 2. Desktop directional gradient: deeper behind text on left, soft and transparent across the tree in center/right -->
+        <div class="hidden lg:block absolute inset-0 bg-gradient-to-r from-[#030805]/85 via-[#030805]/45 to-[#030805]/15"></div>
+
+        <!-- 3. Mobile directional gradient: darker top/bottom for text contrast, open in center for tree visibility -->
+        <div class="lg:hidden absolute inset-0 bg-gradient-to-b from-[#030805]/80 via-[#030805]/35 to-[#030805]/85"></div>
+
+        <!-- 4. Seamless bottom fade into page background (#030805) -->
+        <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-[#030805] via-[#030805]/75 to-transparent"></div>
+
+        <!-- 5. Seamless top fade from navigation bar -->
+        <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#030805]/80 to-transparent"></div>
         
         <!-- Living Forest Subtle Atmospheric Shimmer & Mist -->
         <div class="absolute inset-0 pointer-events-none">
