@@ -85,8 +85,8 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
         <!-- Mobile Main Headline (Visible ONLY in mobile view, right below menu bar) -->
         <div class="lg:hidden text-center space-y-1 mb-5">
           <h1 class="font-heading font-black text-3xl sm:text-4xl tracking-tight leading-[1.08] text-white">
-            THE SAHYADRI <br />
-            NEEDS <span class="text-[#00FF87]">US.</span>
+            <span class="hero-line-left block">THE SAHYADRI</span>
+            <span class="hero-line-right block">NEEDS <span class="text-[#00FF87]">US.</span></span>
           </h1>
         </div>
 
@@ -103,8 +103,8 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
               </div>
 
               <h1 class="font-heading font-black text-4xl sm:text-5xl xl:text-6xl tracking-tight leading-[1.08] text-white">
-                THE SAHYADRI <br />
-                NEEDS <span class="text-[#00FF87]">US.</span>
+                <span class="hero-line-left block">THE SAHYADRI</span>
+                <span class="hero-line-right block">NEEDS <span class="text-[#00FF87]">US.</span></span>
               </h1>
             </div>
 

@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { initTreeCounter, initScrollReveals } from '../src/utils/natureAnimations.js';
+import { initTreeCounter, initScrollReveals, initHeroHeadlineAnimation } from '../src/utils/natureAnimations.js';
 
 console.log('🌿 Starting NATURE ANIMATIONS Test Suite...');
 
@@ -27,6 +27,9 @@ assert.ok(cssContent.includes('.map-headline-right'), 'Must contain map-headline
 assert.ok(cssContent.includes('@keyframes slideInFromLeft'), 'Must contain slideInFromLeft keyframe');
 assert.ok(cssContent.includes('@keyframes slideInFromRight'), 'Must contain slideInFromRight keyframe');
 console.log('✓ Test 2: Fullscreen map dual line opposing entrance keyframes (left & right) verified');
+assert.ok(cssContent.includes('.hero-line-left'), 'Must contain hero-line-left class');
+assert.ok(cssContent.includes('.hero-line-right'), 'Must contain hero-line-right class');
+console.log('✓ Test 2b: Hero dual line opposing slide classes (left & right) verified');
 
 // Scroll Reveals & Stagger
 assert.ok(cssContent.includes('.reveal-on-scroll'), 'Must contain reveal-on-scroll class');
@@ -69,6 +72,7 @@ global.window = {
 assert.doesNotThrow(() => {
   initTreeCounter();
   initScrollReveals();
+  initHeroHeadlineAnimation();
 }, 'Nature animation controllers must initialize safely without throwing');
 console.log('✓ Test 6: Controllers initialize safely in all environments');
 

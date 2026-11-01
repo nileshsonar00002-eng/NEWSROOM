@@ -49,6 +49,8 @@ renderHero(heroEl, () => {}, { total: 108, uniqueCities: 14 });
 assert.ok(heroEl.innerHTML.includes('A MOVEMENT FOR OUR NATURAL HERITAGE'), 'Hero must contain eyebrow');
 assert.ok(heroEl.innerHTML.includes('THE SAHYADRI'), 'Hero must contain main headline');
 assert.ok(heroEl.innerHTML.includes('NEEDS') && heroEl.innerHTML.includes('>US.</span>'), 'Hero must contain highlight headline with solid green US.');
+assert.ok(heroEl.innerHTML.includes('hero-line-left'), 'Hero must contain hero-line-left class for left slide animation');
+assert.ok(heroEl.innerHTML.includes('hero-line-right'), 'Hero must contain hero-line-right class for right slide animation');
 assert.ok(heroEl.innerHTML.includes('From every corner of India, we can stand together for the future of our forests.'), 'Hero must contain exact supporting text');
 assert.ok(heroEl.innerHTML.includes('hero-google-map-target'), 'Hero must contain google map target container');
 assert.ok(heroEl.innerHTML.includes('hero-map-fullscreen-btn'), 'Hero must contain fullscreen map button');

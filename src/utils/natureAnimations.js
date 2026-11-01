@@ -113,7 +113,71 @@ export function initScrollReveals() {
 /**
  * Initialize all nature animation controllers.
  */
+
+/**
+ * Smooth dual-line opposing slide animation for Hero Headline:
+ * Line 1 (THE SAHYADRI) slides smoothly from the left,
+ * Line 2 (NEEDS US.) slides smoothly from the right.
+ * Re-triggers smoothly whenever the page scrolls up or down.
+ */
+export function initHeroHeadlineAnimation() {
+  if (typeof document === 'undefined') return;
+
+  const leftLines = document.querySelectorAll('.hero-line-left');
+  const rightLines = document.querySelectorAll('.hero-line-right');
+  if (!leftLines.length && !rightLines.length) return;
+
+  const prefersReduced = typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (prefersReduced || typeof IntersectionObserver === 'undefined') {
+    leftLines.forEach((el) => el.classList.add('is-revealed'));
+    rightLines.forEach((el) => el.classList.add('is-revealed'));
+    return;
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const left = entry.target.querySelector('.hero-line-left');
+        const right = entry.target.querySelector('.hero-line-right');
+        if (entry.isIntersecting) {
+          if (left) left.classList.add('is-revealed');
+          if (right) right.classList.add('is-revealed');
+        } else {
+          // Re-arm when scrolled away, so it smoothly reveals again upon scrolling back
+          if (left) left.classList.remove('is-revealed');
+          if (right) right.classList.remove('is-revealed');
+        }
+      });
+    },
+    {
+      threshold: 0.1
+    }
+  );
+
+  const heroHeadings = document.querySelectorAll('#hero h1');
+  heroHeadings.forEach((h1) => observer.observe(h1));
+
+  // If already in viewport on load, immediately trigger reveal
+  if (typeof window !== 'undefined') {
+    requestAnimationFrame(() => {
+      heroHeadings.forEach((h1) => {
+        const rect = h1.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          const left = h1.querySelector('.hero-line-left');
+          const right = h1.querySelector('.hero-line-right');
+          if (left) left.classList.add('is-revealed');
+          if (right) right.classList.add('is-revealed');
+        }
+      });
+    });
+  }
+}
+
 export function initNatureAnimations() {
   initTreeCounter();
   initScrollReveals();
+  initHeroHeadlineAnimation();
 }

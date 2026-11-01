@@ -413,6 +413,32 @@ html {
   will-change: transform, opacity;
 }
 
+/* 2b. Hero Section — Dual-Line Opposing Slide Reveal on Page Scroll Up/Down */
+.hero-line-left {
+  display: block;
+  opacity: 0;
+  transform: translate3d(-50px, 0, 0);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.hero-line-right {
+  display: block;
+  opacity: 0;
+  transform: translate3d(50px, 0, 0);
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
+              opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
+  will-change: transform, opacity;
+}
+
+.hero-line-left.is-revealed,
+.hero-line-right.is-revealed {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+
 /* 3. Scroll-Based Section Reveals (Fade + 16px Upward Movement) */
 .reveal-on-scroll {
   opacity: 0;
@@ -536,7 +562,9 @@ button svg {
   .forest-sun-shimmer,
   .nature-spore,
   .map-headline-left,
-  .map-headline-right {
+  .map-headline-right,
+  .hero-line-left,
+  .hero-line-right {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
