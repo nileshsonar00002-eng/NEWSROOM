@@ -17,8 +17,10 @@ export function renderLanguageSelector(mountContainer = null) {
     if (!existing) {
       existing = document.createElement('div');
       existing.id = 'sahyadri-lang-selector-root';
-      existing.className = 'fixed top-[52px] sm:top-[64px] right-3 sm:right-6 z-40 pointer-events-auto select-none transition-all';
+      existing.className = 'hidden md:block fixed top-[52px] sm:top-[64px] right-3 sm:right-6 z-40 pointer-events-auto select-none transition-all';
       document.body.appendChild(existing);
+    } else {
+      existing.className = 'hidden md:block fixed top-[52px] sm:top-[64px] right-3 sm:right-6 z-40 pointer-events-auto select-none transition-all';
     }
     container = existing;
   }
