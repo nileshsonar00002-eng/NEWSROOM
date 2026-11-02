@@ -217,19 +217,6 @@ export function renderHero(container, onJoinClick, supportersData = {}) {
 
               </div>
 
-              <!-- Mobile Movement Button: Full-width, thumb-friendly tap target -->
-              <div class="sm:hidden mt-3">
-                <button 
-                  id="hero-map-join-cta-mobile"
-                  class="hero-map-join-cta btn-nature-cta w-full min-h-[44px] py-3 rounded-xl bg-[#09221B]/95 hover:bg-[#0E342A] border-2 border-[#00FF87] hover:border-emerald-300 text-white font-heading font-extrabold text-xs tracking-wider uppercase shadow-emerald-glow hover:shadow-emerald-glow-lg transition-all duration-300 active:scale-[0.98] cursor-pointer flex items-center justify-center gap-2"
-                >
-                  <div class="w-4 h-4 rounded-full overflow-hidden bg-[#05392e] border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-sm">
-                    <img src="/images/logo.png" alt="Save the Sahyadri Logo" class="w-full h-full object-cover" />
-                  </div>
-                  <span>${t('common.joinMovement')}</span>
-                </button>
-              </div>
-
             </div>
           </div>
 

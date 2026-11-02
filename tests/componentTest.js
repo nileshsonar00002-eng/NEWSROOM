@@ -59,6 +59,8 @@ assert.ok(heroEl.innerHTML.includes('hero-map-fullscreen-btn'), 'Hero must conta
 assert.ok(heroEl.innerHTML.includes('hero-supporter-count'), 'Hero must contain hero-supporter-count element');
 assert.ok(!heroEl.innerHTML.includes('hero-cities-count'), 'Cities count must be removed from hero counter card');
 assert.ok(!heroEl.innerHTML.includes('PEOPLE UNITED FOR SAHYADRI'), 'Hero embedded map must NOT feature live counter card (removed to keep map 100% visible)');
+assert.ok(!heroEl.innerHTML.includes('hero-map-join-cta-mobile'), 'Hero must not contain duplicate mobile join button below map');
+assert.ok(heroEl.innerHTML.includes('hero-map-join-cta'), 'Hero must retain desktop map join button');
 console.log('✓ Hero component rendered properly with centered supporters counter on map');
 
 // 2b. Fullscreen Map Live Counter Card Verification
