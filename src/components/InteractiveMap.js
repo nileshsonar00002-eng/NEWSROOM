@@ -400,7 +400,6 @@ function plotCityMarkers(L, supporters) {
     }
 
     // 2. Minimal Holographic City Marker
-    const count = group.members.length;
     const markerIcon = L.divIcon({
       className: 'city-marker-div',
       html: `
@@ -411,11 +410,6 @@ function plotCityMarkers(L, supporters) {
           <div class="relative w-2.5 h-2.5 rounded-full border border-emerald-400/50 bg-emerald-400/15 flex items-center justify-center shadow-[0_0_6px_rgba(0,255,135,0.4)] group-hover:scale-125 transition-transform">
             <div class="w-1 h-1 rounded-full bg-emerald-300 shadow-[0_0_4px_#00FF87]"></div>
           </div>
-          ${count > 1 ? `
-            <span class="absolute -top-2.5 -right-2 px-1 py-0.2 bg-[#04120A] text-emerald-300 border border-emerald-500/40 text-[8px] font-mono font-bold rounded-full shadow-sm leading-tight">
-              ${count > 99 ? '99+' : count}
-            </span>
-          ` : ''}
         </div>
       `,
       iconSize: [0, 0]

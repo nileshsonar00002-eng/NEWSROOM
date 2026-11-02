@@ -537,7 +537,7 @@ export function renderHeroMaharashtraMap(container, supporters = [], onFullViewC
             url: createHolographicMarkerSvg({
               color: strokeColor,
               isBlue,
-              count: city.count || 1,
+              count: 1, // Clean point marker without numbers
               size: 24
             }),
             size: new maps.Size(24, 24),
@@ -958,7 +958,7 @@ export function openMaharashtraFullView(supporters = []) {
             url: createHolographicMarkerSvg({
               color: strokeColor,
               isBlue,
-              count: city.count || 1,
+              count: 1, // Clean point marker without numbers
               size: 24
             }),
             size: new maps.Size(24, 24),
@@ -1251,10 +1251,6 @@ export function generateMaharashtraSvgHtml(supporters = [], uniqueId = 'hero-map
         <!-- Tiny neon center dot (4-5px diameter) -->
         <circle r="2.2" fill="${strokeColor}" />
         <circle r="0.75" fill="#FFFFFF" opacity="0.9" />
-        ${city.count > 1 ? `
-          <rect x="5" y="-10" width="${city.count > 9 ? 14 : 10}" height="9" rx="4.5" fill="#04120A" stroke="${strokeColor}" stroke-opacity="0.6" stroke-width="0.75" />
-          <text x="${5 + (city.count > 9 ? 7 : 5)}" y="-3.5" text-anchor="middle" font-family="monospace, sans-serif" font-size="6.5" font-weight="700" fill="${strokeColor}">${city.count > 99 ? '99+' : city.count}</text>
-        ` : ''}
         <text x="8" y="4" fill="#94a3b8" font-family="Inter, sans-serif" font-size="10" font-weight="600">${escapeHtml(city.name)}</text>
       </g>
     `);
