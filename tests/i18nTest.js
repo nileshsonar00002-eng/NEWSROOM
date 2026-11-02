@@ -293,4 +293,38 @@ assert.ok(mockFooter.innerHTML.includes('Privacy Policy'), 'Footer should render
 
 console.log('✓ All 6 major website components rendered and verified in Marathi, Hindi, and English\n');
 
+// -------------------------------------------------------------
+// Test 8: Language Selector Alignment & Zero-Overlap Verification
+// -------------------------------------------------------------
+console.log('Test 8: Language Selector Alignment & Layout Verification');
+import { renderLanguageSelector } from '../src/components/LanguageSelector.js';
+
+const mockLangContainer = createMockContainer();
+const selectorInstance = renderLanguageSelector(mockLangContainer);
+assert.ok(mockLangContainer.innerHTML.includes('lang-select-btn'), 'Language selector must render buttons');
+assert.ok(mockLangContainer.innerHTML.includes('data-lang="mr"'), 'Must have Marathi button');
+assert.ok(mockLangContainer.innerHTML.includes('data-lang="hi"'), 'Must have Hindi button');
+assert.ok(mockLangContainer.innerHTML.includes('data-lang="en"'), 'Must have English button');
+selectorInstance.destroy();
+
+// Verify default body wrapper uses navbar-matching max-w-6xl alignment and top-[76px] clearance
+const mockBodyContainer = {
+  id: 'sahyadri-lang-selector-root',
+  className: '',
+  innerHTML: '',
+  querySelector: () => null,
+  querySelectorAll: () => [],
+  appendChild: () => {},
+  remove: () => {}
+};
+global.document.getElementById = (id) => (id === 'sahyadri-lang-selector-root' ? mockBodyContainer : null);
+
+const floatingSelector = renderLanguageSelector();
+assert.ok(mockBodyContainer.className.includes('top-[76px]'), 'Must have top-[76px] to avoid navbar overlap');
+assert.ok(mockBodyContainer.className.includes('hidden md:block'), 'Must be hidden on mobile');
+assert.ok(mockBodyContainer.innerHTML.includes('max-w-6xl mx-auto'), 'Must match navbar container width max-w-6xl');
+assert.ok(mockBodyContainer.innerHTML.includes('flex justify-end'), 'Must align with navbar right edge');
+floatingSelector.destroy();
+console.log('✓ Desktop language selector container alignment and zero-overlap positioning verified\n');
+
 console.log('🎉 ALL MULTILINGUAL (i18n) TESTS PASSED FLAWLESSLY!\n');

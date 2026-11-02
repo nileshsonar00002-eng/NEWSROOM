@@ -14,13 +14,14 @@ export function renderLanguageSelector(mountContainer = null) {
 
   if (!container) {
     let existing = document.getElementById('sahyadri-lang-selector-root');
+    const containerClasses = 'hidden md:block fixed top-[76px] left-0 right-0 z-40 pointer-events-none select-none transition-all';
     if (!existing) {
       existing = document.createElement('div');
       existing.id = 'sahyadri-lang-selector-root';
-      existing.className = 'hidden md:block fixed top-[52px] sm:top-[64px] right-3 sm:right-6 z-40 pointer-events-auto select-none transition-all';
+      existing.className = containerClasses;
       document.body.appendChild(existing);
     } else {
-      existing.className = 'hidden md:block fixed top-[52px] sm:top-[64px] right-3 sm:right-6 z-40 pointer-events-auto select-none transition-all';
+      existing.className = containerClasses;
     }
     container = existing;
   }
@@ -28,9 +29,9 @@ export function renderLanguageSelector(mountContainer = null) {
   function updateHtml() {
     const active = getLanguage();
 
-    container.innerHTML = `
+    const selectorButtonsHtml = `
       <div 
-        class="inline-flex items-center gap-1 p-0.5 sm:p-1 rounded-full bg-[#030905]/95 backdrop-blur-xl border border-emerald-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
+        class="pointer-events-auto inline-flex items-center gap-1 p-0.5 sm:p-1 rounded-full bg-[#030905]/95 backdrop-blur-xl border border-emerald-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
         role="group"
         aria-label="Language selection"
       >
@@ -54,6 +55,16 @@ export function renderLanguageSelector(mountContainer = null) {
         }).join('')}
       </div>
     `;
+
+    if (!mountContainer) {
+      container.innerHTML = `
+        <div class="max-w-6xl mx-auto px-2 sm:px-6 flex justify-end">
+          ${selectorButtonsHtml}
+        </div>
+      `;
+    } else {
+      container.innerHTML = selectorButtonsHtml;
+    }
 
     // Attach click events
     container.querySelectorAll('.lang-select-btn').forEach((btn) => {
