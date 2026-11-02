@@ -69,7 +69,7 @@ export function openPrivacyModal() {
         </p>
         <div class="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/20 text-slate-300 space-y-1.5 font-sans text-xs">
           <div><span class="text-slate-400">Website URL:</span> <a href="https://savesahyadri.online" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 underline font-mono">savesahyadri.online</a></div>
-          <div><span class="text-slate-400">Privacy Technical Support:</span> <a href="mailto:inforoadtok@gmail.com" class="text-emerald-400 hover:text-emerald-300 underline font-mono">inforoadtok@gmail.com</a></div>
+          <div><span class="text-slate-400">Contact Email:</span> <a href="mailto:infosavesahyadri@gmail.com" class="text-emerald-400 hover:text-emerald-300 underline font-mono">infosavesahyadri@gmail.com</a></div>
         </div>
       </div>
     `

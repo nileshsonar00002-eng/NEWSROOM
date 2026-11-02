@@ -246,7 +246,7 @@ assert.ok(appendedOverlay.innerHTML.includes('4. Third-Party Infrastructure:'), 
 assert.ok(appendedOverlay.innerHTML.includes('5. Shareable Digital Cards (WhatsApp Status):'), 'Privacy Policy must have section 5');
 assert.ok(appendedOverlay.innerHTML.includes('6. Your Choices and Contact Details:'), 'Privacy Policy must have section 6');
 assert.ok(!appendedOverlay.innerHTML.includes('Removal Request'), 'Privacy Policy must not contain Removal Request button/link');
-assert.ok(appendedOverlay.innerHTML.includes('inforoadtok@gmail.com'), 'Privacy Policy must have support email');
+assert.ok(appendedOverlay.innerHTML.includes('infosavesahyadri@gmail.com'), 'Privacy Policy must have support email');
 closeInfoModal();
 console.log('✓ Privacy Policy modal rendered and verified with all 6 policy sections');
 
