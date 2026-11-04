@@ -1,0 +1,60 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return request.auth != null && (
+        (request.auth.token.firebase.sign_in_provider != 'anonymous' &&
+         'email' in request.auth.token &&
+         request.auth.token.email != null) ||
+        ('admin' in request.auth.token && request.auth.token.admin == true) ||
+        ('role' in request.auth.token && request.auth.token.role == 'admin')
+      );
+    }
+
+    function isValidImage() {
+      return request.resource.contentType.matches('image/(jpeg|jpg|png|webp|gif|svg\\+xml)') &&
+             request.resource.size <= 10 * 1024 * 1024; // max 10MB
+    }
+
+    // Article featured images and content images
+    match /articles/{allPaths=**} {
+      allow read: if true;
+      allow write: if isValidImage();
+      allow delete: if isAdmin();
+    }
+
+    // Author profile images
+    match /authors/{allPaths=**} {
+      allow read: if true;
+      allow write: if isValidImage();
+      allow delete: if isAdmin();
+    }
+
+    // Brand and site assets
+    match /branding/{allPaths=**} {
+      allow read: if true;
+      allow write: if isValidImage();
+      allow delete: if isAdmin();
+    }
+
+    // Fallback for general images
+    match /images/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidImage();
+      allow delete: if isAdmin();
+    }
+
+    // Pothole / legacy roadtok photos
+    match /potholes/{allPaths=**} {
+      allow read: if true;
+      allow write: if isValidImage();
+      allow delete: if isAdmin();
+    }
+  }
+}

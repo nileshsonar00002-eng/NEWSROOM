@@ -1,0 +1,7 @@
+# Robots.txt for NEWSORA Digital News Platform
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+
+Sitemap: https://newsora.in/sitemap.xml

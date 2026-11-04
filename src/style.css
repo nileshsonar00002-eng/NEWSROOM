@@ -3,647 +3,181 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: dark;
+  color-scheme: light dark;
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
-/* Sticky Navigation Header */
-#sahyadri-header-mount {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  width: 100%;
+/* Ensure no horizontal overflow anywhere */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-/* Custom Forest Scrollbar */
+/* Utilities for hiding horizontal scrollbars in horizontal scroll tracks */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom Editorial Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #030805;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #143321;
+  background: #CBD5E1;
   border-radius: 4px;
-  border: 1px solid rgba(52, 211, 153, 0.2);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #1E293B;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1b422b;
+  background: #94A3B8;
 }
 
-/* ========================================================
-   SAVE THE SAHYADRI — UNIFIED CARD DESIGN SYSTEM
-   Standardized dark emerald-green card architecture,
-   subtle borders, 16–20px internal padding on mobile,
-   and 16px page margin / card spacing for all viewports.
-   ======================================================== */
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
 
-.sahyadri-card-base {
-  background-color: #06150E;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-  border-radius: 1rem; /* 16px on mobile */
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+/* Article Reader Typography */
+.article-content {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0A1128;
+  line-height: 1.75;
+}
+
+.dark .article-content {
+  color: #F1F5F9;
+}
+
+.article-content p {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-size: 1.0625rem; /* ~17px */
+  line-height: 1.75;
 }
 
 @media (min-width: 640px) {
-  .sahyadri-card-base {
-    border-radius: 1.5rem; /* 24px on desktop */
+  .article-content p {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.8;
   }
 }
 
-.sahyadri-card-base:hover {
-  border-color: rgba(52, 211, 153, 0.4);
+.article-content h2 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 1.5rem;
+  line-height: 1.3;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  color: #0A1128;
 }
 
-.sahyadri-card-highlight {
-  background-color: #071F11;
-  border: 2px solid rgba(52, 211, 153, 0.45);
-  box-shadow: 0 0 16px rgba(16, 185, 129, 0.2);
+.dark .article-content h2 {
+  color: #FFFFFF;
 }
 
-.sahyadri-card-highlight:hover {
-  border-color: rgba(0, 255, 135, 0.6);
+.article-content h3 {
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.35;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #0A1128;
 }
 
-/* Natural Mobile Word Wrapping & Touch Safeguards */
-.sahyadri-wrap-safe {
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
+.dark .article-content h3 {
+  color: #FFFFFF;
 }
 
-/* Subtle glow utility classes */
-.glow-border {
-  border: 1px solid rgba(52, 211, 153, 0.2);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.08);
+.article-content blockquote {
+  border-left: 4px solid #FF5722;
+  background: #FFF5F0;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+  border-radius: 0 0.5rem 0.5rem 0;
+  font-style: italic;
+  color: #1E293B;
 }
 
-.glow-border-hover:hover {
-  border-color: rgba(52, 211, 153, 0.45);
-  box-shadow: 0 0 25px rgba(0, 255, 135, 0.15);
+.dark .article-content blockquote {
+  background: rgba(255, 87, 34, 0.08);
+  color: #E2E8F0;
 }
 
-.text-gradient-emerald {
-  background: linear-gradient(135deg, #ffffff 30%, #34d399 75%, #00ff87 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.article-content ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin: 1.25rem 0;
 }
 
-.text-gradient-gold {
-  background: linear-gradient(135deg, #ffffff 40%, #fde047 80%, #ca8a04 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.article-content ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin: 1.25rem 0;
 }
 
-/* Custom Leaflet Map styling for Sahyadri Dark Theme */
-.leaflet-container {
-  background: #06130b !important;
-  font-family: inherit !important;
+.article-content li {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
-.dark-forest-tiles .leaflet-tile {
-  filter: brightness(0.65) invert(1) contrast(2.4) hue-rotate(185deg) saturate(0.4) brightness(0.75) !important;
+.article-content img {
+  border-radius: 0.75rem;
+  margin: 1.5rem 0;
+  width: 100%;
+  height: auto;
 }
 
-/* Pulse effects */
-@keyframes emeraldPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
-  }
-  50% {
-    box-shadow: 0 0 35px rgba(0, 255, 135, 0.5);
-  }
+.article-content a {
+  color: #FF5722;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.animate-emerald-pulse {
-  animation: emeraldPulse 2.5s infinite ease-in-out;
+.article-content a:hover {
+  color: #E64A19;
 }
 
-/* Leaflet Custom Marker & Tooltip styles */
-.leaflet-popup-content-wrapper {
-  background: #0a1910 !important;
-  color: #f1f5f9 !important;
-  border: 1px solid rgba(52, 211, 153, 0.3) !important;
-  border-radius: 12px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(16, 185, 129, 0.2) !important;
-  backdrop-filter: blur(12px) !important;
+/* Touch Target Minimum Safeguard */
+.touch-target {
+  min-width: 44px;
+  min-height: 44px;
 }
 
-.leaflet-popup-tip {
-  background: #0a1910 !important;
-  border: 1px solid rgba(52, 211, 153, 0.3) !important;
-}
-
-.leaflet-tooltip {
-  background: #0a1910 !important;
-  color: #e2e8f0 !important;
-  border: 1px solid rgba(52, 211, 153, 0.3) !important;
-  border-radius: 6px !important;
-  font-size: 11px !important;
-  font-weight: 600 !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5) !important;
-}
-
-/* Minimal Holographic Marker Pulse */
-.city-marker-pulse {
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.city-marker-pulse::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: 50%;
-  border: 1px solid rgba(0, 255, 135, 0.45);
-  background: rgba(0, 255, 135, 0.08);
-  animation: holoPulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes holoPulse {
-  0%, 100% {
-    transform: scale(0.8);
-    opacity: 0.65;
-  }
-  50% {
-    transform: scale(1.35);
-    opacity: 0.15;
-  }
-}
-
-/* Smooth Fade In Animation */
+/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: scale(0.98);
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
 }
 
 .animate-fadeIn {
   animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Smooth Fade In + Centered Entrance for Map City Card */
-@keyframes fadeInCenter {
-  from {
-    opacity: 0;
-    transform: translate3d(-50%, -4px, 0) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(-50%, 0, 0) scale(1);
-  }
-}
-
-.animate-fadeIn-center {
-  animation: fadeInCenter 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Neon Cyan / Blue Glow Utilities */
-.shadow-cyan-glow-sm {
-  box-shadow: 0 0 12px rgba(0, 229, 255, 0.25);
-}
-
-.shadow-cyan-glow {
-  box-shadow: 0 0 25px rgba(0, 229, 255, 0.45);
-}
-
-.text-gradient-cyan {
-  background: linear-gradient(135deg, #ffffff 30%, #38bdf8 75%, #00e5ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Strictly disable Google Maps zoom/gesture overlay preview ("Use ctrl + scroll to zoom") */
-.gm-style-moc,
-.gm-style-pbc {
-  display: none !important;
-  opacity: 0 !important;
-  visibility: hidden !important;
-  pointer-events: none !important;
-}
-
-/* Strictly disable Microsoft Edge browser "Magnify Image" popup on Google Maps tiles */
-.gm-style img,
-#hero-google-map-target img,
-#google-maps-target img,
-.gm-style div img {
-  pointer-events: none !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  -webkit-user-drag: none !important;
-  -webkit-touch-callout: none !important;
-}
-
-/* Hide Google Maps POI infowindow & unwanted preview cards */
-.gm-style-iw-c,
-.gm-style-iw-tc,
-.gm-style-iw-t,
-.gm-style .gm-style-iw-d {
-  display: none !important;
-  pointer-events: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-/* 3D Map Perspective Styles */
-.map-3d-viewport {
-  perspective: 1200px;
-  perspective-origin: 50% 65%;
-  overflow: hidden;
-}
-
-#hero-google-map-target.is-3d,
-#google-maps-target.is-3d {
-  transform: rotateX(24deg) scale(1.08);
-  transform-origin: 50% 65%;
-  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.85);
-}
-
-#hero-google-map-target:not(.is-3d),
-#google-maps-target:not(.is-3d) {
-  transform: rotateX(0deg) scale(1);
-  transform-origin: 50% 65%;
-  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Atmospheric Horizon Gradient in 3D Mode */
-.map-3d-horizon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 28%;
-  background: linear-gradient(to bottom, rgba(2, 7, 4, 0.82) 0%, rgba(2, 7, 4, 0.25) 60%, rgba(2, 7, 4, 0) 100%);
-  pointer-events: none;
-  z-index: 10;
-  transition: opacity 0.5s ease;
-}
-
-/* ========================================================
-   SAVE THE SAHYADRI — LIVING FOREST & NATURE ANIMATIONS
-   Subtle, premium, hardware-accelerated micro-interactions
-   ======================================================== */
-
-/* 1. Hero Living Forest — Animated Mist / Fog Layers */
-.forest-mist-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  will-change: transform, opacity;
-  mix-blend-mode: screen;
-}
-
-.forest-mist-1 {
-  background: radial-gradient(ellipse 90% 55% at 48% 65%, rgba(16, 185, 129, 0.08) 0%, rgba(255, 255, 255, 0.035) 45%, transparent 75%);
-  opacity: 0.65;
-  animation: mistDrift1 44s ease-in-out infinite alternate;
-}
-
-.forest-mist-2 {
-  background: radial-gradient(ellipse 80% 45% at 55% 72%, rgba(0, 255, 135, 0.06) 0%, rgba(180, 245, 210, 0.03) 50%, transparent 80%);
-  opacity: 0.5;
-  animation: mistDrift2 58s ease-in-out infinite alternate;
-}
-
-@keyframes mistDrift1 {
-  0% { transform: translate3d(-3%, 0, 0); }
-  50% { transform: translate3d(3%, -6px, 0); }
-  100% { transform: translate3d(4%, 3px, 0); }
-}
-
-@keyframes mistDrift2 {
-  0% { transform: translate3d(3%, 0, 0); }
-  50% { transform: translate3d(-3%, 5px, 0); }
-  100% { transform: translate3d(-4%, -3px, 0); }
-}
-
-/* Hero Living Forest — Gentle Sunlight Shimmer */
-.forest-sun-shimmer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(135deg, rgba(254, 240, 138, 0.045) 0%, rgba(52, 211, 153, 0.035) 35%, transparent 70%);
-  mix-blend-mode: screen;
-  animation: sunShimmer 14s ease-in-out infinite alternate;
-  will-change: opacity, transform;
-}
-
-@keyframes sunShimmer {
-  0% { opacity: 0.35; transform: scale(1); }
-  50% { opacity: 0.68; transform: scale(1.015); }
-  100% { opacity: 0.42; transform: scale(1.008); }
-}
-
-/* Hero Living Forest — Minimal Floating Nature Spores */
-.nature-spore {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  will-change: transform, opacity;
-  background: radial-gradient(circle, rgba(0, 255, 135, 0.75) 0%, rgba(254, 240, 138, 0.5) 50%, transparent 100%);
-  box-shadow: 0 0 8px rgba(0, 255, 135, 0.55);
-  animation: sporeFloat 18s ease-in-out infinite;
-}
-
-@keyframes sporeFloat {
-  0% {
-    transform: translate3d(0, 0, 0);
-    opacity: 0.15;
-  }
-  30% {
-    opacity: 0.7;
-    transform: translate3d(8px, -22px, 0);
-  }
-  70% {
-    opacity: 0.85;
-    transform: translate3d(-10px, -48px, 0);
-  }
-  100% {
-    transform: translate3d(4px, -70px, 0);
-    opacity: 0;
-  }
-}
-
-/* 2. Fullscreen Map — Smooth Two-Line Opposing Slide Entrance */
-/* Line 1 (32,490 TREES AT RISK?) slides in smoothly from the Left */
-@keyframes slideInFromLeft {
-  0% {
-    opacity: 0;
-    transform: translate3d(-45px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-/* Line 2 (INDIA CONNECTS TO SAVE SAHYADRI.) slides in smoothly from the Right */
-@keyframes slideInFromRight {
-  0% {
-    opacity: 0;
-    transform: translate3d(45px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.map-headline-left {
-  animation: slideInFromLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both !important;
-  will-change: transform, opacity;
-}
-
-.map-headline-right {
-  animation: slideInFromRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both !important;
-  will-change: transform, opacity;
-}
-
-/* 2b. Hero Section — Dual-Line Opposing Slide Reveal on Page Scroll Up/Down */
-.hero-line-left {
-  display: block;
-  opacity: 0;
-  transform: translate3d(-50px, 0, 0);
-  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform, opacity;
-}
-
-.hero-line-right {
-  display: block;
-  opacity: 0;
-  transform: translate3d(50px, 0, 0);
-  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.08s,
-              opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.08s;
-  will-change: transform, opacity;
-}
-
-.hero-line-left.is-revealed,
-.hero-line-right.is-revealed {
-  opacity: 1;
-  transform: translate3d(0, 0, 0);
-}
-
-
-/* 3. Scroll-Based Section Reveals (Fade + 16px Upward Movement) */
-.reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
-}
-
-.reveal-on-scroll.is-revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Stagger Delays (80–120ms intervals) */
-.stagger-1 { transition-delay: 80ms; }
-.stagger-2 { transition-delay: 180ms; }
-.stagger-3 { transition-delay: 280ms; }
-.stagger-4 { transition-delay: 380ms; }
-
-/* 4. Cards — Desktop Hover Lift (3-5px) & Border Brightening */
-@media (hover: hover) and (pointer: fine) {
-  .sahyadri-card-base,
-  .hover-lift {
-    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-                border-color 0.32s ease,
-                box-shadow 0.32s ease;
-  }
-
-  .sahyadri-card-base:hover,
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    border-color: rgba(52, 211, 153, 0.45) !important;
-    box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.65), 0 0 22px rgba(16, 185, 129, 0.16) !important;
-  }
-}
-
-/* Cards & Buttons — Touchscreen Tap Feedback */
-@media (hover: none) and (pointer: coarse) {
-  .sahyadri-card-base:active,
-  .hover-lift:active {
-    transform: scale(0.985);
-    opacity: 0.94;
-    transition: transform 0.12s ease, opacity 0.12s ease;
-  }
-}
-
-/* 5. Buttons — Light Sweep & Press Interaction */
-.btn-nature-cta {
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.25s ease,
-              background 0.25s ease;
-}
-
-.btn-nature-cta::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -75%;
-  width: 50%;
-  height: 200%;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.25) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: rotate(25deg);
-  pointer-events: none;
-  opacity: 0;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .btn-nature-cta:hover::after {
-    opacity: 1;
-    animation: btnLightSweep 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .btn-nature-cta:hover {
-    transform: translateY(-2px);
-  }
-
-  .btn-nature-cta:hover svg:not(.animate-spin) {
-    transform: scale(1.12) translateY(-1px);
-  }
-}
-
-@keyframes btnLightSweep {
-  0% { left: -75%; opacity: 0; }
-  25% { opacity: 1; }
-  100% { left: 140%; opacity: 0; }
-}
-
-/* Button Press Interaction (Subtle scale press) */
-.btn-nature-cta:active,
-button:active,
-.btn-press:active {
-  transform: scale(0.97) !important;
-  transition: transform 0.1s ease !important;
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .btn-nature-cta:active {
-    transform: scale(0.96) !important;
-    opacity: 0.92;
-  }
-}
-
-/* Smooth Icon Transitions */
-.btn-nature-cta svg,
-button svg {
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 6. Performance & Accessibility (Prefers-Reduced-Motion & Mobile Optimizations) */
-@media (prefers-reduced-motion: reduce) {
-  .forest-mist-1,
-  .forest-mist-2,
-  .forest-sun-shimmer,
-  .nature-spore,
-  .map-headline-left,
-  .map-headline-right,
-  .hero-line-left,
-  .hero-line-right,
-  .animate-fadeIn-center {
-    animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-
-  .reveal-on-scroll {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-
-  .btn-nature-cta::after {
-    display: none !important;
-  }
-
-  .sahyadri-card-base,
-  .hover-lift,
-  .btn-nature-cta {
-    transform: none !important;
-    transition: none !important;
-  }
-}
-
-/* Mobile & Low-Power Screen Optimizations */
-@media (max-width: 640px) {
-  .forest-mist-2 {
-    display: none;
-  }
-  .nature-spore:nth-child(n+4) {
-    display: none;
-  }
-}
-
-/* 7. Mobile Statistics & Story Carousels & Active Card Glow */
-@media (max-width: 639px) {
-  #stats-carousel-track,
-  #story-carousel-track {
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .stat-carousel-card,
-  .story-carousel-card {
-    transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease;
-  }
-
-  .stat-carousel-card.is-active-card,
-  .story-carousel-card.is-active-card {
-    border-color: rgba(52, 211, 153, 0.45) !important;
-    box-shadow: 0 0 20px rgba(0, 255, 135, 0.12), inset 0 0 15px rgba(0, 255, 135, 0.03) !important;
-    opacity: 1 !important;
-  }
-
-  .stat-carousel-card.is-inactive-card,
-  .story-carousel-card.is-inactive-card {
-    border-color: rgba(16, 185, 129, 0.2) !important;
-    box-shadow: none !important;
-    opacity: 0.92 !important;
-  }
-
-  .stat-carousel-card,
-  .story-carousel-card {
-    height: auto !important;
-    align-self: flex-start;
-  }
 }

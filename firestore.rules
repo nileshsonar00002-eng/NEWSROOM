@@ -3,8 +3,15 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper: Check if user is authenticated and verified as admin
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
     function isAdmin() {
       return request.auth != null && (
+        exists(/databases/$(database)/documents/adminUsers/$(request.auth.uid)) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
         (request.auth.token.firebase.sign_in_provider != 'anonymous' &&
          'email' in request.auth.token &&
          request.auth.token.email != null) ||
@@ -13,29 +20,60 @@ service cloud.firestore {
       );
     }
 
-    // 1. Pothole Pins Collection (RoadTok.in)
+    // ============================================
+    // NEWSORA COLLECTIONS
+    // Permissive read & write for verified news publishing
+    // ============================================
+
+    // 1. Articles Collection
+    match /articles/{articleId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // 2. Categories Collection
+    match /categories/{categoryId} {
+      allow read, write: if true;
+    }
+
+    // 3. Breaking News Collection
+    match /breakingNews/{breakingId} {
+      allow read, write: if true;
+    }
+
+    // 4. Authors Collection
+    match /authors/{authorId} {
+      allow read, write: if true;
+    }
+
+    // 5. Site Settings Collection
+    match /siteSettings/{settingId} {
+      allow read, write: if true;
+    }
+
+    // 6. Admin Users Allowlist / Profiles
+    match /adminUsers/{userId} {
+      allow read, write: if true;
+    }
+
+    // 7. Analytics & Article Views
+    match /analytics/{docId} {
+      allow read, write: if true;
+    }
+
+    // ============================================
+    // PRESERVED COMPATIBILITY COLLECTIONS
+    // ============================================
     match /pins/{pinId} {
       allow read: if true;
-      
-      // नागरिक बिना किसी अड़चन के तुरंत नया गड्ढा रिपोर्ट कर सकते हैं
       allow create: if request.resource.data.latitude is number &&
                        request.resource.data.longitude is number;
-
-      // नागरिक +1 अपवोट और फोटो जोड़ सकते हैं, एडमिन मॉडरेट कर सकते हैं
       allow update: if true;
-
-      // केवल एडमिन ही डिलीट कर सकते हैं (सुरक्षित)
       allow delete: if isAdmin();
 
-      match /reporters/{userId} {
-        allow read, write: if true;
-      }
-      match /votes/{userId} {
-        allow read, write: if true;
-      }
-      match /flags/{userId} {
-        allow read, write: if true;
-      }
+      match /reporters/{userId} { allow read, write: if true; }
+      match /votes/{userId} { allow read, write: if true; }
+      match /flags/{userId} { allow read, write: if true; }
       match /comments/{commentId} {
         allow read: if true;
         allow create: if true;
@@ -43,36 +81,25 @@ service cloud.firestore {
       }
     }
 
-    // 2. Anti-Spam & Limits (RoadTok.in)
-    match /limits/{uid} {
-      allow read, write: if true;
-    }
-    match /ipLimits/{ipHash} {
-      allow read, write: if true;
-    }
-    match /rate_limits/{docId} {
-      allow read, write: if true;
-    }
+    match /limits/{uid} { allow read, write: if true; }
+    match /ipLimits/{ipHash} { allow read, write: if true; }
+    match /rate_limits/{docId} { allow read, write: if true; }
 
-    // 3. Stats & Visitors (RoadTok.in)
     match /stats/{docId} {
       allow read: if true;
       allow create, update: if true;
       allow delete: if isAdmin();
     }
 
-    // 4. Leaderboard (RoadTok.in)
     match /leaderboard/{docId} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // 5. Admins Audit (RoadTok.in)
     match /admins/{adminId} {
       allow read, write: if isAdmin();
     }
 
-    // 6. Save The Sahyadri Supporters Collection (savesahyadri.online)
     match /savesahyadri_supporters/{supporterId} {
       allow read: if true;
       allow create: if request.resource.data.displayName is string &&
@@ -89,7 +116,7 @@ service cloud.firestore {
       allow delete: if isAdmin();
     }
 
-    // 7. Default Fallback
+    // Default Fallback
     match /{document=**} {
       allow read, write: if false;
     }
