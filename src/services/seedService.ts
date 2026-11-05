@@ -98,7 +98,7 @@ export const SEED_ARTICLES: Article[] = [
   },
   {
     id: 'news-2',
-    categoryId: 'maharashtra',
+    categoryId: 'india',
     authorId: 'author-2',
     imageUrl: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80',
     imageCaption: 'The verdant valleys and ancient biodiversity corridors of the Western Ghats / Sahyadri range in Maharashtra.',
@@ -339,55 +339,56 @@ export const SEED_ARTICLES: Article[] = [
   },
   {
     id: 'news-6',
-    categoryId: 'science',
-    authorId: 'author-3',
-    imageUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
-    imageCaption: 'Deep-space constellation visualization captured by orbiting astrophysical space observatories.',
-    imageCredit: 'NEWSORA Science / NASA / ISRO',
-    sourceUrl: 'https://isro.gov.in',
-    tags: ['Science', 'ISRO', 'Space', 'Astronomy', 'Discovery'],
+    categoryId: 'entertainment',
+    authorId: 'author-2',
+    imageUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80',
+    imageCaption: 'Auditorium celebrations honoring exceptional cinematic storytelling across regional and national languages.',
+    imageCredit: 'NEWSORA Entertainment Bureau / Unsplash',
+    sourceUrl: 'https://mib.gov.in',
+    tags: ['Entertainment', 'Cinema', 'Awards', 'FilmFestival', 'Bollywood'],
     isFeatured: false,
     isBreaking: false,
-    isTrending: false,
-    readingTimeMinutes: 4,
-    viewCount: 1650,
+    isTrending: true,
+    readingTimeMinutes: 3,
+    viewCount: 2450,
     createdAt: new Date(Date.now() - 3600000 * 12).toISOString(),
     updatedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
     translations: {
       en: {
-        title: 'AstroSat and International Telescopes Identify Rare Dual-Black Hole Merger Signal',
-        description: 'Indian astrophysicists lead multi-spectral analysis capturing synchronized gravitational and ultraviolet emission waves from distant galaxy.',
-        slug: 'astrosat-rare-dual-black-hole-merger-discovery',
+        title: 'National Cinema Awards Celebrates Masterpieces in Indian Storytelling Across Regional Languages',
+        description: 'Jury honors groundbreaking visual craftsmanship, poignant independent narratives, and veteran artists at grand annual ceremony.',
+        slug: 'national-cinema-awards-celebrates-indian-storytelling',
         status: 'published',
-        seoTitle: 'Indian Astrophysicists Spot Rare Black Hole Merger | NEWSORA',
-        seoDescription: 'Breakthrough cosmic observation led by Indian scientists reveals rare dual-black hole gravitational wave event.',
+        seoTitle: 'National Cinema Awards - Honoring Best in Indian Cinema | NEWSORA',
+        seoDescription: 'Annual National Cinema Awards celebrate iconic filmmakers, regional classics, and contemporary actors across India.',
         publishedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
         content: `
-          <p class="lead">Indian astrophysicists utilizing data from AstroSat and global gravitational observatories have documented a rare cosmic merger between two supermassive black holes in a galaxy 1.2 billion light-years away.</p>
+          <p class="lead">The vibrant spectrum of Indian cinema took center stage as the prestigious National Cinema Awards celebrated creative excellence, diverse regional storytelling, and cinematic mastery.</p>
+          <p>Highlighting the convergence of artistic depth and popular appeal, juries awarded top honors to independent filmmakers alongside big-budget cinematic epics.</p>
         `
       },
       hi: {
-        title: 'एस्ट्रोसैट और भारतीय वैज्ञानिकों ने खोजी दुर्लभ दोहरे ब्लैक होल के विलय की खगोलीय घटना',
-        description: '1.2 अरब प्रकाश वर्ष दूर स्थित आकाशगंगा से प्राप्त तरंगों का गहन विश्लेषण कर भारतीय खगोलविदों ने रचा इतिहास।',
-        slug: 'astrosat-rare-dual-black-hole-merger-discovery-hi',
+        title: 'राष्ट्रीय सिनेमा पुरस्कारों में भारतीय फिल्मों की धूम, क्षेत्रीय और क्लासिक सिनेमा को मिला सर्वोच्च सम्मान',
+        description: 'भव्य समारोह में उत्कृष्ट पटकथा, निर्देशन और अभिनय के लिए दिग्गज कलाकारों को सम्मानित किया गया।',
+        slug: 'national-cinema-awards-celebrates-indian-storytelling-hi',
         status: 'published',
-        seoTitle: 'ब्लैक होल विलय की दुर्लभ खोज | NEWSORA विज्ञान',
-        seoDescription: 'भारतीय वैज्ञानिकों ने की अंतरिक्ष में दोहरे ब्लैक होल विलय की ऐतिहासिक खोज।',
+        seoTitle: 'राष्ट्रीय सिनेमा पुरस्कार - भारतीय सिनेमा का उत्सव | NEWSORA मनोरंजन',
+        seoDescription: 'सिनेमा जगत के प्रतिष्ठित राष्ट्रीय पुरस्कारों में भारतीय कलाकारों का सम्मान।',
         publishedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
         content: `
-          <p class="lead">भारतीय अंतरिक्ष वेधशाला एस्ट्रोसैट के आंकड़ों की मदद से वैज्ञानिकों ने सुदूर ब्रह्मांड में एक अत्यंत दुर्लभ खगोलीय घटना का अध्ययन किया है।</p>
+          <p class="lead">भारतीय सिनेमा की समृद्ध विविधता और उत्कृष्ट कला को सम्मानित करते हुए राष्ट्रीय सिनेमा पुरस्कारों का भव्य आयोजन संपन्न हुआ।</p>
         `
       },
       mr: {
-        title: '‘अ‍ॅस्ट्रोसॅट’च्या साहाय्याने भारतीय शास्त्रज्ञांचा मोठा शोध; दोन कृष्णविवरांच्या मिलनाची दुर्मिळ नोंद',
-        description: '१.२ अब्ज प्रकाशवर्ष दूर असलेल्या आकाशगंगेतील खगोलीय घडामोडींचा भारतीय खगोलशास्त्रज्ञांकडून यशस्वी अभ्यास.',
-        slug: 'astrosat-rare-dual-black-hole-merger-discovery-mr',
+        title: 'राष्ट्रीय चित्रपट पुरस्कारांमध्ये भारतीय सिनेमाचा गौरव; प्रादेशिक चित्रपटांचा झेंडा फडकला',
+        description: 'उत्कृष्ट अभिनय, दिग्दर्शन आणि संगीतासाठी मानाचे राष्ट्रीय पुरस्कार प्रदान; चित्रपटसृष्टीतील कलाकारांचा सन्मान.',
+        slug: 'national-cinema-awards-celebrates-indian-storytelling-mr',
         status: 'published',
-        seoTitle: 'कृष्णविवरांच्या मिलनाची दुर्मिळ नोंद | NEWSORA विज्ञान',
-        seoDescription: 'भारतीय शास्त्रज्ञांनी अंतराळातील अतिशय दुर्मिळ घटनेचे गूढ उलगडले.',
+        seoTitle: 'राष्ट्रीय चित्रपट पुरस्कार - भारतीय सिनेमाचा गौरव | NEWSORA मनोरंजन',
+        seoDescription: 'राष्ट्रीय चित्रपट पुरस्कार सोहळ्यात उत्कृष्ट चित्रपटांचा आणि कलाकारांचा सन्मान.',
         publishedAt: new Date(Date.now() - 3600000 * 12).toISOString(),
         content: `
-          <p class="lead">भारताच्या अंतराळ वेधशाळेच्या साहाय्याने शास्त्रज्ञांनी दोन प्रचंड कृष्णविवरांच्या एकत्रीकरणाची दुर्मिळ वैज्ञानिक नोंद घेतली आहे.</p>
+          <p class="lead">भारतीय चित्रपटसृष्टीतील वैविध्य आणि सर्जनशीलतेला सलाम करत राष्ट्रीय चित्रपट पुरस्कार सोहळा उत्साहात पार पडला.</p>
         `
       }
     }

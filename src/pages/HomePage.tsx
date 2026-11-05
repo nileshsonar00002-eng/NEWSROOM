@@ -79,19 +79,10 @@ export const HomePage: React.FC = () => {
 
   const categoryNamesMap: Record<string, { en: string; hi: string; mr: string }> = {
     india: { en: 'India News', hi: 'भारत समाचार', mr: 'देश / भारत' },
-    maharashtra: { en: 'Maharashtra News', hi: 'महाराष्ट्र समाचार', mr: 'महाराष्ट्र विशेष' },
-    world: { en: 'World News', hi: 'विदेश समाचार', mr: 'जागतिक घडामोडी' },
-    politics: { en: 'Politics', hi: 'राजनीति', mr: 'राजकारण' },
     business: { en: 'Business & Economy', hi: 'व्यापार एवं अर्थव्यवस्था', mr: 'अर्थकारण व व्यापार' },
     technology: { en: 'Technology & AI', hi: 'तकनीक व नवाचार', mr: 'तंत्रज्ञान व एआय' },
     sports: { en: 'Sports & Cricket', hi: 'खेल व क्रिकेट', mr: 'क्रीडा विश्व' },
-    entertainment: { en: 'Entertainment & Cinema', hi: 'मनोरंजन व सिनेमा', mr: 'मनोरंजन' },
-    education: { en: 'Education & Career', hi: 'शिक्षा व करियर', mr: 'शिक्षण व करिअर' },
-    health: { en: 'Health & Wellness', hi: 'स्वास्थ्य व आरोग्य', mr: 'आरोग्य व जीवन' },
-    science: { en: 'Science & Space', hi: 'विज्ञान व अंतरिक्ष', mr: 'विज्ञान व अवकाश' },
-    automobile: { en: 'Automobile & Mobility', hi: 'ऑटोमोबाइल', mr: 'ऑटोमोबाईल' },
-    crime: { en: 'Crime & Law', hi: 'अपराध व कानून', mr: 'गुन्हेगारी व कायदा' },
-    lifestyle: { en: 'Lifestyle & Culture', hi: 'जीवनशैली व संस्कृति', mr: 'जीवनशैली' }
+    entertainment: { en: 'Entertainment & Cinema', hi: 'मनोरंजन व सिनेमा', mr: 'मनोरंजन' }
   };
 
   return (
@@ -251,62 +242,7 @@ export const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/* 11. MAHARASHTRA NEWS */}
-        <section aria-label="Maharashtra News">
-          <SectionHeader
-            title={categoryNamesMap['maharashtra'][language]}
-            slug="maharashtra"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {getCategoryArticles('maharashtra', 3).map((art) => (
-              <NewsCard
-                key={art.id}
-                article={art}
-                variant="grid"
-                categoryName={categoryNamesMap['maharashtra'][language]}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* 12. WORLD NEWS & 13. POLITICS (Side-by-side on desktop) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <section aria-label="World News">
-            <SectionHeader
-              title={categoryNamesMap['world'][language]}
-              slug="world"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('world', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['world'][language]}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section aria-label="Politics">
-            <SectionHeader
-              title={categoryNamesMap['politics'][language]}
-              slug="politics"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('politics', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['politics'][language]}
-                />
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* 14. BUSINESS & 15. TECHNOLOGY */}
+        {/* 11. BUSINESS & 12. TECHNOLOGY */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <section aria-label="Business News">
             <SectionHeader
@@ -343,7 +279,7 @@ export const HomePage: React.FC = () => {
           </section>
         </div>
 
-        {/* 16. SPORTS & 17. ENTERTAINMENT */}
+        {/* 13. SPORTS & 14. ENTERTAINMENT */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <section aria-label="Sports News">
             <SectionHeader
@@ -374,114 +310,6 @@ export const HomePage: React.FC = () => {
                   article={art}
                   variant="grid"
                   categoryName={categoryNamesMap['entertainment'][language]}
-                />
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* 18. EDUCATION, 19. HEALTH & 20. SCIENCE (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <section aria-label="Education News">
-            <SectionHeader
-              title={categoryNamesMap['education'][language]}
-              slug="education"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('education', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['education'][language]}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section aria-label="Health News">
-            <SectionHeader
-              title={categoryNamesMap['health'][language]}
-              slug="health"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('health', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['health'][language]}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section aria-label="Science News">
-            <SectionHeader
-              title={categoryNamesMap['science'][language]}
-              slug="science"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('science', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['science'][language]}
-                />
-              ))}
-            </div>
-          </section>
-        </div>
-
-        {/* 21. AUTOMOBILE, 22. CRIME & 23. LIFESTYLE (3 Columns) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <section aria-label="Automobile News">
-            <SectionHeader
-              title={categoryNamesMap['automobile'][language]}
-              slug="automobile"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('automobile', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['automobile'][language]}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section aria-label="Crime News">
-            <SectionHeader
-              title={categoryNamesMap['crime'][language]}
-              slug="crime"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('crime', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['crime'][language]}
-                />
-              ))}
-            </div>
-          </section>
-
-          <section aria-label="Lifestyle News">
-            <SectionHeader
-              title={categoryNamesMap['lifestyle'][language]}
-              slug="lifestyle"
-            />
-            <div className="space-y-4">
-              {getCategoryArticles('lifestyle', 2).map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="compact"
-                  categoryName={categoryNamesMap['lifestyle'][language]}
                 />
               ))}
             </div>

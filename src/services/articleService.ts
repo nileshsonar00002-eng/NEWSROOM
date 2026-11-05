@@ -26,6 +26,16 @@ export interface QueryArticleOptions {
 
 const LOCAL_STORAGE_ARTICLES_KEY = 'newsora_articles_store';
 
+const VALID_CATEGORIES = new Set(['india', 'business', 'technology', 'entertainment', 'sports']);
+
+export function sanitizeCategory(catId?: string): string {
+  if (catId && VALID_CATEGORIES.has(catId)) return catId;
+  if (catId === 'maharashtra' || catId === 'politics' || catId === 'world' || catId === 'crime') return 'india';
+  if (catId === 'science' || catId === 'automobile') return 'technology';
+  if (catId === 'lifestyle' || catId === 'health' || catId === 'education') return 'entertainment';
+  return 'india';
+}
+
 // Helper to safely load articles from localStorage or fallback to SEED_ARTICLES
 function loadStoredArticles(): Article[] {
   if (typeof window === 'undefined') {
@@ -36,7 +46,10 @@ function loadStoredArticles(): Article[] {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return parsed.map((item: Article) => ({
+          ...item,
+          categoryId: sanitizeCategory(item.categoryId)
+        }));
       }
     }
   } catch (e) {
@@ -286,7 +299,7 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
 
   const fullData: Article = {
     id,
-    categoryId: article.categoryId || 'india',
+    categoryId: sanitizeCategory(article.categoryId || 'india'),
     authorId: article.authorId || 'author-1',
     imageUrl:
       article.imageUrl ||

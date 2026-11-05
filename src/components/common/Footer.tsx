@@ -26,19 +26,10 @@ export const Footer: React.FC = () => {
 
   const categories = [
     { slug: 'india', label: language === 'hi' ? 'भारत' : language === 'mr' ? 'भारत' : 'India' },
-    { slug: 'maharashtra', label: language === 'hi' ? 'महाराष्ट्र' : language === 'mr' ? 'महाराष्ट्र' : 'Maharashtra' },
-    { slug: 'politics', label: language === 'hi' ? 'राजनीति' : language === 'mr' ? 'राजकारण' : 'Politics' },
-    { slug: 'world', label: language === 'hi' ? 'विदेश' : language === 'mr' ? 'आंतरराष्ट्रीय' : 'World' },
     { slug: 'business', label: language === 'hi' ? 'व्यापार' : language === 'mr' ? 'अर्थकारण' : 'Business' },
     { slug: 'technology', label: language === 'hi' ? 'तकनीक' : language === 'mr' ? 'तंत्रज्ञान' : 'Technology' },
-    { slug: 'sports', label: language === 'hi' ? 'खेल' : language === 'mr' ? 'क्रीडा' : 'Sports' },
     { slug: 'entertainment', label: language === 'hi' ? 'मनोरंजन' : language === 'mr' ? 'मनोरंजन' : 'Entertainment' },
-    { slug: 'education', label: language === 'hi' ? 'शिक्षा' : language === 'mr' ? 'शिक्षण' : 'Education' },
-    { slug: 'health', label: language === 'hi' ? 'स्वास्थ्य' : language === 'mr' ? 'आरोग्य' : 'Health' },
-    { slug: 'science', label: language === 'hi' ? 'विज्ञान' : language === 'mr' ? 'विज्ञान' : 'Science' },
-    { slug: 'automobile', label: language === 'hi' ? 'ऑटोमोबाइल' : language === 'mr' ? 'ऑटोमोबाईल' : 'Automobile' },
-    { slug: 'crime', label: language === 'hi' ? 'अपराध' : language === 'mr' ? 'गुन्हेगारी' : 'Crime' },
-    { slug: 'lifestyle', label: language === 'hi' ? 'जीवनशैली' : language === 'mr' ? 'जीवनशैली' : 'Lifestyle' }
+    { slug: 'sports', label: language === 'hi' ? 'खेल' : language === 'mr' ? 'क्रीडा' : 'Sports' }
   ];
 
   return (

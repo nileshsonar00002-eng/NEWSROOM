@@ -53,7 +53,7 @@ export const LatestNewsPage: React.FC = () => {
     <div className="min-h-screen bg-slate-50 dark:bg-navy-950 text-navy-900 dark:text-slate-100 transition-colors pb-16">
       <SEOHead
         title={t.latestNews}
-        description="Browse real-time breaking and latest news across India, Maharashtra, Politics, Tech, and the World."
+        description="Browse real-time breaking and latest news across India, Business, Technology, Entertainment, and Sports."
       />
 
       <CategoryBar />
