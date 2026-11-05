@@ -166,6 +166,28 @@ body {
   min-height: 44px;
 }
 
+/* TV News Channel Continuous Breaking News Ticker (Train / Marquee) */
+@keyframes ticker-marquee-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-ticker-marquee {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: ticker-marquee-left 40s linear infinite;
+}
+
+.animate-ticker-marquee:hover,
+.animate-ticker-marquee:focus-within {
+  animation-play-state: paused;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {

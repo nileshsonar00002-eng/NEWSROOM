@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Flame, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Flame, Play, Pause, Zap } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getActiveBreakingNews, DEFAULT_BREAKING_NEWS } from '../../services/breakingNewsService';
 import { BreakingNewsItem } from '../../types';
@@ -8,7 +8,7 @@ import { BreakingNewsItem } from '../../types';
 export const BreakingNewsTicker: React.FC = () => {
   const { language, t } = useLanguage();
   const [items, setItems] = useState<BreakingNewsItem[]>(DEFAULT_BREAKING_NEWS);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -37,73 +37,110 @@ export const BreakingNewsTicker: React.FC = () => {
     };
   }, [language]);
 
-  // Auto-cycle through items
-  useEffect(() => {
-    if (items.length <= 1) return;
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % items.length);
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [items]);
-
   if (!items.length) return null;
 
-  const currentItem = items[currentIndex] || items[0];
-  const headlineText =
-    currentItem.headline?.[language] ||
-    currentItem.headline?.en ||
-    '';
+  // Extract headlines for the current active language (with English fallback)
+  const rawHeadlines = items
+    .map((item) => {
+      const text = item.headline?.[language] || item.headline?.en || '';
+      const link = item.articleSlug
+        ? `/${language}/news/${item.articleSlug}`
+        : `/${language}/latest`;
+      return { id: item.id, text: text.trim(), link };
+    })
+    .filter((h) => h.text.length > 0);
 
-  const linkTarget = currentItem.articleSlug
-    ? `/${language}/news/${currentItem.articleSlug}`
-    : `/${language}/latest`;
+  if (rawHeadlines.length === 0) return null;
+
+  // Multiply items so the repeating block is wide enough to seamlessly span large screens
+  let repeatedList = [...rawHeadlines];
+  while (repeatedList.length < 5) {
+    repeatedList = [...repeatedList, ...rawHeadlines];
+  }
+
+  // Exact 2 identical sets for seamless continuous marquee loop (0% -> -50%)
+  const marqueeItems = [...repeatedList, ...repeatedList];
+
+  // Dynamic animation duration based on content length for comfortable reading speed
+  const crawlDuration = Math.max(35, repeatedList.length * 8);
 
   return (
-    <div className="bg-gradient-to-r from-red-600 via-brand-600 to-red-700 text-white shadow-sm overflow-hidden border-b border-red-700">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2 flex items-center justify-between gap-3">
-        {/* Left: Compact Breaking Label */}
-        <div className="flex items-center gap-1.5 shrink-0 bg-white/20 backdrop-blur-sm px-2.5 py-1 rounded-md">
-          <Flame className="w-4 h-4 text-amber-300 animate-pulse" />
-          <span className="font-black text-xs tracking-wider uppercase">
-            {t.breakingNews}
-          </span>
-        </div>
-
-        {/* Center: Headline Ticker */}
-        <div className="flex-1 min-w-0 overflow-hidden">
-          <Link
-            to={linkTarget}
-            className="block text-xs sm:text-sm font-semibold truncate hover:underline hover:text-amber-100 transition"
-            title={headlineText}
-          >
-            <span className="animate-fadeIn inline-block">{headlineText}</span>
-          </Link>
-        </div>
-
-        {/* Right: Cycle Controls (Desktop & Mobile) */}
-        {items.length > 1 && (
-          <div className="flex items-center gap-1 shrink-0">
-            <span className="text-[11px] text-white/80 hidden sm:inline mr-1">
-              {currentIndex + 1} / {items.length}
+    <div
+      className="relative bg-gradient-to-r from-red-900 via-red-700 to-red-850 text-white border-b-2 border-amber-400 shadow-md overflow-hidden select-none"
+      role="region"
+      aria-label="Breaking News Continuous Ticker"
+    >
+      <div className="max-w-7xl mx-auto flex items-stretch relative">
+        {/* Pinned Left TV Badge */}
+        <div className="relative z-20 flex items-center shrink-0 bg-red-950/90 dark:bg-black/90 backdrop-blur-md px-3 sm:px-4 py-2 border-r border-amber-400/30 shadow-2xl">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400"></span>
             </span>
-            <button
-              type="button"
-              onClick={() => setCurrentIndex((prev) => (prev === 0 ? items.length - 1 : prev - 1))}
-              className="p-1 rounded hover:bg-white/20 transition min-w-[28px] min-h-[28px] flex items-center justify-center"
-              aria-label="Previous headline"
-            >
-              <ChevronLeft className="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={() => setCurrentIndex((prev) => (prev + 1) % items.length)}
-              className="p-1 rounded hover:bg-white/20 transition min-w-[28px] min-h-[28px] flex items-center justify-center"
-              aria-label="Next headline"
-            >
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
+            <span className="font-headline font-black text-[11px] sm:text-xs tracking-wider uppercase text-amber-300 flex items-center gap-1">
+              <Flame className="w-3.5 h-3.5 text-amber-300 animate-pulse hidden sm:inline" />
+              <span>{t.breakingNews}</span>
+            </span>
           </div>
-        )}
+
+          {/* Depth gradient feathering where news text enters/passes behind the badge */}
+          <div className="absolute left-full top-0 bottom-0 w-6 bg-gradient-to-r from-red-950/90 dark:from-black/90 to-transparent pointer-events-none"></div>
+        </div>
+
+        {/* Continuous Train Ticker Track (Right to Left) */}
+        <div
+          className="flex-1 overflow-hidden relative flex items-center py-2"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div
+            className="animate-ticker-marquee flex items-center"
+            style={{
+              animationDuration: `${crawlDuration}s`,
+              animationPlayState: isPaused ? 'paused' : 'running'
+            }}
+          >
+            {marqueeItems.map((item, idx) => (
+              <div key={`${item.id}-${idx}`} className="inline-flex items-center shrink-0">
+                <Link
+                  to={item.link}
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-white hover:text-amber-200 transition py-0.5 hover:underline whitespace-nowrap tracking-wide"
+                  title={item.text}
+                >
+                  <span>{item.text}</span>
+                </Link>
+
+                {/* Broadcast News Channel Bullet Separator */}
+                <span className="mx-4 sm:mx-6 inline-flex items-center gap-1.5 text-amber-300 select-none">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-sm"></span>
+                  <Zap className="w-3 h-3 text-amber-300 opacity-90" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shadow-sm"></span>
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Right Fade Mask: News emerges smoothly from the right edge */}
+          <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-red-850 to-transparent pointer-events-none z-10"></div>
+        </div>
+
+        {/* Right Action Control (Pause / Resume Toggle) */}
+        <div className="relative z-20 flex items-center pr-2 sm:pr-3 pl-1 shrink-0 bg-gradient-to-l from-red-850 via-red-850/90 to-transparent">
+          <button
+            type="button"
+            onClick={() => setIsPaused((prev) => !prev)}
+            className="p-1 sm:p-1.5 rounded-lg bg-black/30 hover:bg-black/60 text-amber-300 hover:text-white transition min-h-[30px] min-w-[30px] flex items-center justify-center border border-amber-400/20 shadow-sm"
+            title={isPaused ? 'Resume news ticker' : 'Pause news ticker'}
+            aria-label={isPaused ? 'Resume news ticker' : 'Pause news ticker'}
+          >
+            {isPaused ? (
+              <Play className="w-3.5 h-3.5 fill-current" />
+            ) : (
+              <Pause className="w-3.5 h-3.5 fill-current" />
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
