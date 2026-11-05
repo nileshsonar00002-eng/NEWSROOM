@@ -180,7 +180,7 @@ body {
   display: inline-flex;
   white-space: nowrap;
   will-change: transform;
-  animation: ticker-marquee-left 40s linear infinite;
+  animation: ticker-marquee-left 65s linear infinite;
 }
 
 .animate-ticker-marquee:hover,

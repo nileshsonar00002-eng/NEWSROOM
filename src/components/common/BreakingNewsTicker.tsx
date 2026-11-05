@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Flame, Play, Pause, Zap } from 'lucide-react';
+import { Flame, Zap } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getActiveBreakingNews, DEFAULT_BREAKING_NEWS } from '../../services/breakingNewsService';
 import { BreakingNewsItem } from '../../types';
@@ -8,7 +8,6 @@ import { BreakingNewsItem } from '../../types';
 export const BreakingNewsTicker: React.FC = () => {
   const { language, t } = useLanguage();
   const [items, setItems] = useState<BreakingNewsItem[]>(DEFAULT_BREAKING_NEWS);
-  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -61,8 +60,8 @@ export const BreakingNewsTicker: React.FC = () => {
   // Exact 2 identical sets for seamless continuous marquee loop (0% -> -50%)
   const marqueeItems = [...repeatedList, ...repeatedList];
 
-  // Dynamic animation duration based on content length for comfortable reading speed
-  const crawlDuration = Math.max(35, repeatedList.length * 8);
+  // Relaxed, calm reading speed (reduced scroll speed)
+  const crawlDuration = Math.max(60, repeatedList.length * 13);
 
   return (
     <div
@@ -88,17 +87,12 @@ export const BreakingNewsTicker: React.FC = () => {
           <div className="absolute left-full top-0 bottom-0 w-6 bg-gradient-to-r from-red-950/90 dark:from-black/90 to-transparent pointer-events-none"></div>
         </div>
 
-        {/* Continuous Train Ticker Track (Right to Left) */}
-        <div
-          className="flex-1 overflow-hidden relative flex items-center py-2"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
+        {/* Continuous Train Ticker Track (Right to Left with Hover Pause) */}
+        <div className="flex-1 overflow-hidden relative flex items-center py-2">
           <div
             className="animate-ticker-marquee flex items-center"
             style={{
-              animationDuration: `${crawlDuration}s`,
-              animationPlayState: isPaused ? 'paused' : 'running'
+              animationDuration: `${crawlDuration}s`
             }}
           >
             {marqueeItems.map((item, idx) => (
@@ -123,23 +117,6 @@ export const BreakingNewsTicker: React.FC = () => {
 
           {/* Right Fade Mask: News emerges smoothly from the right edge */}
           <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-red-850 to-transparent pointer-events-none z-10"></div>
-        </div>
-
-        {/* Right Action Control (Pause / Resume Toggle) */}
-        <div className="relative z-20 flex items-center pr-2 sm:pr-3 pl-1 shrink-0 bg-gradient-to-l from-red-850 via-red-850/90 to-transparent">
-          <button
-            type="button"
-            onClick={() => setIsPaused((prev) => !prev)}
-            className="p-1 sm:p-1.5 rounded-lg bg-black/30 hover:bg-black/60 text-amber-300 hover:text-white transition min-h-[30px] min-w-[30px] flex items-center justify-center border border-amber-400/20 shadow-sm"
-            title={isPaused ? 'Resume news ticker' : 'Pause news ticker'}
-            aria-label={isPaused ? 'Resume news ticker' : 'Pause news ticker'}
-          >
-            {isPaused ? (
-              <Play className="w-3.5 h-3.5 fill-current" />
-            ) : (
-              <Pause className="w-3.5 h-3.5 fill-current" />
-            )}
-          </button>
         </div>
       </div>
     </div>
