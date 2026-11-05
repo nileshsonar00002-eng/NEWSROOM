@@ -70,7 +70,7 @@ const LangRouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
   const { language, setLanguage } = useLanguage();
 
   React.useEffect(() => {
-    if (lang && (lang === 'en' || lang === 'hi' || lang === 'mr') && lang !== language) {
+    if (lang && (lang === 'en' || lang === 'hi') && lang !== language) {
       setLanguage(lang);
     }
   }, [lang, language, setLanguage]);

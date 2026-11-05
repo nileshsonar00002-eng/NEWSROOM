@@ -29,7 +29,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
   const { language } = useLanguage();
 
   const siteTitle = 'NEWSORA • News That Moves You';
-  const defaultDesc = 'Verified, in-depth, mobile-first journalism across India, Maharashtra, and the World in English, Hindi, and Marathi.';
+  const defaultDesc = 'Verified, in-depth, mobile-first journalism across India and the World in English and Hindi.';
   const defaultImage = 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?auto=format&fit=crop&w=1200&q=80';
   const baseUrl = 'https://newsora.in';
 
@@ -73,7 +73,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
     linkCanonical.href = canonicalUrl;
 
     // 4. Set hreflang tags for multi-language versions
-    const langs = ['en', 'hi', 'mr'];
+    const langs = ['en', 'hi'];
     langs.forEach((lng) => {
       let linkHreflang = document.querySelector(`link[rel="alternate"][hreflang="${lng}"]`) as HTMLLinkElement;
       if (!linkHreflang) {

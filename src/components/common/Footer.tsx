@@ -25,11 +25,11 @@ export const Footer: React.FC = () => {
   const { language, t } = useLanguage();
 
   const categories = [
-    { slug: 'india', label: language === 'hi' ? 'भारत' : language === 'mr' ? 'भारत' : 'India' },
-    { slug: 'business', label: language === 'hi' ? 'व्यापार' : language === 'mr' ? 'अर्थकारण' : 'Business' },
-    { slug: 'technology', label: language === 'hi' ? 'तकनीक' : language === 'mr' ? 'तंत्रज्ञान' : 'Technology' },
-    { slug: 'entertainment', label: language === 'hi' ? 'मनोरंजन' : language === 'mr' ? 'मनोरंजन' : 'Entertainment' },
-    { slug: 'sports', label: language === 'hi' ? 'खेल' : language === 'mr' ? 'क्रीडा' : 'Sports' }
+    { slug: 'india', label: language === 'hi' ? 'भारत' : 'India' },
+    { slug: 'business', label: language === 'hi' ? 'व्यापार' : 'Business' },
+    { slug: 'technology', label: language === 'hi' ? 'तकनीक' : 'Technology' },
+    { slug: 'entertainment', label: language === 'hi' ? 'मनोरंजन' : 'Entertainment' },
+    { slug: 'sports', label: language === 'hi' ? 'खेल' : 'Sports' }
   ];
 
   return (
@@ -112,7 +112,7 @@ export const Footer: React.FC = () => {
           {/* Column 3: Categories (Part 2) */}
           <div>
             <h3 className="font-headline font-bold text-sm uppercase tracking-wider text-white mb-4">
-              {language === 'hi' ? 'विशेष वर्ग' : language === 'mr' ? 'विशेष विभाग' : 'More Beats'}
+              {language === 'hi' ? 'विशेष वर्ग' : 'More Beats'}
             </h3>
             <ul className="space-y-2 text-xs sm:text-sm">
               {categories.slice(7).map((c) => (

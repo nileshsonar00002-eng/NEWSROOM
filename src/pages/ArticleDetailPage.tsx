@@ -131,13 +131,13 @@ export const ArticleDetailPage: React.FC = () => {
       ? article.translations[activeLang]
       : article.translations?.en?.title
       ? article.translations.en
-      : article.translations?.hi || article.translations?.mr;
+      : article.translations?.hi;
 
   const currentUrl = window.location.href;
   const publishedDate = trans?.publishedAt || article.createdAt;
   const formattedDate = publishedDate
     ? new Intl.DateTimeFormat(
-        activeLang === 'hi' ? 'hi-IN' : activeLang === 'mr' ? 'mr-IN' : 'en-IN',
+        activeLang === 'hi' ? 'hi-IN' : 'en-IN',
         {
           dateStyle: 'full',
           timeStyle: 'short'
@@ -146,7 +146,7 @@ export const ArticleDetailPage: React.FC = () => {
     : '';
 
   // Available translations for language notice
-  const availableLangs = (['en', 'hi', 'mr'] as Language[]).filter(
+  const availableLangs = (['en', 'hi'] as Language[]).filter(
     (l) => article.translations?.[l]?.status === 'published' && article.translations?.[l]?.title
   );
 

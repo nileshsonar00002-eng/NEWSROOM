@@ -41,7 +41,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               2. Cookies & Local Storage
             </h2>
             <p>
-              We use standard browser localStorage solely to remember your preferred reading language (English, Hindi, or Marathi) and your preferred visual theme (Light or Dark mode). We do not deploy invasive third-party cross-site tracking beacons.
+              We use standard browser localStorage solely to remember your preferred reading language (English or Hindi) and your preferred visual theme (Light or Dark mode). We do not deploy invasive third-party cross-site tracking beacons.
             </p>
           </section>
 

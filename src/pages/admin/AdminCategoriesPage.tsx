@@ -42,7 +42,7 @@ export const AdminCategoriesPage: React.FC = () => {
       id: `cat-${Date.now()}`,
       slug: '',
       order: categories.length + 1,
-      names: { en: '', hi: '', mr: '' },
+      names: { en: '', hi: '' },
       isActive: true
     });
   };
@@ -155,8 +155,6 @@ export const AdminCategoriesPage: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-1">
                         <span>हिं: {cat.names?.hi || '—'}</span>
-                        <span>•</span>
-                        <span>मरा: {cat.names?.mr || '—'}</span>
                       </div>
                     </div>
                   </div>
@@ -241,24 +239,6 @@ export const AdminCategoriesPage: React.FC = () => {
                       })
                     }
                     placeholder="उदा. तकनीक व विज्ञान"
-                    className="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-navy-950 border border-slate-300 dark:border-navy-700 rounded-lg min-h-[44px]"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block mb-1">
-                    Marathi Name (मराठी)
-                  </label>
-                  <input
-                    type="text"
-                    value={editingCategory.names?.mr || ''}
-                    onChange={(e) =>
-                      setEditingCategory({
-                        ...editingCategory,
-                        names: { ...editingCategory.names!, mr: e.target.value }
-                      })
-                    }
-                    placeholder="उदा. तंत्रज्ञान"
                     className="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-navy-950 border border-slate-300 dark:border-navy-700 rounded-lg min-h-[44px]"
                   />
                 </div>

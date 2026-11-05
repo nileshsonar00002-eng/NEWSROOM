@@ -15,35 +15,35 @@ export const DEFAULT_CATEGORIES: Category[] = [
     id: 'india',
     slug: 'india',
     order: 1,
-    names: { en: 'India', hi: 'भारत', mr: 'भारत' },
+    names: { en: 'India', hi: 'भारत' },
     isActive: true
   },
   {
     id: 'business',
     slug: 'business',
     order: 2,
-    names: { en: 'Business', hi: 'व्यापार व अर्थव्यवस्था', mr: 'अर्थकारण व व्यवसाय' },
+    names: { en: 'Business', hi: 'व्यापार व अर्थव्यवस्था' },
     isActive: true
   },
   {
     id: 'technology',
     slug: 'technology',
     order: 3,
-    names: { en: 'Technology', hi: 'तकनीक व विज्ञान', mr: 'तंत्रज्ञान' },
+    names: { en: 'Technology', hi: 'तकनीक व विज्ञान' },
     isActive: true
   },
   {
     id: 'entertainment',
     slug: 'entertainment',
     order: 4,
-    names: { en: 'Entertainment', hi: 'मनोरंजन व सिनेमा', mr: 'मनोरंजन' },
+    names: { en: 'Entertainment', hi: 'मनोरंजन व सिनेमा' },
     isActive: true
   },
   {
     id: 'sports',
     slug: 'sports',
     order: 5,
-    names: { en: 'Sports', hi: 'खेल', mr: 'क्रीडा' },
+    names: { en: 'Sports', hi: 'खेल' },
     isActive: true
   }
 ];

@@ -26,7 +26,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' 
         className="flex items-center hover:text-brand-500 transition shrink-0 min-h-[32px]"
       >
         <Home className="w-3.5 h-3.5 mr-1" />
-        <span>{language === 'hi' ? 'मुखपृष्ठ' : language === 'mr' ? 'मुख्यपृष्ठ' : 'Home'}</span>
+        <span>{language === 'hi' ? 'मुखपृष्ठ' : 'Home'}</span>
       </Link>
 
       {items.map((item, idx) => {

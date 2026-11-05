@@ -80,16 +80,6 @@ export const AdminArticleEditorPage: React.FC = () => {
         seoTitle: '',
         seoDescription: '',
         publishedAt: new Date().toISOString()
-      },
-      mr: {
-        title: '',
-        description: '',
-        content: '',
-        slug: '',
-        status: 'published',
-        seoTitle: '',
-        seoDescription: '',
-        publishedAt: new Date().toISOString()
       }
     }
   });
@@ -290,7 +280,7 @@ export const AdminArticleEditorPage: React.FC = () => {
                 {id ? 'Edit Article' : 'Write New Article'}
               </h1>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Direct publishing to Main Website for English, Hindi, and Marathi.
+                Direct publishing to Main Website for English and Hindi.
               </p>
             </div>
           </div>
@@ -364,8 +354,7 @@ export const AdminArticleEditorPage: React.FC = () => {
           <div className="flex items-center gap-2">
             {[
               { lang: 'en', label: 'English (EN)', native: 'English' },
-              { lang: 'hi', label: 'Hindi (हिंदी)', native: 'हिन्दी' },
-              { lang: 'mr', label: 'Marathi (मराठी)', native: 'मराठी' }
+              { lang: 'hi', label: 'Hindi (हिंदी)', native: 'हिन्दी' }
             ].map((tab) => {
               const tr = article.translations?.[tab.lang as Language];
               const isPublished = tr?.status === 'published';
@@ -466,7 +455,7 @@ export const AdminArticleEditorPage: React.FC = () => {
             <AdminCard
               title={`${activeTab.toUpperCase()} Article Content`}
               subtitle={`Drafting edition for: ${
-                activeTab === 'hi' ? 'हिंदी' : activeTab === 'mr' ? 'मराठी' : 'English'
+                activeTab === 'hi' ? 'हिंदी' : 'English'
               }`}
             >
               <div className="space-y-4">

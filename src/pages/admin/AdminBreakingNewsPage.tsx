@@ -42,7 +42,7 @@ export const AdminBreakingNewsPage: React.FC = () => {
   const handleOpenNew = () => {
     setEditingItem({
       id: `breaking-${Date.now()}`,
-      headline: { en: '', hi: '', mr: '' },
+      headline: { en: '', hi: '' },
       articleSlug: '',
       isActive: true,
       order: items.length + 1,
@@ -80,7 +80,7 @@ export const AdminBreakingNewsPage: React.FC = () => {
               Breaking News Ticker Management
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Control the top breaking headline ticker across English, Hindi, and Marathi.
+              Control the top breaking headline ticker across English and Hindi.
             </p>
           </div>
 
@@ -139,7 +139,6 @@ export const AdminBreakingNewsPage: React.FC = () => {
 
                     <div className="text-xs text-slate-500 dark:text-slate-400 space-y-0.5">
                       {item.headline?.hi && <p>हिं: {item.headline.hi}</p>}
-                      {item.headline?.mr && <p>मरा: {item.headline.mr}</p>}
                     </div>
                   </div>
 
@@ -232,24 +231,6 @@ export const AdminBreakingNewsPage: React.FC = () => {
                       })
                     }
                     placeholder="हिंदी में ताज़ा समाचार लिखें..."
-                    className="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-navy-950 border border-slate-300 dark:border-navy-700 rounded-lg min-h-[44px]"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block mb-1">
-                    Marathi Headline (मराठी)
-                  </label>
-                  <input
-                    type="text"
-                    value={editingItem.headline?.mr || ''}
-                    onChange={(e) =>
-                      setEditingItem({
-                        ...editingItem,
-                        headline: { ...editingItem.headline!, mr: e.target.value }
-                      })
-                    }
-                    placeholder="मराठीत ब्रेकिंग बातमी लिहा..."
                     className="w-full px-3 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-navy-950 border border-slate-300 dark:border-navy-700 rounded-lg min-h-[44px]"
                   />
                 </div>

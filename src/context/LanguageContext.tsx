@@ -15,15 +15,14 @@ const LANGUAGE_STORAGE_KEY = 'newsora_lang';
 
 export const languageNames: Record<Language, { label: string; native: string }> = {
   en: { label: 'English', native: 'English' },
-  hi: { label: 'Hindi', native: 'हिन्दी' },
-  mr: { label: 'Marathi', native: 'मराठी' }
+  hi: { label: 'Hindi', native: 'हिन्दी' }
 };
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     try {
       const saved = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language;
-      if (saved && (saved === 'en' || saved === 'hi' || saved === 'mr')) {
+      if (saved && (saved === 'en' || saved === 'hi')) {
         return saved;
       }
     } catch {

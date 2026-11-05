@@ -76,7 +76,7 @@ export const CategoryBar: React.FC = () => {
               }`
             }
           >
-            {language === 'hi' ? 'मुखपृष्ठ' : language === 'mr' ? 'मुख्यपृष्ठ' : 'Home'}
+            {language === 'hi' ? 'मुखपृष्ठ' : 'Home'}
           </NavLink>
 
           {/* Latest News Link */}

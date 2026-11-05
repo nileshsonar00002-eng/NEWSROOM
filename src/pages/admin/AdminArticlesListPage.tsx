@@ -92,8 +92,7 @@ export const AdminArticlesListPage: React.FC = () => {
     } else if (statusFilter !== 'all') {
       const hasStatus =
         art.translations?.en?.status === statusFilter ||
-        art.translations?.hi?.status === statusFilter ||
-        art.translations?.mr?.status === statusFilter;
+        art.translations?.hi?.status === statusFilter;
       if (!hasStatus) return false;
     }
 
@@ -101,9 +100,8 @@ export const AdminArticlesListPage: React.FC = () => {
       const q = search.toLowerCase();
       const matchEn = art.translations?.en?.title?.toLowerCase().includes(q);
       const matchHi = art.translations?.hi?.title?.toLowerCase().includes(q);
-      const matchMr = art.translations?.mr?.title?.toLowerCase().includes(q);
       const matchTag = art.tags?.some((t) => t.toLowerCase().includes(q));
-      if (!matchEn && !matchHi && !matchMr && !matchTag) return false;
+      if (!matchEn && !matchHi && !matchTag) return false;
     }
 
     return true;
@@ -119,7 +117,7 @@ export const AdminArticlesListPage: React.FC = () => {
               Article Management
             </h1>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
-              Manage stories across English, Hindi, and Marathi with independent draft & publishing control.
+              Manage stories across English and Hindi with independent draft & publishing control.
             </p>
           </div>
 
@@ -173,7 +171,6 @@ export const AdminArticlesListPage: React.FC = () => {
                 <option value="all">All Languages</option>
                 <option value="en">English (en)</option>
                 <option value="hi">Hindi (hi)</option>
-                <option value="mr">Marathi (mr)</option>
               </select>
             </div>
 
@@ -204,8 +201,7 @@ export const AdminArticlesListPage: React.FC = () => {
             {filtered.map((art) => {
               const enTitle = art.translations?.en?.title;
               const hiTitle = art.translations?.hi?.title;
-              const mrTitle = art.translations?.mr?.title;
-              const primaryTitle = enTitle || hiTitle || mrTitle || 'Untitled Article';
+              const primaryTitle = enTitle || hiTitle || 'Untitled Article';
 
               return (
                 <div
@@ -267,7 +263,7 @@ export const AdminArticlesListPage: React.FC = () => {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
-                      {(['en', 'hi', 'mr'] as Language[]).map((lng) => {
+                      {(['en', 'hi'] as Language[]).map((lng) => {
                         const tr = art.translations?.[lng];
                         const hasContent = !!tr?.title;
                         const isPublished = tr?.status === 'published';
@@ -380,7 +376,7 @@ export const AdminArticlesListPage: React.FC = () => {
                   Confirm Article Deletion
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                  Are you sure you want to permanently delete this article across English, Hindi, and Marathi? This action cannot be undone.
+                  Are you sure you want to permanently delete this article across English and Hindi? This action cannot be undone.
                 </p>
               </div>
 

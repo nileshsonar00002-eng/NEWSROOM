@@ -38,7 +38,7 @@ export const RssFeedPage: React.FC = () => {
   <channel>
     <title>NEWSORA • News That Moves You (${language.toUpperCase()})</title>
     <link>https://newsora.in/${language}</link>
-    <description>Verified, in-depth digital news publication in English, Hindi, and Marathi.</description>
+    <description>Verified, in-depth digital news publication in English and Hindi.</description>
     <language>${language}</language>
     <atom:link href="${rssFeedUrl}" rel="self" type="application/rss+xml" />
 ${itemsXml}
@@ -58,7 +58,7 @@ ${itemsXml}
     <div className="min-h-screen bg-slate-50 dark:bg-navy-950 text-navy-900 dark:text-slate-100 transition-colors pb-16">
       <SEOHead
         title="RSS Feeds & Syndication"
-        description="Subscribe to NEWSORA RSS 2.0 Feeds in English, Hindi, and Marathi for live headline delivery to RSS readers."
+        description="Subscribe to NEWSORA RSS 2.0 Feeds in English and Hindi for live headline delivery to RSS readers."
       />
 
       <CategoryBar />
@@ -79,11 +79,10 @@ ${itemsXml}
         </div>
 
         {/* Feed URL Options */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {[
             { lang: 'en', label: 'English Feed', url: 'https://newsora.in/en/rss.xml' },
-            { lang: 'hi', label: 'Hindi Feed (हिंदी)', url: 'https://newsora.in/hi/rss.xml' },
-            { lang: 'mr', label: 'Marathi Feed (मराठी)', url: 'https://newsora.in/mr/rss.xml' }
+            { lang: 'hi', label: 'Hindi Feed (हिंदी)', url: 'https://newsora.in/hi/rss.xml' }
           ].map((item) => (
             <div
               key={item.lang}

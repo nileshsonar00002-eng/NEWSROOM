@@ -29,7 +29,7 @@ export const AboutUsPage: React.FC = () => {
               About NEWSORA • News That Moves You
             </h1>
             <p className="text-base text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">
-              NEWSORA is an independent digital news publishing platform designed mobile-first from the ground up. Founded on the principle that verified journalism must be immediately accessible to every citizen, NEWSORA provides comprehensive reporting in English, Hindi (हिंदी), and Marathi (मराठी).
+              NEWSORA is an independent digital news publishing platform designed mobile-first from the ground up. Founded on the principle that verified journalism must be immediately accessible to every citizen, NEWSORA provides comprehensive reporting in English and Hindi (हिंदी).
             </p>
           </div>
 
@@ -50,7 +50,7 @@ export const AboutUsPage: React.FC = () => {
                 Multilingual Native
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                We reject raw machine translation. Content in Marathi and Hindi is manually reviewed and culturally resonant.
+                We reject raw machine translation. Content in Hindi is manually reviewed and culturally resonant.
               </p>
             </div>
 

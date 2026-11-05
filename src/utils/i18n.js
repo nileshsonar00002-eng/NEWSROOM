@@ -7,7 +7,6 @@
 import { TRANSLATIONS } from '../data/translations.js';
 
 export const SUPPORTED_LANGUAGES = [
-  { code: 'mr', icon: 'म', name: 'मराठी', label: 'म (मराठी)' },
   { code: 'hi', icon: 'हिं', name: 'हिंदी', label: 'हिं (हिंदी)' },
   { code: 'en', icon: 'EN', name: 'English', label: 'EN' }
 ];
@@ -18,7 +17,7 @@ const listeners = new Set();
 /**
  * Detect initial language on startup:
  * 1. Read from localStorage if previously chosen
- * 2. If first visit, inspect navigator.languages / navigator.language for Marathi or Hindi
+ * 2. If first visit, inspect navigator.languages / navigator.language for Hindi
  * 3. Default to English ('en')
  */
 export function detectInitialLanguage() {
@@ -26,7 +25,7 @@ export function detectInitialLanguage() {
 
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved && ['en', 'mr', 'hi'].includes(saved)) {
+    if (saved && ['en', 'hi'].includes(saved)) {
       return saved;
     }
   } catch (_) {}
@@ -36,7 +35,6 @@ export function detectInitialLanguage() {
     const browserLangs = navigator.languages || [navigator.language || ''];
     for (const raw of browserLangs) {
       const code = (raw || '').toLowerCase().trim();
-      if (code.startsWith('mr')) return 'mr';
       if (code.startsWith('hi')) return 'hi';
     }
   } catch (_) {}
@@ -52,7 +50,7 @@ if (typeof document !== 'undefined' && document.documentElement) {
 }
 
 /**
- * Get current active language code ('en' | 'mr' | 'hi')
+ * Get current active language code ('en' | 'hi')
  */
 export function getLanguage() {
   return currentLanguage;
@@ -60,10 +58,10 @@ export function getLanguage() {
 
 /**
  * Set and switch language instantly across the entire application
- * @param {'en' | 'mr' | 'hi'} lang 
+ * @param {'en' | 'hi'} lang 
  */
 export function setLanguage(lang) {
-  if (!['en', 'mr', 'hi'].includes(lang)) return;
+  if (!['en', 'hi'].includes(lang)) return;
   if (currentLanguage === lang) return;
 
   currentLanguage = lang;
@@ -164,7 +162,7 @@ export function t(path, paramsOrFallback = {}) {
 /**
  * Get WhatsApp share message for current language or specified language
  * @param {string} url Website link to share
- * @param {string} [langOverride] Optional language override ('en' | 'mr' | 'hi')
+ * @param {string} [langOverride] Optional language override ('en' | 'hi')
  * @returns {string} Pre-filled message
  */
 export function getWhatsAppShareText(url, langOverride = null) {

@@ -56,15 +56,13 @@ export const AdminDashboardPage: React.FC = () => {
   const totalPublished = articles.filter(
     (a) =>
       a.translations?.en?.status === 'published' ||
-      a.translations?.hi?.status === 'published' ||
-      a.translations?.mr?.status === 'published'
+      a.translations?.hi?.status === 'published'
   ).length;
 
   const totalDrafts = articles.filter(
     (a) =>
       a.translations?.en?.status === 'draft' ||
-      a.translations?.hi?.status === 'draft' ||
-      a.translations?.mr?.status === 'draft'
+      a.translations?.hi?.status === 'draft'
   ).length;
 
   const totalViews = articles.reduce((sum, a) => sum + (a.viewCount || 0), 0) + (analytics?.totalViews || 14280);
@@ -81,7 +79,7 @@ export const AdminDashboardPage: React.FC = () => {
               Newsroom Command Studio
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 mt-1">
-              Publish news across English, Hindi, and Marathi with full editorial control.
+              Publish news across English and Hindi with full editorial control.
             </p>
           </div>
 
@@ -183,7 +181,6 @@ export const AdminDashboardPage: React.FC = () => {
                   const title =
                     art.translations?.en?.title ||
                     art.translations?.hi?.title ||
-                    art.translations?.mr?.title ||
                     'Untitled Article';
 
                   return (
@@ -216,7 +213,7 @@ export const AdminDashboardPage: React.FC = () => {
 
                       {/* Language Status Badges */}
                       <div className="flex items-center gap-1.5 shrink-0 self-end sm:self-center">
-                        {(['en', 'hi', 'mr'] as const).map((lng) => {
+                        {(['en', 'hi'] as const).map((lng) => {
                           const isPub = art.translations?.[lng]?.status === 'published';
                           return (
                             <span

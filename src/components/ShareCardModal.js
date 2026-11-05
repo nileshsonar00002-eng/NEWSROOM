@@ -190,14 +190,7 @@ export function openShareCardModal(supporter = {}) {
 
     const lang = getLanguage();
     let msgBody = '';
-    if (lang === 'mr') {
-      msgBody = `🌿 *Save the Sahyadri — सहभाग प्रमाणपत्र* 📜\n\n` +
-        `मी सह्याद्रीची जंगले, वन्यजीव आणि समृद्ध जैवविविधतेच्या रक्षणासाठी माझा संकल्प नोंदवला आहे. 💚🌳\n\n` +
-        `३२,४९० झाडे आणि आपल्या पश्चिम घाटाला वाचवण्याच्या या मोहिमेत सहभागी व्हा आणि आपले प्रमाणपत्र मिळवा:\n\n` +
-        `🌐 *Visit & Join the Movement:*\n` +
-        `${siteUrl}\n\n` +
-        `🚩 *हर हर महादेव!* • Save the Sahyadri Movement`;
-    } else if (lang === 'hi') {
+    if (lang === 'hi') {
       msgBody = `🌿 *Save the Sahyadri — Certificate of Support* 📜\n\n` +
         `मैंने सह्याद्री के जंगलों, वन्यजीवों और जैव विविधता की रक्षा के लिए अपना संकल्प दर्ज किया है। 💚🌳\n\n` +
         `32,490 पेड़ों और हमारे पश्चिमी घाटों को बचाने की इस मुहिम से जुड़ें और अपना Certificate of Support प्राप्त करें:\n\n` +

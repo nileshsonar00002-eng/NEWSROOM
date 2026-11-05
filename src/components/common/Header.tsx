@@ -40,7 +40,7 @@ export const Header: React.FC = () => {
     setLanguage(lng);
     // Replace language in current URL path if formatted like /:lang/...
     const parts = location.pathname.split('/');
-    if (parts[1] === 'en' || parts[1] === 'hi' || parts[1] === 'mr') {
+    if (parts[1] === 'en' || parts[1] === 'hi') {
       parts[1] = lng;
       navigate(parts.join('/') + location.search);
     } else {
@@ -50,7 +50,7 @@ export const Header: React.FC = () => {
   };
 
   const formattedDate = new Intl.DateTimeFormat(
-    language === 'hi' ? 'hi-IN' : language === 'mr' ? 'mr-IN' : 'en-IN',
+    language === 'hi' ? 'hi-IN' : 'en-IN',
     {
       weekday: 'long',
       year: 'numeric',
@@ -70,8 +70,6 @@ export const Header: React.FC = () => {
             <span className="hidden sm:inline-block text-slate-400">
               {language === 'hi'
                 ? 'राष्ट्रीय एवं वैश्विक संस्करण'
-                : language === 'mr'
-                ? 'राष्ट्रीय व जागतिक आवृत्ती'
                 : 'National & Global Edition'}
             </span>
           </div>
@@ -160,19 +158,19 @@ export const Header: React.FC = () => {
 
               {/* Language Selector Segmented Pills */}
               <div className="flex items-center p-1 bg-slate-100 dark:bg-navy-900 rounded-lg border border-slate-200 dark:border-navy-800">
-                {(['en', 'hi', 'mr'] as Language[]).map((lng) => {
+                {(['en', 'hi'] as Language[]).map((lng) => {
                   const isActive = language === lng;
                   return (
                     <button
                       key={lng}
                       onClick={() => handleLanguageChange(lng)}
-                      className={`px-2.5 py-1 text-xs font-semibold rounded-md transition min-h-[32px] sm:min-h-[36px] ${
+                      className={`px-3 py-1 text-xs font-semibold rounded-md transition min-h-[32px] sm:min-h-[36px] ${
                         isActive
                           ? 'bg-brand-500 text-white shadow-sm'
                           : 'text-slate-600 dark:text-slate-300 hover:text-navy-900 dark:hover:text-white'
                       }`}
                     >
-                      {lng === 'en' ? 'EN' : lng === 'hi' ? 'हिं' : 'मरा'}
+                      {lng === 'en' ? 'EN' : 'हिंदी'}
                     </button>
                   );
                 })}
@@ -260,8 +258,8 @@ export const Header: React.FC = () => {
               <span className="text-xs uppercase font-semibold text-slate-400 tracking-wider block mb-2">
                 Language / भाषा
               </span>
-              <div className="grid grid-cols-3 gap-2">
-                {(['en', 'hi', 'mr'] as Language[]).map((lng) => (
+              <div className="grid grid-cols-2 gap-2">
+                {(['en', 'hi'] as Language[]).map((lng) => (
                   <button
                     key={lng}
                     onClick={() => handleLanguageChange(lng)}
@@ -315,11 +313,11 @@ export const Header: React.FC = () => {
               </span>
               <div className="grid grid-cols-2 gap-1">
                 {[
-                  { slug: 'india', label: language === 'hi' ? 'भारत' : language === 'mr' ? 'भारत' : 'India' },
-                  { slug: 'business', label: language === 'hi' ? 'व्यापार' : language === 'mr' ? 'अर्थकारण' : 'Business' },
-                  { slug: 'technology', label: language === 'hi' ? 'तकनीक' : language === 'mr' ? 'तंत्रज्ञान' : 'Technology' },
-                  { slug: 'entertainment', label: language === 'hi' ? 'मनोरंजन' : language === 'mr' ? 'मनोरंजन' : 'Entertainment' },
-                  { slug: 'sports', label: language === 'hi' ? 'खेल' : language === 'mr' ? 'क्रीडा' : 'Sports' }
+                  { slug: 'india', label: language === 'hi' ? 'भारत' : 'India' },
+                  { slug: 'business', label: language === 'hi' ? 'व्यापार' : 'Business' },
+                  { slug: 'technology', label: language === 'hi' ? 'तकनीक' : 'Technology' },
+                  { slug: 'entertainment', label: language === 'hi' ? 'मनोरंजन' : 'Entertainment' },
+                  { slug: 'sports', label: language === 'hi' ? 'खेल' : 'Sports' }
                 ].map((item) => (
                   <Link
                     key={item.slug}

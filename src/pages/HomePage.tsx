@@ -77,12 +77,12 @@ export const HomePage: React.FC = () => {
     return articles.slice(0, max);
   };
 
-  const categoryNamesMap: Record<string, { en: string; hi: string; mr: string }> = {
-    india: { en: 'India News', hi: 'भारत समाचार', mr: 'देश / भारत' },
-    business: { en: 'Business & Economy', hi: 'व्यापार एवं अर्थव्यवस्था', mr: 'अर्थकारण व व्यापार' },
-    technology: { en: 'Technology & AI', hi: 'तकनीक व नवाचार', mr: 'तंत्रज्ञान व एआय' },
-    sports: { en: 'Sports & Cricket', hi: 'खेल व क्रिकेट', mr: 'क्रीडा विश्व' },
-    entertainment: { en: 'Entertainment & Cinema', hi: 'मनोरंजन व सिनेमा', mr: 'मनोरंजन' }
+  const categoryNamesMap: Record<string, { en: string; hi: string }> = {
+    india: { en: 'India News', hi: 'भारत समाचार' },
+    business: { en: 'Business & Economy', hi: 'व्यापार एवं अर्थव्यवस्था' },
+    technology: { en: 'Technology & AI', hi: 'तकनीक व नवाचार' },
+    sports: { en: 'Sports & Cricket', hi: 'खेल व क्रिकेट' },
+    entertainment: { en: 'Entertainment & Cinema', hi: 'मनोरंजन व सिनेमा' }
   };
 
   return (
@@ -109,7 +109,7 @@ export const HomePage: React.FC = () => {
         <section aria-label="Featured News">
           <SectionHeader
             title={t.featuredNews}
-            badge={language === 'hi' ? 'विशेष' : language === 'mr' ? 'प्रमुख' : 'Top Stories'}
+            badge={language === 'hi' ? 'विशेष' : 'Top Stories'}
           />
 
           {loading ? (
@@ -157,7 +157,7 @@ export const HomePage: React.FC = () => {
             <SectionHeader
               title={t.latestNews}
               slug="latest"
-              badge={language === 'hi' ? 'ताज़ा' : language === 'mr' ? 'ताजे वृत्त' : 'Live'}
+              badge={language === 'hi' ? 'ताज़ा' : 'Live'}
             />
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

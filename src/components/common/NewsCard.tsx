@@ -27,7 +27,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
       ? article.translations[language]
       : article.translations?.en?.title
       ? article.translations.en
-      : article.translations?.hi || article.translations?.mr;
+      : article.translations?.hi;
 
   if (!trans || !trans.title) return null;
 
@@ -38,7 +38,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
   const dateStr = trans.publishedAt || article.createdAt;
   const formattedDate = dateStr
     ? new Intl.DateTimeFormat(
-        language === 'hi' ? 'hi-IN' : language === 'mr' ? 'mr-IN' : 'en-IN',
+        language === 'hi' ? 'hi-IN' : 'en-IN',
         { month: 'short', day: 'numeric' }
       ).format(new Date(dateStr))
     : '';

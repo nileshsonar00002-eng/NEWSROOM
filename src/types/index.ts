@@ -1,4 +1,4 @@
-export type Language = 'en' | 'hi' | 'mr';
+export type Language = 'en' | 'hi';
 
 export type ArticleStatus = 'draft' | 'published';
 
@@ -32,7 +32,7 @@ export interface Article {
   translations: {
     en: ArticleTranslation;
     hi: ArticleTranslation;
-    mr: ArticleTranslation;
+    mr?: ArticleTranslation;
   };
 }
 
@@ -43,7 +43,7 @@ export interface Category {
   names: {
     en: string;
     hi: string;
-    mr: string;
+    mr?: string;
   };
   isActive: boolean;
 }
@@ -53,7 +53,7 @@ export interface BreakingNewsItem {
   headline: {
     en: string;
     hi: string;
-    mr: string;
+    mr?: string;
   };
   articleId?: string;
   articleSlug?: string;

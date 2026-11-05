@@ -15,8 +15,7 @@ export const DEFAULT_BREAKING_NEWS: BreakingNewsItem[] = [
     id: 'breaking-1',
     headline: {
       en: 'ISRO successfully launches next-generation weather observation satellite from Sriharikota',
-      hi: 'इसरो ने श्रीहरिकोटा से अगली पीढ़ी के मौसम उपग्रह का सफल प्रक्षेपण किया',
-      mr: 'इस्रोकडून श्रीहरिकोटा येथून अत्याधुनिक हवामान निरीक्षण उपग्रहाचे यशस्वी प्रक्षेपण'
+      hi: 'इसरो ने श्रीहरिकोटा से अगली पीढ़ी के मौसम उपग्रह का सफल प्रक्षेपण किया'
     },
     articleSlug: 'isro-satellite-launch-sriharikota',
     isActive: true,
@@ -26,11 +25,10 @@ export const DEFAULT_BREAKING_NEWS: BreakingNewsItem[] = [
   {
     id: 'breaking-2',
     headline: {
-      en: 'Maharashtra Cabinet approves new industrial and green infrastructure corridor connecting Pune and Nashik',
-      hi: 'महाराष्ट्र मंत्रिमंडल ने पुणे-नासिक को जोड़ने वाले नए हरित औद्योगिक गलियारे को दी मंजूरी',
-      mr: 'पुणे-नाशिकला जोडणाऱ्या नवीन हरित औद्योगिक कॉरिडॉरला महाराष्ट्र मंत्रिमंडळाची मंजुरी'
+      en: 'Union Cabinet approves new industrial and green infrastructure corridor connecting key trade hubs',
+      hi: 'केंद्रीय मंत्रिमंडल ने प्रमुख व्यापारिक केंद्रों को जोड़ने वाले नए हरित औद्योगिक गलियारे को दी मंजूरी'
     },
-    articleSlug: 'maharashtra-cabinet-green-corridor-pune-nashik',
+    articleSlug: 'green-infrastructure-corridor-approved',
     isActive: true,
     order: 2,
     createdAt: new Date().toISOString()
@@ -39,8 +37,7 @@ export const DEFAULT_BREAKING_NEWS: BreakingNewsItem[] = [
     id: 'breaking-3',
     headline: {
       en: 'RBI announces revised digital payment security protocols for UPI and online banking transactions',
-      hi: 'आरबीआई ने यूपीआई और ऑनलाइन बैंकिंग लेनदेन के लिए संशोधित डिजिटल सुरक्षा प्रोटोकॉल की घोषणा की',
-      mr: 'युपीआय आणि ऑनलाइन बँकिंग व्यवहारांसाठी आरबीआयकडून सुधारित सुरक्षा नियमावली जाहीर'
+      hi: 'आरबीआई ने यूपीआई और ऑनलाइन बैंकिंग लेनदेन के लिए संशोधित डिजिटल सुरक्षा प्रोटोकॉल की घोषणा की'
     },
     articleSlug: 'rbi-announces-revised-digital-payment-protocols',
     isActive: true,

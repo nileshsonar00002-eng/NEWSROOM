@@ -106,7 +106,6 @@ export const AdminSettingsPage: React.FC = () => {
                 >
                   <option value="en">English (en)</option>
                   <option value="hi">Hindi (hi)</option>
-                  <option value="mr">Marathi (mr)</option>
                 </select>
               </div>
             </div>

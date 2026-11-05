@@ -179,7 +179,7 @@ export async function getArticles(options: QueryArticleOptions = {}): Promise<Ar
         const isPublishedInLang = trans && trans.title && trans.status === status;
 
         // If not published in requested language, check if it's published in ANY other language
-        // This ensures news written in Hindi or Marathi or English appears on the site with graceful translation fallback
+        // This ensures news written in Hindi or English appears on the site with graceful translation fallback
         const isPublishedInAny = Object.values(article.translations || {}).some(
           (t) => t && t.title && t.status === status
         );
@@ -216,7 +216,6 @@ export async function getArticles(options: QueryArticleOptions = {}): Promise<Ar
       const matchTags = article.tags?.some((t) => t.toLowerCase().includes(q));
       const transEn = article.translations?.en;
       const transHi = article.translations?.hi;
-      const transMr = article.translations?.mr;
 
       const matchEn =
         transEn &&
@@ -226,12 +225,8 @@ export async function getArticles(options: QueryArticleOptions = {}): Promise<Ar
         transHi &&
         (transHi.title.toLowerCase().includes(q) ||
           transHi.description.toLowerCase().includes(q));
-      const matchMr =
-        transMr &&
-        (transMr.title.toLowerCase().includes(q) ||
-          transMr.description.toLowerCase().includes(q));
 
-      if (!matchTags && !matchEn && !matchHi && !matchMr) {
+      if (!matchTags && !matchEn && !matchHi) {
         return false;
       }
     }
@@ -275,8 +270,7 @@ export async function getArticleBySlug(lang: Language, slug: string): Promise<Ar
     found = all.find(
       (a) =>
         a.translations?.en?.slug === slug ||
-        a.translations?.hi?.slug === slug ||
-        a.translations?.mr?.slug === slug
+        a.translations?.hi?.slug === slug
     );
   }
 
@@ -295,7 +289,6 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
   // Determine language statuses carefully: if a translation has content and status isn't explicitly set, default to published
   const enStatus = article.translations?.en?.status || 'published';
   const hiStatus = article.translations?.hi?.status || 'published';
-  const mrStatus = article.translations?.mr?.status || 'published';
 
   const fullData: Article = {
     id,
@@ -346,22 +339,6 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
         publishedAt:
           hiStatus === 'published'
             ? article.translations?.hi?.publishedAt || nowIso
-            : null
-      },
-      mr: {
-        title: article.translations?.mr?.title || '',
-        description: article.translations?.mr?.description || '',
-        content: article.translations?.mr?.content || '',
-        slug:
-          article.translations?.mr?.slug ||
-          generateSlug(article.translations?.mr?.title || 'article-mr'),
-        status: mrStatus,
-        seoTitle: article.translations?.mr?.seoTitle || article.translations?.mr?.title || '',
-        seoDescription:
-          article.translations?.mr?.seoDescription || article.translations?.mr?.description || '',
-        publishedAt:
-          mrStatus === 'published'
-            ? article.translations?.mr?.publishedAt || nowIso
             : null
       }
     }
