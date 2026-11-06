@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Flame, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { getActiveBreakingNews, DEFAULT_BREAKING_NEWS } from '../../services/breakingNewsService';
 import { BreakingNewsItem } from '../../types';
@@ -60,31 +60,28 @@ export const BreakingNewsTicker: React.FC = () => {
   // Exact 2 identical sets for seamless continuous marquee loop (0% -> -50%)
   const marqueeItems = [...repeatedList, ...repeatedList];
 
-  // Relaxed, calm reading speed (reduced scroll speed)
+  // Relaxed, calm reading speed
   const crawlDuration = Math.max(60, repeatedList.length * 13);
 
   return (
     <div
-      className="relative bg-gradient-to-r from-red-900 via-red-700 to-red-850 text-white border-b-2 border-amber-400 shadow-md overflow-hidden select-none"
+      className="relative bg-red-600 text-white border-b-2 border-amber-400 shadow-md overflow-hidden select-none"
       role="region"
       aria-label="Breaking News Continuous Ticker"
     >
       <div className="max-w-7xl mx-auto flex items-stretch relative">
         {/* Pinned Left TV Badge */}
-        <div className="relative z-20 flex items-center shrink-0 bg-red-950/90 dark:bg-black/90 backdrop-blur-md px-3 sm:px-4 py-2 border-r border-amber-400/30 shadow-2xl">
-          <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="relative z-20 flex items-center shrink-0 bg-black px-3 sm:px-4 py-2 border-r border-black/30 shadow-md">
+          <div className="flex items-center gap-2">
+            {/* Live TV Red Pulsing Beacon */}
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-400"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-80"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-600"></span>
             </span>
-            <span className="font-headline font-black text-[11px] sm:text-xs tracking-wider uppercase text-amber-300 flex items-center gap-1">
-              <Flame className="w-3.5 h-3.5 text-amber-300 animate-pulse hidden sm:inline" />
-              <span>{t.breakingNews}</span>
+            <span className="font-headline font-black text-[11px] sm:text-xs tracking-wider uppercase text-white">
+              {t.breakingNews}
             </span>
           </div>
-
-          {/* Depth gradient feathering where news text enters/passes behind the badge */}
-          <div className="absolute left-full top-0 bottom-0 w-6 bg-gradient-to-r from-red-950/90 dark:from-black/90 to-transparent pointer-events-none"></div>
         </div>
 
         {/* Continuous Train Ticker Track (Right to Left with Hover Pause) */}
@@ -114,9 +111,6 @@ export const BreakingNewsTicker: React.FC = () => {
               </div>
             ))}
           </div>
-
-          {/* Right Fade Mask: News emerges smoothly from the right edge */}
-          <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-red-850 to-transparent pointer-events-none z-10"></div>
         </div>
       </div>
     </div>
