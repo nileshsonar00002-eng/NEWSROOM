@@ -224,13 +224,7 @@ export const App: React.FC = () => {
               />
               <Route
                 path="/:lang/rss"
-                element={
-                  <LangRouteWrapper>
-                    <PublicLayout>
-                      <RssFeedPage />
-                    </PublicLayout>
-                  </LangRouteWrapper>
-                }
+                element={<Navigate to="/" replace />}
               />
 
               {/* =========================================
@@ -245,7 +239,7 @@ export const App: React.FC = () => {
               <Route path="/terms" element={<Navigate to="/en/terms" replace />} />
               <Route path="/editorial-policy" element={<Navigate to="/en/editorial-policy" replace />} />
               <Route path="/disclaimer" element={<Navigate to="/en/disclaimer" replace />} />
-              <Route path="/rss" element={<Navigate to="/en/rss" replace />} />
+              <Route path="/rss" element={<Navigate to="/" replace />} />
 
               {/* =========================================
                   ADMIN STUDIO ROUTES
@@ -321,6 +315,14 @@ export const App: React.FC = () => {
                 element={
                   <ProtectedAdminRoute>
                     <AdminSettingsPage />
+                  </ProtectedAdminRoute>
+                }
+              />
+              <Route
+                path="/admin/rss"
+                element={
+                  <ProtectedAdminRoute>
+                    <RssFeedPage />
                   </ProtectedAdminRoute>
                 }
               />

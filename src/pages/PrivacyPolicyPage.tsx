@@ -59,7 +59,7 @@ export const PrivacyPolicyPage: React.FC = () => {
               4. Contact Our Data Protection Officer
             </h2>
             <p>
-              For privacy queries or rights under data protection laws, contact: <span className="font-semibold text-brand-500">privacy@newsora.in</span>.
+              For privacy queries or rights under data protection laws, contact our Compliance & Grievance Desk via our official Contact page.
             </p>
           </section>
         </div>

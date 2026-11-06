@@ -77,7 +77,7 @@ export const EditorialPolicyPage: React.FC = () => {
                 When factual errors or inaccuracies occur, NEWSORA corrects them promptly and transparently. We believe admitting and correcting errors reinforces reader trust rather than undermining it.
               </p>
               <p>
-                Any correction made to an article after initial publication is clearly noted with a timestamped correction notice at the bottom or top of the report. Readers can submit correction requests directly via email to <span className="font-semibold text-brand-500">corrections@newsora.in</span>.
+                Any correction made to an article after initial publication is clearly noted with a timestamped correction notice at the bottom or top of the report. Readers can submit correction requests directly through our Contact & Grievance Desk.
               </p>
             </section>
           </div>

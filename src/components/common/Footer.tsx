@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Rss, Mail, Phone, Heart } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 const XIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
@@ -80,13 +79,6 @@ export const Footer: React.FC = () => {
               >
                 <YoutubeIcon className="w-4 h-4" />
               </a>
-              <Link
-                to={`/${language}/rss`}
-                className="w-9 h-9 rounded-full bg-navy-900 border border-navy-800 flex items-center justify-center text-slate-400 hover:text-brand-400 hover:border-brand-500 transition"
-                aria-label="RSS Feed"
-              >
-                <Rss className="w-4 h-4" />
-              </Link>
             </div>
           </div>
 
@@ -171,11 +163,6 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
           <p>{t.copyrightNotice}</p>
-          <div className="flex items-center gap-4">
-            <Link to={`/${language}/rss`} className="hover:text-slate-300 transition">
-              RSS Feed
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

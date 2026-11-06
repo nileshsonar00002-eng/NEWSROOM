@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Save, CheckCircle, Sparkles, DollarSign, Globe, Mail, Share2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Save, CheckCircle, Sparkles, DollarSign, Globe, Mail, Share2, Rss } from 'lucide-react';
 import { AdminLayout } from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
 import { getSiteSettings, updateSiteSettings, DEFAULT_SITE_SETTINGS } from '../../services/settingsService';
@@ -264,6 +265,31 @@ export const AdminSettingsPage: React.FC = () => {
                   />
                 </div>
               </div>
+            </div>
+          </AdminCard>
+
+          {/* 4. Internal Syndication & RSS Feeds */}
+          <AdminCard
+            title="Internal Syndication & RSS Feeds"
+            subtitle="XML news feeds for backend aggregators and syndication (hidden from public readers)"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-50 dark:bg-navy-950 rounded-xl border border-slate-200 dark:border-navy-800">
+              <div>
+                <p className="text-xs font-bold text-navy-950 dark:text-white flex items-center gap-1.5">
+                  <Rss className="w-3.5 h-3.5 text-brand-500" />
+                  <span>NEWSORA RSS 2.0 XML Generator</span>
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                  Internal tool to generate, preview, and copy live XML feeds for English and Hindi.
+                </p>
+              </div>
+              <Link
+                to="/admin/rss"
+                target="_blank"
+                className="px-4 py-2 rounded-lg bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs uppercase tracking-wider transition shrink-0 min-h-[38px] flex items-center justify-center gap-1.5 shadow-sm"
+              >
+                <span>Open Syndication Tool</span>
+              </Link>
             </div>
           </AdminCard>
         </form>

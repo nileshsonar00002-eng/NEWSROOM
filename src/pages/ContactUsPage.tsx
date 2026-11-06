@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, CheckCircle, Shield } from 'lucide-react';
+import { Phone, MapPin, Send, CheckCircle, Shield } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { SEOHead } from '../components/common/SEOHead';
 import { CategoryBar } from '../components/common/CategoryBar';
@@ -10,7 +10,7 @@ export const ContactUsPage: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: '',
-    email: '',
+    contact: '',
     subject: 'news-tip',
     message: ''
   });
@@ -41,16 +41,6 @@ export const ContactUsPage: React.FC = () => {
               </h2>
 
               <div className="flex items-start gap-3 text-xs sm:text-sm">
-                <Mail className="w-4 h-4 text-brand-500 shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold block text-navy-950 dark:text-white">Editorial Inquiries:</span>
-                  <a href="mailto:editor@newsora.in" className="text-brand-500 hover:underline">
-                    editor@newsora.in
-                  </a>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 text-xs sm:text-sm">
                 <Phone className="w-4 h-4 text-brand-500 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold block text-navy-950 dark:text-white">Desk WhatsApp Hotline:</span>
@@ -76,10 +66,10 @@ export const ContactUsPage: React.FC = () => {
                 <span>Grievance Redressal</span>
               </div>
               <p className="text-amber-800 dark:text-amber-400">
-                In compliance with the IT Rules 2021, grievances regarding published content can be emailed to:
+                In compliance with the IT Rules 2021, grievances regarding published content can be submitted directly through our contact form or via the WhatsApp desk hotline.
               </p>
-              <p className="font-mono text-amber-950 dark:text-amber-200 font-semibold">
-                grievance@newsora.in
+              <p className="font-semibold text-amber-950 dark:text-amber-200">
+                Grievance & Legal Compliance Desk
               </p>
             </div>
           </div>
@@ -107,7 +97,7 @@ export const ContactUsPage: React.FC = () => {
                     type="button"
                     onClick={() => {
                       setSubmitted(false);
-                      setForm({ name: '', email: '', subject: 'news-tip', message: '' });
+                      setForm({ name: '', contact: '', subject: 'news-tip', message: '' });
                     }}
                     className="mt-4 px-4 py-2 bg-slate-100 dark:bg-navy-800 text-xs font-semibold rounded-lg hover:bg-slate-200 transition"
                   >
@@ -132,14 +122,13 @@ export const ContactUsPage: React.FC = () => {
 
                   <div>
                     <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                      Email Address (Confidential)
+                      Phone Number / Contact Info (Optional)
                     </label>
                     <input
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      placeholder="e.g. anand@example.com"
+                      type="text"
+                      value={form.contact}
+                      onChange={(e) => setForm({ ...form, contact: e.target.value })}
+                      placeholder="e.g. +91 98765 43210"
                       className="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-navy-950 border border-slate-300 dark:border-navy-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 min-h-[44px]"
                     />
                   </div>
