@@ -172,10 +172,6 @@ export const Footer: React.FC = () => {
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
           <p>{t.copyrightNotice}</p>
           <div className="flex items-center gap-4">
-            <Link to="/admin/login" className="hover:text-slate-300 transition">
-              {t.adminPortal}
-            </Link>
-            <span>•</span>
             <Link to={`/${language}/rss`} className="hover:text-slate-300 transition">
               RSS Feed
             </Link>

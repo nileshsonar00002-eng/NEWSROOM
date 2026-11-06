@@ -109,7 +109,6 @@ export const HomePage: React.FC = () => {
         <section aria-label="Featured News">
           <SectionHeader
             title={t.featuredNews}
-            badge={language === 'hi' ? 'विशेष' : 'Top Stories'}
           />
 
           {loading ? (

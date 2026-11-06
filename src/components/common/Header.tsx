@@ -6,21 +6,15 @@ import {
   Search,
   Moon,
   Sun,
-  ShieldCheck,
-  TrendingUp,
-  Globe,
-  ChevronRight,
-  Flame
+  ChevronRight
 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { useTheme } from '../../context/ThemeContext';
-import { useAuth } from '../../context/AuthContext';
 import { Language } from '../../types';
 
 export const Header: React.FC = () => {
   const { language, setLanguage, t, languageNames } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -72,33 +66,6 @@ export const Header: React.FC = () => {
                 ? 'राष्ट्रीय एवं वैश्विक संस्करण'
                 : 'National & Global Edition'}
             </span>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link
-              to={`/${language}/trending`}
-              className="flex items-center gap-1.5 text-xs text-brand-400 hover:text-brand-300 font-medium transition"
-            >
-              <Flame className="w-3.5 h-3.5" />
-              <span>{t.trendingNews}</span>
-            </Link>
-
-            {isAuthenticated ? (
-              <Link
-                to="/admin/dashboard"
-                className="flex items-center gap-1 text-emerald-400 hover:text-emerald-300 font-medium text-xs transition"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>{t.adminPortal}</span>
-              </Link>
-            ) : (
-              <Link
-                to="/admin/login"
-                className="text-slate-400 hover:text-slate-200 text-xs transition hidden sm:inline-block"
-              >
-                {t.login}
-              </Link>
-            )}
           </div>
         </div>
       </div>
@@ -282,7 +249,7 @@ export const Header: React.FC = () => {
                 onClick={() => setMobileMenuOpen(false)}
                 className="flex items-center justify-between p-3 rounded-lg font-medium text-sm text-navy-900 dark:text-white hover:bg-slate-100 dark:hover:bg-navy-900 min-h-[44px]"
               >
-                <span>{t.featuredNews}</span>
+                <span>{language === 'hi' ? 'मुखपृष्ठ' : 'Home'}</span>
                 <ChevronRight className="w-4 h-4 text-slate-400" />
               </Link>
               <Link
@@ -291,17 +258,6 @@ export const Header: React.FC = () => {
                 className="flex items-center justify-between p-3 rounded-lg font-medium text-sm text-navy-900 dark:text-white hover:bg-slate-100 dark:hover:bg-navy-900 min-h-[44px]"
               >
                 <span>{t.latestNews}</span>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              </Link>
-              <Link
-                to={`/${language}/trending`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between p-3 rounded-lg font-medium text-sm text-brand-600 dark:text-brand-400 hover:bg-slate-100 dark:hover:bg-navy-900 min-h-[44px]"
-              >
-                <div className="flex items-center gap-2">
-                  <Flame className="w-4 h-4 text-brand-500" />
-                  <span>{t.trendingNews}</span>
-                </div>
                 <ChevronRight className="w-4 h-4 text-slate-400" />
               </Link>
             </div>
@@ -332,16 +288,8 @@ export const Header: React.FC = () => {
             </div>
 
             {/* Footer Information in Drawer */}
-            <div className="mt-auto p-4 border-t border-slate-200 dark:border-navy-800 bg-slate-50 dark:bg-navy-900/50 space-y-2">
-              <Link
-                to="/admin/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-navy-800 min-h-[44px]"
-              >
-                <ShieldCheck className="w-4 h-4 text-brand-500" />
-                <span>{isAuthenticated ? t.dashboard : t.adminPortal}</span>
-              </Link>
-              <div className="text-[11px] text-slate-400 pt-2 border-t border-slate-200 dark:border-navy-800">
+            <div className="mt-auto p-4 border-t border-slate-200 dark:border-navy-800 bg-slate-50 dark:bg-navy-900/50">
+              <div className="text-[11px] text-slate-400">
                 {t.copyrightNotice}
               </div>
             </div>
