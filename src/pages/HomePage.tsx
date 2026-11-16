@@ -105,7 +105,78 @@ export const HomePage: React.FC = () => {
       </div>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-12">
-        {/* 7. FEATURED NEWS SECTION */}
+        {/* 7. LATEST NEWS & TRENDING NEWS (Editorial Two-Column Grid) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Section: Latest News (2 Columns on Desktop) */}
+          <section className="lg:col-span-2" aria-label="Latest News">
+            <SectionHeader
+              title={t.latestNews}
+              slug="latest"
+              badge={language === 'hi' ? 'ताज़ा' : 'Live'}
+            />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {latestArticles.map((art) => (
+                <NewsCard
+                  key={art.id}
+                  article={art}
+                  variant="grid"
+                  categoryName={categoryNamesMap[art.categoryId]?.[language]}
+                />
+              ))}
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link
+                to={`/${language}/latest`}
+                className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white dark:bg-navy-900 border border-slate-300 dark:border-navy-700 text-sm font-bold text-navy-950 dark:text-white hover:bg-slate-100 dark:hover:bg-navy-800 shadow-sm transition min-h-[44px]"
+              >
+                {t.loadMore}
+              </Link>
+            </div>
+          </section>
+
+          {/* Section: Trending News (Sidebar List) */}
+          <aside className="lg:col-span-1" aria-label="Trending News">
+            <div className="bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 rounded-xl overflow-hidden shadow-sm sticky top-24">
+              <div className="p-4 bg-slate-50 dark:bg-navy-850 border-b border-slate-200 dark:border-navy-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Flame className="w-5 h-5 text-brand-500" />
+                  <h3 className="font-headline font-bold text-base text-navy-950 dark:text-white">
+                    {t.trendingNews}
+                  </h3>
+                </div>
+                <Link
+                  to={`/${language}/trending`}
+                  className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline"
+                >
+                  {t.viewAll}
+                </Link>
+              </div>
+
+              <div className="divide-y divide-slate-100 dark:divide-navy-800">
+                {(trendingArticles.length > 0 ? trendingArticles : articles.slice(0, 5)).map(
+                  (art, idx) => (
+                    <NewsCard
+                      key={art.id}
+                      article={art}
+                      variant="trending"
+                      trendingIndex={idx + 1}
+                      categoryName={categoryNamesMap[art.categoryId]?.[language]}
+                    />
+                  )
+                )}
+              </div>
+
+              {/* Sidebar AdSense Placement */}
+              <div className="p-3">
+                <AdBanner placement="sidebar" />
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        {/* 8. FEATURED NEWS SECTION */}
         <section aria-label="Featured News">
           <SectionHeader
             title={t.featuredNews}
@@ -148,77 +219,6 @@ export const HomePage: React.FC = () => {
             </div>
           )}
         </section>
-
-        {/* 8 & 9. LATEST NEWS & TRENDING NEWS (Editorial Two-Column Grid) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Section 8: Latest News (2 Columns on Desktop) */}
-          <section className="lg:col-span-2" aria-label="Latest News">
-            <SectionHeader
-              title={t.latestNews}
-              slug="latest"
-              badge={language === 'hi' ? 'ताज़ा' : 'Live'}
-            />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {latestArticles.map((art) => (
-                <NewsCard
-                  key={art.id}
-                  article={art}
-                  variant="grid"
-                  categoryName={categoryNamesMap[art.categoryId]?.[language]}
-                />
-              ))}
-            </div>
-
-            <div className="mt-6 text-center">
-              <Link
-                to={`/${language}/latest`}
-                className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white dark:bg-navy-900 border border-slate-300 dark:border-navy-700 text-sm font-bold text-navy-950 dark:text-white hover:bg-slate-100 dark:hover:bg-navy-800 shadow-sm transition min-h-[44px]"
-              >
-                {t.loadMore}
-              </Link>
-            </div>
-          </section>
-
-          {/* Section 9: Trending News (Sidebar List) */}
-          <aside className="lg:col-span-1" aria-label="Trending News">
-            <div className="bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 rounded-xl overflow-hidden shadow-sm sticky top-24">
-              <div className="p-4 bg-slate-50 dark:bg-navy-850 border-b border-slate-200 dark:border-navy-800 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Flame className="w-5 h-5 text-brand-500" />
-                  <h3 className="font-headline font-bold text-base text-navy-950 dark:text-white">
-                    {t.trendingNews}
-                  </h3>
-                </div>
-                <Link
-                  to={`/${language}/trending`}
-                  className="text-xs font-bold text-brand-600 dark:text-brand-400 hover:underline"
-                >
-                  {t.viewAll}
-                </Link>
-              </div>
-
-              <div className="divide-y divide-slate-100 dark:divide-navy-800">
-                {(trendingArticles.length > 0 ? trendingArticles : articles.slice(0, 5)).map(
-                  (art, idx) => (
-                    <NewsCard
-                      key={art.id}
-                      article={art}
-                      variant="trending"
-                      trendingIndex={idx + 1}
-                      categoryName={categoryNamesMap[art.categoryId]?.[language]}
-                    />
-                  )
-                )}
-              </div>
-
-              {/* Sidebar AdSense Placement */}
-              <div className="p-3">
-                <AdBanner placement="sidebar" />
-              </div>
-            </div>
-          </aside>
-        </div>
 
         {/* In-Between Content Advertisement */}
         <AdBanner placement="home-between" />
