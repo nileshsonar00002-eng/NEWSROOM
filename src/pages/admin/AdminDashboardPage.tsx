@@ -65,7 +65,7 @@ export const AdminDashboardPage: React.FC = () => {
       a.translations?.hi?.status === 'draft'
   ).length;
 
-  const totalViews = articles.reduce((sum, a) => sum + (a.viewCount || 0), 0) + (analytics?.totalViews || 14280);
+  const totalViews = articles.reduce((sum, a) => sum + (a.viewCount || 0), 0) + (analytics?.totalViews || 0);
 
   const recentArticles = articles.slice(0, 5);
 

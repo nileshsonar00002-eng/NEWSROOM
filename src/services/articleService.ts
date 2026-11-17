@@ -5,13 +5,11 @@ import {
   doc,
   setDoc,
   deleteDoc,
-  onSnapshot,
-  writeBatch
+  onSnapshot
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { stripUndefined, formatFirestoreError } from './firebaseStatus';
 import { Article, Language, ArticleStatus } from '../types';
-import { SEED_ARTICLES } from './seedService';
 
 export interface QueryArticleOptions {
   lang?: Language;
@@ -24,7 +22,16 @@ export interface QueryArticleOptions {
   searchQuery?: string;
 }
 
-const LOCAL_STORAGE_ARTICLES_KEY = 'newsora_articles_store_v3';
+const LOCAL_STORAGE_ARTICLES_KEY = 'newsora_articles_store_v4';
+
+// Clean up any legacy demo-article caches so old seed news never lingers in browser storage
+if (typeof window !== 'undefined') {
+  try {
+    localStorage.removeItem('newsora_articles_store');
+    localStorage.removeItem('newsora_articles_store_v2');
+    localStorage.removeItem('newsora_articles_store_v3');
+  } catch {}
+}
 
 const VALID_CATEGORIES = new Set(['india', 'business', 'technology', 'entertainment', 'sports']);
 
@@ -33,7 +40,7 @@ export function sanitizeCategory(catId?: string): string {
   if (catId === 'maharashtra' || catId === 'politics' || catId === 'world' || catId === 'crime') return 'india';
   if (catId === 'science' || catId === 'automobile') return 'technology';
   if (catId === 'lifestyle' || catId === 'health' || catId === 'education') return 'entertainment';
-  return 'india';
+  return catId || 'india';
 }
 
 function normalizeArticle(id: string, data: any): Article | null {
@@ -52,9 +59,9 @@ function sortArticlesDesc(list: Article[]): Article[] {
   );
 }
 
-// Fast local cache (read-through mirror of Firestore, NEVER overrides Firestore)
-function loadCachedArticles(): Article[] | null {
-  if (typeof window === 'undefined') return null;
+// Fast local cache (read-through mirror of Firestore; never falls back to fake seed data)
+function loadCachedArticles(): Article[] {
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_ARTICLES_KEY);
     if (raw !== null) {
@@ -69,7 +76,7 @@ function loadCachedArticles(): Article[] | null {
   } catch (e) {
     console.warn('[Articles] Error reading cache:', e);
   }
-  return null;
+  return [];
 }
 
 function saveCachedArticles(articles: Article[], notify: boolean = false): void {
@@ -87,49 +94,6 @@ function saveCachedArticles(articles: Article[], notify: boolean = false): void 
       console.warn('[Articles] Local cache quota warning (data is still safely in Firebase):', e);
     }
   }
-}
-
-let bootstrapPromise: Promise<boolean> | null = null;
-
-/**
- * Seeds default starter articles into Cloud Firestore ONCE when a brand new
- * database is completely empty. Once seeded, edits and deletions in Firestore
- * are permanently respected and seed data never resurrects.
- */
-async function ensureArticlesBootstrapped(): Promise<boolean> {
-  if (bootstrapPromise) return bootstrapPromise;
-
-  bootstrapPromise = (async () => {
-    try {
-      const metaRef = doc(db, 'siteSettings', 'bootstrap_articles');
-      const metaSnap = await getDoc(metaRef);
-      if (metaSnap.exists() && metaSnap.data()?.seeded === true) {
-        return false; // Already seeded before; empty list is intentional
-      }
-
-      const batch = writeBatch(db);
-      for (const seed of SEED_ARTICLES) {
-        const cleanSeed = stripUndefined({
-          ...seed,
-          categoryId: sanitizeCategory(seed.categoryId)
-        });
-        batch.set(doc(db, 'articles', seed.id), cleanSeed);
-      }
-      batch.set(metaRef, {
-        seeded: true,
-        seededAt: new Date().toISOString()
-      });
-      await batch.commit();
-      return true;
-    } catch (err) {
-      console.warn('[Articles] Bootstrap seed skipped:', err);
-      return false;
-    } finally {
-      bootstrapPromise = null;
-    }
-  })();
-
-  return bootstrapPromise;
 }
 
 export function generateSlug(title: string): string {
@@ -243,18 +207,12 @@ export function filterArticles(all: Article[], options: QueryArticleOptions = {}
 
 /**
  * Fetches all articles directly from Cloud Firestore (Source of Truth).
+ * Returns strictly what exists in Firebase — no demo/seed articles.
  */
 export async function getAllArticlesForAdmin(): Promise<Article[]> {
   try {
     const colRef = collection(db, 'articles');
-    let snap = await getDocs(colRef);
-
-    if (snap.empty) {
-      const seeded = await ensureArticlesBootstrapped();
-      if (seeded) {
-        snap = await getDocs(colRef);
-      }
-    }
+    const snap = await getDocs(colRef);
 
     const remoteItems: Article[] = [];
     snap.forEach((d) => {
@@ -267,14 +225,13 @@ export async function getAllArticlesForAdmin(): Promise<Article[]> {
     return sorted;
   } catch (err) {
     console.error('[Articles] Firestore read error:', err);
-    const cached = loadCachedArticles();
-    return cached !== null ? cached : [...SEED_ARTICLES];
+    return loadCachedArticles();
   }
 }
 
 /**
  * Real-time Cloud Firestore subscription for articles.
- * Automatically updates the Main Site & Admin Panel whenever ANY change happens in Firebase.
+ * Reflects strictly what is published from Admin Panel in Firebase.
  */
 export function subscribeToArticles(
   options: QueryArticleOptions,
@@ -285,15 +242,7 @@ export function subscribeToArticles(
 
   const unsubscribe = onSnapshot(
     colRef,
-    async (snap) => {
-      if (snap.empty) {
-        const seeded = await ensureArticlesBootstrapped();
-        if (seeded) {
-          // Next snapshot will automatically deliver seeded docs
-          return;
-        }
-      }
-
+    (snap) => {
       const remoteItems: Article[] = [];
       snap.forEach((d) => {
         const normalized = normalizeArticle(d.id, d.data());
@@ -307,9 +256,7 @@ export function subscribeToArticles(
     (err) => {
       console.error('[Articles] Firestore real-time listener error:', err);
       if (onError) onError(err);
-      const cached = loadCachedArticles();
-      const fallback = cached !== null ? cached : [...SEED_ARTICLES];
-      onUpdate(filterArticles(fallback, options));
+      onUpdate(filterArticles(loadCachedArticles(), options));
     }
   );
 
@@ -420,23 +367,15 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
 
   const cleanData = stripUndefined(fullData);
 
-  // Save directly to Cloud Firestore (source of truth) — surface errors clearly!
   try {
     const docRef = doc(db, 'articles', id);
     await setDoc(docRef, cleanData);
-    // Mark bootstrap done so user-created articles aren't overwritten
-    await setDoc(
-      doc(db, 'siteSettings', 'bootstrap_articles'),
-      { seeded: true, lastUpdatedAt: nowIso },
-      { merge: true }
-    );
   } catch (err: any) {
     console.error('[Articles] Firestore save FAILED:', err);
     throw new Error(formatFirestoreError(err, 'save article'));
   }
 
-  // Update local cache immediately for instant UI responsiveness
-  const currentList = loadCachedArticles() || [];
+  const currentList = loadCachedArticles();
   const existingIdx = currentList.findIndex((a) => a.id === id);
   let updatedList: Article[];
   if (existingIdx >= 0) {
@@ -459,7 +398,7 @@ export async function deleteArticle(id: string): Promise<void> {
     throw new Error(formatFirestoreError(err, 'delete article'));
   }
 
-  const currentList = loadCachedArticles() || [];
+  const currentList = loadCachedArticles();
   const updatedList = currentList.filter((a) => a.id !== id);
   saveCachedArticles(updatedList, true);
 }

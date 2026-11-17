@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { subscribeToActiveBreakingNews, DEFAULT_BREAKING_NEWS } from '../../services/breakingNewsService';
+import { subscribeToActiveBreakingNews } from '../../services/breakingNewsService';
 import { BreakingNewsItem } from '../../types';
 
 export const BreakingNewsTicker: React.FC = () => {
   const { language, t } = useLanguage();
-  const [items, setItems] = useState<BreakingNewsItem[]>(DEFAULT_BREAKING_NEWS);
+  const [items, setItems] = useState<BreakingNewsItem[]>([]);
 
   useEffect(() => {
     const unsubscribe = subscribeToActiveBreakingNews(language, (res) => {
@@ -21,10 +21,10 @@ export const BreakingNewsTicker: React.FC = () => {
 
   if (!items.length) return null;
 
-  // Extract headlines for the current active language (with English fallback)
+  // Extract headlines for the current active language (with cross-language fallback)
   const rawHeadlines = items
     .map((item) => {
-      const text = item.headline?.[language] || item.headline?.en || '';
+      const text = item.headline?.[language] || item.headline?.en || item.headline?.hi || '';
       const link = item.articleSlug
         ? `/${language}/news/${item.articleSlug}`
         : `/${language}/latest`;

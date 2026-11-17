@@ -64,33 +64,19 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
     });
 
     return {
-      totalViews: Math.max(totalViews, 14280),
+      totalViews,
       totalArticles: 0,
-      totalCategories: 14,
+      totalCategories: 5,
       mostViewedArticles: mostViewed,
-      categoryPerformance: {
-        india: 4520,
-        maharashtra: 3890,
-        technology: 2740,
-        politics: 2150,
-        business: 1820,
-        sports: 1490
-      }
+      categoryPerformance: {}
     };
   } catch (err) {
     return {
-      totalViews: 14280,
-      totalArticles: 18,
-      totalCategories: 14,
+      totalViews: 0,
+      totalArticles: 0,
+      totalCategories: 5,
       mostViewedArticles: [],
-      categoryPerformance: {
-        india: 4520,
-        maharashtra: 3890,
-        technology: 2740,
-        politics: 2150,
-        business: 1820,
-        sports: 1490
-      }
+      categoryPerformance: {}
     };
   }
 }
