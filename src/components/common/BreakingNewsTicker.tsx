@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Zap } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getActiveBreakingNews, DEFAULT_BREAKING_NEWS } from '../../services/breakingNewsService';
+import { subscribeToActiveBreakingNews, DEFAULT_BREAKING_NEWS } from '../../services/breakingNewsService';
 import { BreakingNewsItem } from '../../types';
 
 export const BreakingNewsTicker: React.FC = () => {
@@ -10,29 +10,12 @@ export const BreakingNewsTicker: React.FC = () => {
   const [items, setItems] = useState<BreakingNewsItem[]>(DEFAULT_BREAKING_NEWS);
 
   useEffect(() => {
-    let mounted = true;
-
-    const loadBreaking = () => {
-      getActiveBreakingNews(language).then((res) => {
-        if (mounted && res && res.length > 0) {
-          setItems(res);
-        }
-      });
-    };
-
-    loadBreaking();
-
-    const handleUpdate = () => {
-      loadBreaking();
-    };
-
-    window.addEventListener('newsora_breaking_updated', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
+    const unsubscribe = subscribeToActiveBreakingNews(language, (res) => {
+      setItems(res);
+    });
 
     return () => {
-      mounted = false;
-      window.removeEventListener('newsora_breaking_updated', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
+      unsubscribe();
     };
   }, [language]);
 

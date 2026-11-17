@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, Link, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -14,11 +14,30 @@ import {
   X,
   Sun,
   Moon,
-  ShieldCheck
+  ShieldCheck,
+  Database,
+  AlertTriangle,
+  Copy,
+  Check,
+  RefreshCw
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useLanguage } from '../../context/LanguageContext';
+import { checkFirestoreHealth, FirebaseHealthStatus } from '../../services/firebaseStatus';
+
+const FIRESTORE_RULES_SNIPPET = `rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /articles/{docId} { allow read, write: if true; }
+    match /categories/{docId} { allow read, write: if true; }
+    match /breakingNews/{docId} { allow read, write: if true; }
+    match /authors/{docId} { allow read, write: if true; }
+    match /siteSettings/{docId} { allow read, write: if true; }
+    match /adminUsers/{docId} { allow read, write: if true; }
+    match /analytics/{docId} { allow read, write: if true; }
+  }
+}`;
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { admin, logout } = useAuth();
@@ -26,6 +45,30 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [fbHealth, setFbHealth] = useState<FirebaseHealthStatus>({
+    checked: false,
+    connected: false,
+    permissionDenied: false
+  });
+  const [checkingFb, setCheckingFb] = useState(false);
+  const [copiedRules, setCopiedRules] = useState(false);
+
+  const runHealthCheck = async () => {
+    setCheckingFb(true);
+    const status = await checkFirestoreHealth();
+    setFbHealth(status);
+    setCheckingFb(false);
+  };
+
+  useEffect(() => {
+    runHealthCheck();
+  }, []);
+
+  const handleCopyRules = () => {
+    navigator.clipboard.writeText(FIRESTORE_RULES_SNIPPET);
+    setCopiedRules(true);
+    setTimeout(() => setCopiedRules(false), 2500);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -68,6 +111,24 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Firebase Sync Health Indicator */}
+            {fbHealth.checked && (
+              <button
+                type="button"
+                onClick={runHealthCheck}
+                disabled={checkingFb}
+                className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition ${
+                  fbHealth.connected
+                    ? 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/50'
+                    : 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800/50 animate-pulse'
+                }`}
+                title="Click to re-check Firebase Firestore cloud sync"
+              >
+                <Database className="w-3.5 h-3.5" />
+                <span>{fbHealth.connected ? 'Firebase Synced' : 'Firebase Blocked'}</span>
+              </button>
+            )}
+
             {/* View Live Website Link */}
             <Link
               to={`/${language}`}
@@ -221,7 +282,64 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         )}
 
         {/* Main Admin Content Container */}
-        <main className="flex-1 min-w-0 overflow-hidden">
+        <main className="flex-1 min-w-0 overflow-hidden space-y-5">
+          {fbHealth.checked && !fbHealth.connected && (
+            <div className="p-4 sm:p-5 rounded-2xl bg-red-50 dark:bg-red-950/40 border-2 border-red-300 dark:border-red-800 shadow-sm space-y-3">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
+                <div className="flex-1 space-y-1">
+                  <h3 className="font-headline font-bold text-sm sm:text-base text-red-900 dark:text-red-200">
+                    Firebase Database Permission Blocked (newsroom-4d2a7)
+                  </h3>
+                  <p className="text-xs text-red-800 dark:text-red-300 leading-relaxed">
+                    {fbHealth.permissionDenied
+                      ? 'Firebase Firestore Rules are currently blocking saves, so updates cannot be stored in Firebase or shown on the live website. Publish the rules below in Firebase Console (takes 10 seconds):'
+                      : fbHealth.errorMessage}
+                  </p>
+                </div>
+              </div>
+
+              {fbHealth.permissionDenied && (
+                <div className="space-y-2.5 pl-0 sm:pl-8">
+                  <pre className="p-3 rounded-xl bg-navy-950 text-emerald-300 text-[11px] font-mono overflow-x-auto leading-relaxed border border-navy-800">
+                    {FIRESTORE_RULES_SNIPPET}
+                  </pre>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={handleCopyRules}
+                      className="px-3 py-2 rounded-lg bg-navy-950 hover:bg-navy-800 text-white text-xs font-bold flex items-center gap-1.5 min-h-[38px]"
+                    >
+                      {copiedRules ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedRules ? 'Rules Copied!' : '1. Copy Rules'}</span>
+                    </button>
+
+                    <a
+                      href="https://console.firebase.google.com/project/newsroom-4d2a7/firestore/rules"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold flex items-center gap-1.5 min-h-[38px]"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>2. Open Firebase Rules & Publish</span>
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={runHealthCheck}
+                      disabled={checkingFb}
+                      className="px-3 py-2 rounded-lg bg-white dark:bg-navy-900 border border-red-300 dark:border-red-700 text-red-800 dark:text-red-200 text-xs font-bold flex items-center gap-1.5 min-h-[38px]"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${checkingFb ? 'animate-spin' : ''}`} />
+                      <span>3. Re-check Connection</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {children}
         </main>
       </div>

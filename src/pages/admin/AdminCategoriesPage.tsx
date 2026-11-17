@@ -25,6 +25,7 @@ export const AdminCategoriesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [editingCategory, setEditingCategory] = useState<Partial<Category> | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const loadCategories = async () => {
     setLoading(true);
@@ -50,17 +51,27 @@ export const AdminCategoriesPage: React.FC = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingCategory || !editingCategory.slug || !editingCategory.names?.en) return;
-
-    await saveCategory(editingCategory as Category);
-    setEditingCategory(null);
-    loadCategories();
+    setErrorMsg(null);
+    try {
+      await saveCategory(editingCategory as Category);
+      setEditingCategory(null);
+      loadCategories();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to save category to Firebase.');
+    }
   };
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
-    await deleteCategory(deleteTarget.id);
-    setDeleteTarget(null);
-    loadCategories();
+    setErrorMsg(null);
+    try {
+      await deleteCategory(deleteTarget.id);
+      setDeleteTarget(null);
+      loadCategories();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to delete category from Firebase.');
+      setDeleteTarget(null);
+    }
   };
 
   const handleMoveOrder = async (index: number, direction: 'up' | 'down') => {
@@ -73,18 +84,26 @@ export const AdminCategoriesPage: React.FC = () => {
     reordered[index] = reordered[targetIdx];
     reordered[targetIdx] = temp;
 
-    // Update orders
-    for (let i = 0; i < reordered.length; i++) {
-      reordered[i].order = i + 1;
-      await saveCategory(reordered[i]);
+    setErrorMsg(null);
+    try {
+      for (let i = 0; i < reordered.length; i++) {
+        reordered[i].order = i + 1;
+        await saveCategory(reordered[i]);
+      }
+      setCategories(reordered);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to update category order in Firebase.');
     }
-
-    setCategories(reordered);
   };
 
   return (
     <AdminLayout>
       <div className="space-y-6">
+        {errorMsg && (
+          <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 font-semibold">
+            {errorMsg}
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-headline font-black text-2xl sm:text-3xl text-navy-950 dark:text-white">

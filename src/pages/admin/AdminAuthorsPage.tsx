@@ -12,6 +12,7 @@ export const AdminAuthorsPage: React.FC = () => {
   const [editingAuthor, setEditingAuthor] = useState<Partial<Author> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const loadAuthors = async () => {
     setLoading(true);
@@ -38,16 +39,25 @@ export const AdminAuthorsPage: React.FC = () => {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingAuthor || !editingAuthor.name) return;
-
-    await saveAuthor(editingAuthor as Author);
-    setEditingAuthor(null);
-    loadAuthors();
+    setErrorMsg(null);
+    try {
+      await saveAuthor(editingAuthor as Author);
+      setEditingAuthor(null);
+      loadAuthors();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to save author to Firebase.');
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Delete this author profile?')) return;
-    await deleteAuthor(id);
-    loadAuthors();
+    setErrorMsg(null);
+    try {
+      await deleteAuthor(id);
+      loadAuthors();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to delete author from Firebase.');
+    }
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -76,6 +86,11 @@ export const AdminAuthorsPage: React.FC = () => {
   return (
     <AdminLayout>
       <div className="space-y-6">
+        {errorMsg && (
+          <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 font-semibold">
+            {errorMsg}
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-headline font-black text-2xl sm:text-3xl text-navy-950 dark:text-white">

@@ -34,8 +34,9 @@ export const AdminArticlesListPage: React.FC = () => {
   const [langFilter, setLangFilter] = useState<Language | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
 
-  // Deletion modal
+  // Deletion modal & errors
   const [deleteTarget, setDeleteTarget] = useState<Article | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -66,9 +67,15 @@ export const AdminArticlesListPage: React.FC = () => {
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
-    await deleteArticle(deleteTarget.id);
-    setDeleteTarget(null);
-    loadData();
+    setErrorMsg(null);
+    try {
+      await deleteArticle(deleteTarget.id);
+      setDeleteTarget(null);
+      loadData();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to delete article from Firebase.');
+      setDeleteTarget(null);
+    }
   };
 
   const handleToggleStatus = async (
@@ -76,9 +83,14 @@ export const AdminArticlesListPage: React.FC = () => {
     lang: Language,
     currentStatus: ArticleStatus
   ) => {
-    const nextStatus = currentStatus === 'published' ? 'draft' : 'published';
-    await toggleLanguagePublishStatus(articleId, lang, nextStatus);
-    loadData();
+    setErrorMsg(null);
+    try {
+      const nextStatus = currentStatus === 'published' ? 'draft' : 'published';
+      await toggleLanguagePublishStatus(articleId, lang, nextStatus);
+      loadData();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to update publish status in Firebase.');
+    }
   };
 
   // Filter logic
@@ -110,6 +122,11 @@ export const AdminArticlesListPage: React.FC = () => {
   return (
     <AdminLayout>
       <div className="space-y-6">
+        {errorMsg && (
+          <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 font-semibold">
+            {errorMsg}
+          </div>
+        )}
         {/* Header Bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>

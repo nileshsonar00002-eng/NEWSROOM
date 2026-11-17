@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '../context/LanguageContext';
-import { getArticles } from '../services/articleService';
-import { getCategories } from '../services/categoryService';
+import { subscribeToArticles } from '../services/articleService';
+import { subscribeToCategories } from '../services/categoryService';
 import { Article, Category } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { CategoryBar } from '../components/common/CategoryBar';
@@ -19,55 +19,34 @@ export const CategoryPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
+    if (!categorySlug) return;
+    setLoading(true);
 
-    const loadCategoryData = () => {
-      setLoading(true);
-      if (categorySlug) {
-        Promise.all([
-          getCategories(),
-          getArticles({ lang: language, categoryId: categorySlug })
-        ]).then(([cats, arts]) => {
-          if (!mounted) return;
-          const matched = cats.find((c) => c.slug === categorySlug || c.id === categorySlug);
-          setCategory(matched || {
-            id: categorySlug,
-            slug: categorySlug,
-            order: 99,
-            names: { en: categorySlug.toUpperCase(), hi: categorySlug, mr: categorySlug },
-            isActive: true
-          });
+    const unsubCats = subscribeToCategories((cats) => {
+      const matched = cats.find((c) => c.slug === categorySlug || c.id === categorySlug);
+      setCategory(
+        matched || {
+          id: categorySlug,
+          slug: categorySlug,
+          order: 99,
+          names: { en: categorySlug.toUpperCase(), hi: categorySlug },
+          isActive: true
+        }
+      );
+    });
 
-          if (arts.length === 0) {
-            getArticles({ categoryId: categorySlug }).then((fallbackArts) => {
-              if (mounted) {
-                setArticles(fallbackArts);
-                setLoading(false);
-              }
-            });
-          } else {
-            setArticles(arts);
-            setLoading(false);
-          }
-        });
-      }
-    };
-
-    loadCategoryData();
-
-    const handleUpdate = () => {
-      loadCategoryData();
-    };
-
-    window.addEventListener('newsora_articles_updated', handleUpdate);
-    window.addEventListener('newsora_categories_updated', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
+    const unsubArticles = subscribeToArticles(
+      { lang: language, status: 'published', categoryId: categorySlug },
+      (arts) => {
+        setArticles(arts);
+        setLoading(false);
+      },
+      () => setLoading(false)
+    );
 
     return () => {
-      mounted = false;
-      window.removeEventListener('newsora_articles_updated', handleUpdate);
-      window.removeEventListener('newsora_categories_updated', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
+      unsubCats();
+      unsubArticles();
     };
   }, [categorySlug, language]);
 

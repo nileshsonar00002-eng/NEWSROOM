@@ -1,13 +1,15 @@
 import {
   collection,
   getDocs,
+  getDoc,
   doc,
   setDoc,
   deleteDoc,
-  query,
-  orderBy
+  onSnapshot,
+  writeBatch
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { stripUndefined, formatFirestoreError } from './firebaseStatus';
 import { Category } from '../types';
 
 export const DEFAULT_CATEGORIES: Category[] = [
@@ -48,128 +50,169 @@ export const DEFAULT_CATEGORIES: Category[] = [
   }
 ];
 
-const ALLOWED_CATEGORY_SLUGS = new Set(['india', 'business', 'technology', 'entertainment', 'sports']);
+const LOCAL_STORAGE_CATEGORIES_KEY = 'newsora_categories_store_v3';
 
-const LOCAL_STORAGE_CATEGORIES_KEY = 'newsora_categories_store_v2';
-
-function loadStoredCategories(): Category[] {
-  if (typeof window === 'undefined') return DEFAULT_CATEGORIES;
-  try {
-    const raw = localStorage.getItem(LOCAL_STORAGE_CATEGORIES_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        // Enforce only the 5 allowed categories
-        const filtered = parsed.filter(
-          (c) => ALLOWED_CATEGORY_SLUGS.has(c.slug) || ALLOWED_CATEGORY_SLUGS.has(c.id)
-        );
-        if (filtered.length === DEFAULT_CATEGORIES.length) {
-          return filtered;
-        }
-      }
-    }
-  } catch (e) {
-    console.warn('[Categories] Error reading localStorage:', e);
-  }
-
-  try {
-    localStorage.setItem(LOCAL_STORAGE_CATEGORIES_KEY, JSON.stringify(DEFAULT_CATEGORIES));
-  } catch (e) {}
-  return DEFAULT_CATEGORIES;
+function sortCategories(list: Category[]): Category[] {
+  return [...list].sort((a, b) => (a.order || 0) - (b.order || 0));
 }
 
-function saveStoredCategories(categories: Category[]): void {
+function loadCachedCategories(): Category[] | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_CATEGORIES_KEY);
+    if (raw !== null) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {
+    console.warn('[Categories] Error reading cache:', e);
+  }
+  return null;
+}
+
+function saveCachedCategories(categories: Category[], notify: boolean = false): void {
   if (typeof window !== 'undefined') {
     try {
-      // Filter strictly to allowed categories
-      const cleanCategories = categories.filter(
-        (c) => ALLOWED_CATEGORY_SLUGS.has(c.slug) || ALLOWED_CATEGORY_SLUGS.has(c.id)
-      );
-      localStorage.setItem(LOCAL_STORAGE_CATEGORIES_KEY, JSON.stringify(cleanCategories));
-      window.dispatchEvent(
-        new CustomEvent('newsora_categories_updated', {
-          detail: { count: cleanCategories.length, timestamp: Date.now() }
-        })
-      );
+      localStorage.setItem(LOCAL_STORAGE_CATEGORIES_KEY, JSON.stringify(categories));
+      if (notify) {
+        window.dispatchEvent(
+          new CustomEvent('newsora_categories_updated', {
+            detail: { count: categories.length, timestamp: Date.now() }
+          })
+        );
+      }
     } catch (e) {
-      console.warn('[Categories] Error writing to localStorage:', e);
+      console.warn('[Categories] Error writing cache:', e);
     }
   }
+}
+
+let catBootstrapPromise: Promise<boolean> | null = null;
+
+async function ensureCategoriesBootstrapped(): Promise<boolean> {
+  if (catBootstrapPromise) return catBootstrapPromise;
+
+  catBootstrapPromise = (async () => {
+    try {
+      const metaRef = doc(db, 'siteSettings', 'bootstrap_categories');
+      const metaSnap = await getDoc(metaRef);
+      if (metaSnap.exists() && metaSnap.data()?.seeded === true) {
+        return false;
+      }
+
+      const batch = writeBatch(db);
+      for (const cat of DEFAULT_CATEGORIES) {
+        batch.set(doc(db, 'categories', cat.id), stripUndefined(cat));
+      }
+      batch.set(metaRef, { seeded: true, seededAt: new Date().toISOString() });
+      await batch.commit();
+      return true;
+    } catch (err) {
+      console.warn('[Categories] Bootstrap skipped:', err);
+      return false;
+    } finally {
+      catBootstrapPromise = null;
+    }
+  })();
+
+  return catBootstrapPromise;
 }
 
 export async function getCategories(): Promise<Category[]> {
-  const localList = loadStoredCategories();
-
   try {
     const colRef = collection(db, 'categories');
-    const q = query(colRef, orderBy('order', 'asc'));
-    const snap = await getDocs(q);
+    let snap = await getDocs(colRef);
 
-    if (!snap.empty) {
-      const remoteList: Category[] = [];
-      snap.forEach((d) => {
-        const cat = { id: d.id, ...d.data() } as Category;
-        if (ALLOWED_CATEGORY_SLUGS.has(cat.slug) || ALLOWED_CATEGORY_SLUGS.has(cat.id)) {
-          remoteList.push(cat);
-        }
-      });
-      if (remoteList.length > 0) {
-        saveStoredCategories(remoteList);
-        return remoteList;
+    if (snap.empty) {
+      const seeded = await ensureCategoriesBootstrapped();
+      if (seeded) {
+        snap = await getDocs(colRef);
       }
     }
-  } catch (err) {
-    console.warn('[Categories] Using persistent categories store:', err);
-  }
 
-  return localList;
+    const remoteList: Category[] = [];
+    snap.forEach((d) => {
+      remoteList.push({ id: d.id, ...d.data() } as Category);
+    });
+
+    const sorted = sortCategories(remoteList);
+    saveCachedCategories(sorted);
+    return sorted;
+  } catch (err) {
+    console.error('[Categories] Firestore read error:', err);
+    const cached = loadCachedCategories();
+    return cached !== null ? cached : DEFAULT_CATEGORIES;
+  }
+}
+
+export function subscribeToCategories(
+  onUpdate: (categories: Category[]) => void
+): () => void {
+  const colRef = collection(db, 'categories');
+
+  return onSnapshot(
+    colRef,
+    async (snap) => {
+      if (snap.empty) {
+        const seeded = await ensureCategoriesBootstrapped();
+        if (seeded) return;
+      }
+
+      const remoteList: Category[] = [];
+      snap.forEach((d) => {
+        remoteList.push({ id: d.id, ...d.data() } as Category);
+      });
+
+      const sorted = sortCategories(remoteList);
+      saveCachedCategories(sorted);
+      onUpdate(sorted);
+    },
+    (err) => {
+      console.error('[Categories] Real-time listener error:', err);
+      const cached = loadCachedCategories();
+      onUpdate(cached !== null ? cached : DEFAULT_CATEGORIES);
+    }
+  );
 }
 
 export async function saveCategory(category: Category): Promise<void> {
-  if (!ALLOWED_CATEGORY_SLUGS.has(category.slug) && !ALLOWED_CATEGORY_SLUGS.has(category.id)) {
-    console.warn(`[Categories] Category ${category.slug} is not in allowed list.`);
-    return;
-  }
-  const current = loadStoredCategories();
-  const idx = current.findIndex((c) => c.id === category.id);
-  let updated: Category[];
-  if (idx >= 0) {
-    updated = [...current];
-    updated[idx] = category;
-  } else {
-    updated = [...current, category];
-  }
-  saveStoredCategories(updated);
-
+  const cleanCat = stripUndefined(category);
   try {
-    const docRef = doc(db, 'categories', category.id);
-    await setDoc(docRef, category, { merge: true });
-  } catch (e) {
-    console.warn('[Categories] Firestore save error (saved locally):', e);
+    const docRef = doc(db, 'categories', cleanCat.id);
+    await setDoc(docRef, cleanCat, { merge: true });
+    await setDoc(
+      doc(db, 'siteSettings', 'bootstrap_categories'),
+      { seeded: true },
+      { merge: true }
+    );
+  } catch (err: any) {
+    console.error('[Categories] Firestore save FAILED:', err);
+    throw new Error(formatFirestoreError(err, 'save category'));
   }
+
+  const current = loadCachedCategories() || [];
+  const idx = current.findIndex((c) => c.id === cleanCat.id);
+  const updated =
+    idx >= 0
+      ? current.map((c, i) => (i === idx ? cleanCat : c))
+      : [...current, cleanCat];
+  saveCachedCategories(sortCategories(updated));
 }
 
 export async function deleteCategory(categoryId: string): Promise<void> {
-  const current = loadStoredCategories();
-  const updated = current.filter((c) => c.id !== categoryId);
-  saveStoredCategories(updated);
-
   try {
     const docRef = doc(db, 'categories', categoryId);
     await deleteDoc(docRef);
-  } catch (e) {
-    console.warn('[Categories] Firestore delete error (deleted locally):', e);
+  } catch (err: any) {
+    console.error('[Categories] Firestore delete FAILED:', err);
+    throw new Error(formatFirestoreError(err, 'delete category'));
   }
+
+  const current = loadCachedCategories() || [];
+  const updated = current.filter((c) => c.id !== categoryId);
+  saveCachedCategories(updated);
 }
 
-export async function seedDefaultCategories(): Promise<void> {
-  saveStoredCategories(DEFAULT_CATEGORIES);
-  try {
-    for (const cat of DEFAULT_CATEGORIES) {
-      const docRef = doc(db, 'categories', cat.id);
-      await setDoc(docRef, cat, { merge: true });
-    }
-  } catch (e) {
-    console.warn('Could not seed default categories to firestore:', e);
-  }
+export async function seedDefaultCategoriesIfEmpty(): Promise<void> {
+  await ensureCategoriesBootstrapped();
 }

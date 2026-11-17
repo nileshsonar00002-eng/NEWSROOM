@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
-import { getCategories, DEFAULT_CATEGORIES } from '../../services/categoryService';
+import { subscribeToCategories, DEFAULT_CATEGORIES } from '../../services/categoryService';
 import { Category } from '../../types';
 
 export const CategoryBar: React.FC = () => {
@@ -12,29 +12,14 @@ export const CategoryBar: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let mounted = true;
-
-    const loadCats = () => {
-      getCategories().then((cats) => {
-        if (mounted && cats && cats.length > 0) {
-          setCategories(cats.filter((c) => c.isActive !== false));
-        }
-      });
-    };
-
-    loadCats();
-
-    const handleUpdate = () => {
-      loadCats();
-    };
-
-    window.addEventListener('newsora_categories_updated', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
+    const unsubscribe = subscribeToCategories((cats) => {
+      if (cats && cats.length > 0) {
+        setCategories(cats.filter((c) => c.isActive !== false));
+      }
+    });
 
     return () => {
-      mounted = false;
-      window.removeEventListener('newsora_categories_updated', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
+      unsubscribe();
     };
   }, []);
 

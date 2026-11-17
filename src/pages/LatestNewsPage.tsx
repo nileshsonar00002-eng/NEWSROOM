@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { getArticles } from '../services/articleService';
-import { getCategories } from '../services/categoryService';
+import { subscribeToArticles } from '../services/articleService';
+import { subscribeToCategories } from '../services/categoryService';
 import { Article, Category } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { CategoryBar } from '../components/common/CategoryBar';
@@ -17,35 +17,27 @@ export const LatestNewsPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
+    setLoading(true);
+    const unsubArticles = subscribeToArticles(
+      {
+        lang: language,
+        status: 'published',
+        categoryId: selectedCategory !== 'all' ? selectedCategory : undefined
+      },
+      (arts) => {
+        setArticles(arts);
+        setLoading(false);
+      },
+      () => setLoading(false)
+    );
 
-    const loadData = () => {
-      setLoading(true);
-      Promise.all([
-        getArticles({ lang: language, categoryId: selectedCategory !== 'all' ? selectedCategory : undefined }),
-        getCategories()
-      ]).then(([arts, cats]) => {
-        if (mounted) {
-          setArticles(arts);
-          setCategories(cats);
-          setLoading(false);
-        }
-      });
-    };
-
-    loadData();
-
-    const handleUpdate = () => {
-      loadData();
-    };
-
-    window.addEventListener('newsora_articles_updated', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
+    const unsubCats = subscribeToCategories((cats) => {
+      setCategories(cats);
+    });
 
     return () => {
-      mounted = false;
-      window.removeEventListener('newsora_articles_updated', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
+      unsubArticles();
+      unsubCats();
     };
   }, [language, selectedCategory]);
 

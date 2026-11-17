@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, increment, serverTimestamp, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { doc, setDoc, updateDoc, increment, serverTimestamp, collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from './firebase';
 import { Language } from '../types';
 
@@ -25,15 +25,11 @@ export async function trackArticleView(articleId: string, lang: Language): Promi
       { merge: true }
     );
 
-    // Also update article document viewCount
+    // Also update existing article document viewCount (never creates partial shell docs)
     const articleDoc = doc(db, 'articles', articleId);
-    await setDoc(
-      articleDoc,
-      {
-        viewCount: increment(1)
-      },
-      { merge: true }
-    );
+    await updateDoc(articleDoc, {
+      viewCount: increment(1)
+    });
   } catch (err) {
     // Non-blocking for reader experience
     console.debug('[Analytics] View log notice:', err);

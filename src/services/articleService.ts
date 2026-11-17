@@ -5,11 +5,11 @@ import {
   doc,
   setDoc,
   deleteDoc,
-  query,
-  orderBy,
-  limit
+  onSnapshot,
+  writeBatch
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { stripUndefined, formatFirestoreError } from './firebaseStatus';
 import { Article, Language, ArticleStatus } from '../types';
 import { SEED_ARTICLES } from './seedService';
 
@@ -24,7 +24,7 @@ export interface QueryArticleOptions {
   searchQuery?: string;
 }
 
-const LOCAL_STORAGE_ARTICLES_KEY = 'newsora_articles_store';
+const LOCAL_STORAGE_ARTICLES_KEY = 'newsora_articles_store_v3';
 
 const VALID_CATEGORIES = new Set(['india', 'business', 'technology', 'entertainment', 'sports']);
 
@@ -36,16 +36,30 @@ export function sanitizeCategory(catId?: string): string {
   return 'india';
 }
 
-// Helper to safely load articles from localStorage or fallback to SEED_ARTICLES
-function loadStoredArticles(): Article[] {
-  if (typeof window === 'undefined') {
-    return [...SEED_ARTICLES];
-  }
+function normalizeArticle(id: string, data: any): Article | null {
+  if (!data || !data.translations) return null;
+  return {
+    ...(data as Article),
+    id,
+    categoryId: sanitizeCategory(data.categoryId)
+  };
+}
+
+function sortArticlesDesc(list: Article[]): Article[] {
+  return [...list].sort(
+    (a, b) =>
+      new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+  );
+}
+
+// Fast local cache (read-through mirror of Firestore, NEVER overrides Firestore)
+function loadCachedArticles(): Article[] | null {
+  if (typeof window === 'undefined') return null;
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_ARTICLES_KEY);
-    if (raw) {
+    if (raw !== null) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed)) {
         return parsed.map((item: Article) => ({
           ...item,
           categoryId: sanitizeCategory(item.categoryId)
@@ -53,47 +67,82 @@ function loadStoredArticles(): Article[] {
       }
     }
   } catch (e) {
-    console.warn('[Articles] Error reading localStorage:', e);
+    console.warn('[Articles] Error reading cache:', e);
   }
-  // If not found in localStorage, initialize with seeds
-  try {
-    localStorage.setItem(LOCAL_STORAGE_ARTICLES_KEY, JSON.stringify(SEED_ARTICLES));
-  } catch (e) {
-    // Ignore storage quota errors
-  }
-  return [...SEED_ARTICLES];
+  return null;
 }
 
-// Helper to save articles to localStorage and notify all components/tabs
-function saveStoredArticles(articles: Article[]): void {
-  memoryArticles = [...articles];
+function saveCachedArticles(articles: Article[], notify: boolean = false): void {
   if (typeof window !== 'undefined') {
     try {
       localStorage.setItem(LOCAL_STORAGE_ARTICLES_KEY, JSON.stringify(articles));
-      // Dispatch custom event for same-tab instant sync
-      window.dispatchEvent(
-        new CustomEvent('newsora_articles_updated', {
-          detail: { count: articles.length, timestamp: Date.now() }
-        })
-      );
+      if (notify) {
+        window.dispatchEvent(
+          new CustomEvent('newsora_articles_updated', {
+            detail: { count: articles.length, timestamp: Date.now() }
+          })
+        );
+      }
     } catch (e) {
-      console.warn('[Articles] Error writing to localStorage:', e);
+      console.warn('[Articles] Local cache quota warning (data is still safely in Firebase):', e);
     }
   }
 }
 
-// In-memory cache initialized from persistent storage
-let memoryArticles: Article[] = loadStoredArticles();
+let bootstrapPromise: Promise<boolean> | null = null;
+
+/**
+ * Seeds default starter articles into Cloud Firestore ONCE when a brand new
+ * database is completely empty. Once seeded, edits and deletions in Firestore
+ * are permanently respected and seed data never resurrects.
+ */
+async function ensureArticlesBootstrapped(): Promise<boolean> {
+  if (bootstrapPromise) return bootstrapPromise;
+
+  bootstrapPromise = (async () => {
+    try {
+      const metaRef = doc(db, 'siteSettings', 'bootstrap_articles');
+      const metaSnap = await getDoc(metaRef);
+      if (metaSnap.exists() && metaSnap.data()?.seeded === true) {
+        return false; // Already seeded before; empty list is intentional
+      }
+
+      const batch = writeBatch(db);
+      for (const seed of SEED_ARTICLES) {
+        const cleanSeed = stripUndefined({
+          ...seed,
+          categoryId: sanitizeCategory(seed.categoryId)
+        });
+        batch.set(doc(db, 'articles', seed.id), cleanSeed);
+      }
+      batch.set(metaRef, {
+        seeded: true,
+        seededAt: new Date().toISOString()
+      });
+      await batch.commit();
+      return true;
+    } catch (err) {
+      console.warn('[Articles] Bootstrap seed skipped:', err);
+      return false;
+    } finally {
+      bootstrapPromise = null;
+    }
+  })();
+
+  return bootstrapPromise;
+}
 
 export function generateSlug(title: string): string {
   if (!title) return `article-${Date.now()}`;
-  return title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .substring(0, 90) || `article-${Date.now()}`;
+  return (
+    title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .substring(0, 90) || `article-${Date.now()}`
+  );
 }
 
 export async function checkSlugUnique(
@@ -112,54 +161,7 @@ export async function checkSlugUnique(
   return !duplicate;
 }
 
-export async function getAllArticlesForAdmin(): Promise<Article[]> {
-  // 1. Immediately read from local persistent storage for instant availability
-  const localArticles = loadStoredArticles();
-
-  try {
-    const colRef = collection(db, 'articles');
-    const q = query(colRef, orderBy('createdAt', 'desc'), limit(100));
-    const snap = await getDocs(q);
-
-    if (!snap.empty) {
-      const remoteItems: Article[] = [];
-      snap.forEach((d) => remoteItems.push({ id: d.id, ...d.data() } as Article));
-
-      // Merge remote items with local items (keep latest version by updatedAt/createdAt)
-      const mergedMap = new Map<string, Article>();
-      remoteItems.forEach((item) => mergedMap.set(item.id, item));
-
-      localArticles.forEach((localItem) => {
-        const remoteItem = mergedMap.get(localItem.id);
-        if (!remoteItem) {
-          mergedMap.set(localItem.id, localItem);
-        } else {
-          const localTime = new Date(localItem.updatedAt || localItem.createdAt || 0).getTime();
-          const remoteTime = new Date(remoteItem.updatedAt || remoteItem.createdAt || 0).getTime();
-          if (localTime >= remoteTime) {
-            mergedMap.set(localItem.id, localItem);
-          }
-        }
-      });
-
-      const finalArticles = Array.from(mergedMap.values());
-      // Re-sort descending
-      finalArticles.sort(
-        (a, b) =>
-          new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
-      );
-      saveStoredArticles(finalArticles);
-      return finalArticles;
-    }
-  } catch (err) {
-    console.warn('[Articles] Firestore read notice, using persistent store:', err);
-  }
-
-  return localArticles;
-}
-
-export async function getArticles(options: QueryArticleOptions = {}): Promise<Article[]> {
-  const all = await getAllArticlesForAdmin();
+export function filterArticles(all: Article[], options: QueryArticleOptions = {}): Article[] {
   const {
     lang,
     status = 'published',
@@ -172,14 +174,12 @@ export async function getArticles(options: QueryArticleOptions = {}): Promise<Ar
   } = options;
 
   let filtered = all.filter((article) => {
-    // Status check
     if (status !== 'all') {
       if (lang) {
         const trans = article.translations?.[lang];
         const isPublishedInLang = trans && trans.title && trans.status === status;
 
-        // If not published in requested language, check if it's published in ANY other language
-        // This ensures news written in Hindi or English appears on the site with graceful translation fallback
+        // Graceful fallback: show news published in either English or Hindi
         const isPublishedInAny = Object.values(article.translations || {}).some(
           (t) => t && t.title && t.status === status
         );
@@ -241,31 +241,107 @@ export async function getArticles(options: QueryArticleOptions = {}): Promise<Ar
   return filtered;
 }
 
-export async function getArticleById(id: string): Promise<Article | null> {
-  const all = await getAllArticlesForAdmin();
-  const localFound = all.find((a) => a.id === id);
-  if (localFound) return localFound;
+/**
+ * Fetches all articles directly from Cloud Firestore (Source of Truth).
+ */
+export async function getAllArticlesForAdmin(): Promise<Article[]> {
+  try {
+    const colRef = collection(db, 'articles');
+    let snap = await getDocs(colRef);
 
+    if (snap.empty) {
+      const seeded = await ensureArticlesBootstrapped();
+      if (seeded) {
+        snap = await getDocs(colRef);
+      }
+    }
+
+    const remoteItems: Article[] = [];
+    snap.forEach((d) => {
+      const normalized = normalizeArticle(d.id, d.data());
+      if (normalized) remoteItems.push(normalized);
+    });
+
+    const sorted = sortArticlesDesc(remoteItems);
+    saveCachedArticles(sorted);
+    return sorted;
+  } catch (err) {
+    console.error('[Articles] Firestore read error:', err);
+    const cached = loadCachedArticles();
+    return cached !== null ? cached : [...SEED_ARTICLES];
+  }
+}
+
+/**
+ * Real-time Cloud Firestore subscription for articles.
+ * Automatically updates the Main Site & Admin Panel whenever ANY change happens in Firebase.
+ */
+export function subscribeToArticles(
+  options: QueryArticleOptions,
+  onUpdate: (articles: Article[]) => void,
+  onError?: (err: any) => void
+): () => void {
+  const colRef = collection(db, 'articles');
+
+  const unsubscribe = onSnapshot(
+    colRef,
+    async (snap) => {
+      if (snap.empty) {
+        const seeded = await ensureArticlesBootstrapped();
+        if (seeded) {
+          // Next snapshot will automatically deliver seeded docs
+          return;
+        }
+      }
+
+      const remoteItems: Article[] = [];
+      snap.forEach((d) => {
+        const normalized = normalizeArticle(d.id, d.data());
+        if (normalized) remoteItems.push(normalized);
+      });
+
+      const sorted = sortArticlesDesc(remoteItems);
+      saveCachedArticles(sorted);
+      onUpdate(filterArticles(sorted, options));
+    },
+    (err) => {
+      console.error('[Articles] Firestore real-time listener error:', err);
+      if (onError) onError(err);
+      const cached = loadCachedArticles();
+      const fallback = cached !== null ? cached : [...SEED_ARTICLES];
+      onUpdate(filterArticles(fallback, options));
+    }
+  );
+
+  return unsubscribe;
+}
+
+export async function getArticles(options: QueryArticleOptions = {}): Promise<Article[]> {
+  const all = await getAllArticlesForAdmin();
+  return filterArticles(all, options);
+}
+
+export async function getArticleById(id: string): Promise<Article | null> {
   try {
     const docRef = doc(db, 'articles', id);
     const snap = await getDoc(docRef);
     if (snap.exists()) {
-      return { id: snap.id, ...snap.data() } as Article;
+      const normalized = normalizeArticle(snap.id, snap.data());
+      if (normalized) return normalized;
     }
   } catch (err) {
-    console.warn('[Articles] Firestore getDoc notice:', err);
+    console.warn('[Articles] Firestore getDoc error:', err);
   }
 
-  return null;
+  const all = await getAllArticlesForAdmin();
+  return all.find((a) => a.id === id) || null;
 }
 
 export async function getArticleBySlug(lang: Language, slug: string): Promise<Article | null> {
   const all = await getAllArticlesForAdmin();
 
-  // Find article matching slug in requested language
   let found = all.find((a) => a.translations?.[lang]?.slug === slug);
 
-  // If not found, check if slug matches any other language of an article
   if (!found) {
     found = all.find(
       (a) =>
@@ -274,7 +350,6 @@ export async function getArticleBySlug(lang: Language, slug: string): Promise<Ar
     );
   }
 
-  // Also match by id if slug happens to be the ID
   if (!found) {
     found = all.find((a) => a.id === slug);
   }
@@ -286,7 +361,6 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
   const id = article.id || `news-${Date.now()}`;
   const nowIso = new Date().toISOString();
 
-  // Determine language statuses carefully: if a translation has content and status isn't explicitly set, default to published
   const enStatus = article.translations?.en?.status || 'published';
   const hiStatus = article.translations?.hi?.status || 'published';
 
@@ -344,42 +418,50 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
     }
   };
 
-  // 1. Immediately persist locally so changes are visible instantly across tabs and page reloads
-  const currentList = loadStoredArticles();
+  const cleanData = stripUndefined(fullData);
+
+  // Save directly to Cloud Firestore (source of truth) — surface errors clearly!
+  try {
+    const docRef = doc(db, 'articles', id);
+    await setDoc(docRef, cleanData);
+    // Mark bootstrap done so user-created articles aren't overwritten
+    await setDoc(
+      doc(db, 'siteSettings', 'bootstrap_articles'),
+      { seeded: true, lastUpdatedAt: nowIso },
+      { merge: true }
+    );
+  } catch (err: any) {
+    console.error('[Articles] Firestore save FAILED:', err);
+    throw new Error(formatFirestoreError(err, 'save article'));
+  }
+
+  // Update local cache immediately for instant UI responsiveness
+  const currentList = loadCachedArticles() || [];
   const existingIdx = currentList.findIndex((a) => a.id === id);
   let updatedList: Article[];
   if (existingIdx >= 0) {
     updatedList = [...currentList];
-    updatedList[existingIdx] = fullData;
+    updatedList[existingIdx] = cleanData;
   } else {
-    updatedList = [fullData, ...currentList];
+    updatedList = [cleanData, ...currentList];
   }
-  saveStoredArticles(updatedList);
-
-  // 2. Asynchronously sync to Cloud Firestore
-  try {
-    const docRef = doc(db, 'articles', id);
-    await setDoc(docRef, fullData, { merge: true });
-  } catch (e) {
-    console.warn('[Articles] Firestore setDoc error (saved to persistent local storage):', e);
-  }
+  saveCachedArticles(sortArticlesDesc(updatedList), true);
 
   return id;
 }
 
 export async function deleteArticle(id: string): Promise<void> {
-  // 1. Remove from local store immediately
-  const currentList = loadStoredArticles();
-  const updatedList = currentList.filter((a) => a.id !== id);
-  saveStoredArticles(updatedList);
-
-  // 2. Asynchronously delete from Firestore
   try {
     const docRef = doc(db, 'articles', id);
     await deleteDoc(docRef);
-  } catch (e) {
-    console.warn('[Articles] Firestore delete notice (deleted locally):', e);
+  } catch (err: any) {
+    console.error('[Articles] Firestore delete FAILED:', err);
+    throw new Error(formatFirestoreError(err, 'delete article'));
   }
+
+  const currentList = loadCachedArticles() || [];
+  const updatedList = currentList.filter((a) => a.id !== id);
+  saveCachedArticles(updatedList, true);
 }
 
 export async function toggleLanguagePublishStatus(

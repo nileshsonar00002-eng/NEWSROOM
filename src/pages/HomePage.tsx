@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Flame, Clock, TrendingUp, Sparkles, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { getArticles } from '../services/articleService';
+import { subscribeToArticles } from '../services/articleService';
 import { Article } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { CategoryBar } from '../components/common/CategoryBar';
@@ -17,46 +17,21 @@ export const HomePage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
-
-    const fetchArticles = () => {
-      setLoading(true);
-      getArticles({ lang: language, status: 'published' })
-        .then((data) => {
-          if (mounted) {
-            if (data.length === 0) {
-              getArticles({ status: 'published' }).then((fallbackData) => {
-                if (mounted) {
-                  setArticles(fallbackData);
-                  setLoading(false);
-                }
-              });
-            } else {
-              setArticles(data);
-              setLoading(false);
-            }
-          }
-        })
-        .catch((err) => {
-          console.warn('Error fetching homepage articles:', err);
-          if (mounted) setLoading(false);
-        });
-    };
-
-    fetchArticles();
-
-    // Real-time listener for instant admin updates across tabs and windows
-    const handleUpdate = () => {
-      fetchArticles();
-    };
-
-    window.addEventListener('newsora_articles_updated', handleUpdate);
-    window.addEventListener('storage', handleUpdate);
+    setLoading(true);
+    // Live Cloud Firestore real-time subscription — reflects admin updates immediately across all devices
+    const unsubscribe = subscribeToArticles(
+      { lang: language, status: 'published' },
+      (data) => {
+        setArticles(data);
+        setLoading(false);
+      },
+      () => {
+        setLoading(false);
+      }
+    );
 
     return () => {
-      mounted = false;
-      window.removeEventListener('newsora_articles_updated', handleUpdate);
-      window.removeEventListener('storage', handleUpdate);
+      unsubscribe();
     };
   }, [language]);
 

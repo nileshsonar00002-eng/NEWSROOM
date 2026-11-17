@@ -23,6 +23,7 @@ export const AdminBreakingNewsPage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingItem, setEditingItem] = useState<Partial<BreakingNewsItem> | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const loadData = async () => {
     setLoading(true);
@@ -52,28 +53,47 @@ export const AdminBreakingNewsPage: React.FC = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingItem || !editingItem.headline?.en) return;
-
-    await saveBreakingNews(editingItem as BreakingNewsItem);
-    setEditingItem(null);
-    loadData();
+    if (!editingItem || (!editingItem.headline?.en && !editingItem.headline?.hi)) return;
+    setErrorMsg(null);
+    try {
+      await saveBreakingNews(editingItem as BreakingNewsItem);
+      setEditingItem(null);
+      loadData();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to save breaking news to Firebase.');
+    }
   };
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this breaking news alert?')) return;
-    await deleteBreakingNews(id);
-    loadData();
+    setErrorMsg(null);
+    try {
+      await deleteBreakingNews(id);
+      loadData();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to delete breaking news from Firebase.');
+    }
   };
 
   const handleToggleActive = async (item: BreakingNewsItem) => {
-    const updated = { ...item, isActive: !item.isActive };
-    await saveBreakingNews(updated);
-    loadData();
+    setErrorMsg(null);
+    try {
+      const updated = { ...item, isActive: !item.isActive };
+      await saveBreakingNews(updated);
+      loadData();
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Failed to update breaking news status in Firebase.');
+    }
   };
 
   return (
     <AdminLayout>
       <div className="space-y-6">
+        {errorMsg && (
+          <div className="p-3.5 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-xs text-red-700 dark:text-red-300 font-semibold">
+            {errorMsg}
+          </div>
+        )}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="font-headline font-black text-2xl sm:text-3xl text-navy-950 dark:text-white">

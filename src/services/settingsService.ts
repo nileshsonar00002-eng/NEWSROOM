@@ -1,5 +1,6 @@
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import { db } from './firebase';
+import { stripUndefined, formatFirestoreError } from './firebaseStatus';
 import { SiteSettings } from '../types';
 
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
@@ -20,20 +21,75 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   defaultLang: 'en'
 };
 
+const LOCAL_STORAGE_SETTINGS_KEY = 'newsora_settings_store_v3';
+
+function loadCachedSettings(): SiteSettings {
+  if (typeof window === 'undefined') return DEFAULT_SITE_SETTINGS;
+  try {
+    const raw = localStorage.getItem(LOCAL_STORAGE_SETTINGS_KEY);
+    if (raw) {
+      return { ...DEFAULT_SITE_SETTINGS, ...JSON.parse(raw) };
+    }
+  } catch {}
+  return DEFAULT_SITE_SETTINGS;
+}
+
+function saveCachedSettings(settings: SiteSettings): void {
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(LOCAL_STORAGE_SETTINGS_KEY, JSON.stringify(settings));
+      window.dispatchEvent(new CustomEvent('newsora_settings_updated', { detail: settings }));
+    } catch {}
+  }
+}
+
 export async function getSiteSettings(): Promise<SiteSettings> {
   try {
     const docRef = doc(db, 'siteSettings', 'global');
     const snap = await getDoc(docRef);
     if (snap.exists()) {
-      return { ...DEFAULT_SITE_SETTINGS, ...snap.data() } as SiteSettings;
+      const merged = { ...DEFAULT_SITE_SETTINGS, ...snap.data() } as SiteSettings;
+      saveCachedSettings(merged);
+      return merged;
     }
-    return DEFAULT_SITE_SETTINGS;
+    return loadCachedSettings();
   } catch (err) {
-    return DEFAULT_SITE_SETTINGS;
+    console.error('[Settings] Firestore read error:', err);
+    return loadCachedSettings();
   }
 }
 
-export async function updateSiteSettings(settings: Partial<SiteSettings>): Promise<void> {
+export function subscribeToSiteSettings(
+  onUpdate: (settings: SiteSettings) => void
+): () => void {
   const docRef = doc(db, 'siteSettings', 'global');
-  await setDoc(docRef, settings, { merge: true });
+  return onSnapshot(
+    docRef,
+    (snap) => {
+      if (snap.exists()) {
+        const merged = { ...DEFAULT_SITE_SETTINGS, ...snap.data() } as SiteSettings;
+        saveCachedSettings(merged);
+        onUpdate(merged);
+      } else {
+        onUpdate(loadCachedSettings());
+      }
+    },
+    (err) => {
+      console.error('[Settings] Real-time listener error:', err);
+      onUpdate(loadCachedSettings());
+    }
+  );
+}
+
+export async function updateSiteSettings(settings: Partial<SiteSettings>): Promise<void> {
+  const clean = stripUndefined(settings);
+  try {
+    const docRef = doc(db, 'siteSettings', 'global');
+    await setDoc(docRef, clean, { merge: true });
+    const merged = { ...loadCachedSettings(), ...clean } as SiteSettings;
+    saveCachedSettings(merged);
+  } catch (err: any) {
+    console.error('[Settings] Firestore save FAILED:', err);
+    throw new Error(formatFirestoreError(err, 'save site settings'));
+  }
 }

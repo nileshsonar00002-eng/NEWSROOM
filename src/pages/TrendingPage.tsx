@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Flame, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { getArticles } from '../services/articleService';
+import { subscribeToArticles } from '../services/articleService';
 import { Article } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { CategoryBar } from '../components/common/CategoryBar';
@@ -14,12 +14,11 @@ export const TrendingPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let mounted = true;
     setLoading(true);
 
-    getArticles({ lang: language }).then((arts) => {
-      if (mounted) {
-        // Prioritize isTrending flag or high view count
+    const unsubscribe = subscribeToArticles(
+      { lang: language, status: 'published' },
+      (arts) => {
         const sorted = [...arts].sort((a, b) => {
           if (a.isTrending && !b.isTrending) return -1;
           if (!a.isTrending && b.isTrending) return 1;
@@ -27,11 +26,12 @@ export const TrendingPage: React.FC = () => {
         });
         setTrendingArticles(sorted.slice(0, 10));
         setLoading(false);
-      }
-    });
+      },
+      () => setLoading(false)
+    );
 
     return () => {
-      mounted = false;
+      unsubscribe();
     };
   }, [language]);
 
