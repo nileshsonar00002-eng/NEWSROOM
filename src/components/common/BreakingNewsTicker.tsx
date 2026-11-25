@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { Zap } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 import { subscribeToActiveBreakingNews } from '../../services/breakingNewsService';
+import { translatePlainText } from '../../services/translationService';
 import { BreakingNewsItem } from '../../types';
 
 export const BreakingNewsTicker: React.FC = () => {
   const { language, t } = useLanguage();
   const [items, setItems] = useState<BreakingNewsItem[]>([]);
+  const [translatedMap, setTranslatedMap] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const unsubscribe = subscribeToActiveBreakingNews(language, (res) => {
@@ -19,12 +21,35 @@ export const BreakingNewsTicker: React.FC = () => {
     };
   }, [language]);
 
+  useEffect(() => {
+    let mounted = true;
+    if (language === 'hi') {
+      items.forEach((item) => {
+        if (!item.headline?.hi && item.headline?.en) {
+          translatePlainText(item.headline.en, 'en', 'hi').then((hiText) => {
+            if (mounted && hiText) {
+              setTranslatedMap((prev) => ({ ...prev, [item.id]: hiText }));
+            }
+          });
+        }
+      });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [language, items]);
+
   if (!items.length) return null;
 
   // Extract headlines for the current active language (with cross-language fallback)
   const rawHeadlines = items
     .map((item) => {
-      const text = item.headline?.[language] || item.headline?.en || item.headline?.hi || '';
+      const text =
+        item.headline?.[language] ||
+        (language === 'hi' ? translatedMap[item.id] : '') ||
+        item.headline?.en ||
+        item.headline?.hi ||
+        '';
       const link = item.articleSlug
         ? `/${language}/news/${item.articleSlug}`
         : `/${language}/latest`;

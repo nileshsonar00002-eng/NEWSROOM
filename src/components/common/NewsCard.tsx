@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Clock, Eye, Share2 } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
+import { translatePlainText } from '../../services/translationService';
 import { Article, Language } from '../../types';
 
 interface NewsCardProps {
@@ -21,6 +22,9 @@ export const NewsCard: React.FC<NewsCardProps> = ({
 }) => {
   const { language, t } = useLanguage();
 
+  const [dynamicTitle, setDynamicTitle] = useState<string>('');
+  const [dynamicDesc, setDynamicDesc] = useState<string>('');
+
   // Pick translation for current language, or fallback to first available
   const trans =
     article.translations?.[language]?.title
@@ -29,7 +33,34 @@ export const NewsCard: React.FC<NewsCardProps> = ({
       ? article.translations.en
       : article.translations?.hi;
 
+  useEffect(() => {
+    let mounted = true;
+    if (
+      language === 'hi' &&
+      (!article.translations?.hi?.title || article.translations.hi.title.trim() === '') &&
+      article.translations?.en?.title
+    ) {
+      translatePlainText(article.translations.en.title, 'en', 'hi').then((tTitle) => {
+        if (mounted && tTitle) setDynamicTitle(tTitle);
+      });
+      if (article.translations.en.description) {
+        translatePlainText(article.translations.en.description, 'en', 'hi').then((tDesc) => {
+          if (mounted && tDesc) setDynamicDesc(tDesc);
+        });
+      }
+    } else {
+      setDynamicTitle('');
+      setDynamicDesc('');
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [language, article]);
+
   if (!trans || !trans.title) return null;
+
+  const displayTitle = dynamicTitle || trans.title;
+  const displayDescription = dynamicDesc || trans.description;
 
   const articleUrl = `/${language}/news/${trans.slug || article.id}`;
   const displayCategory = categoryName || article.categoryId.toUpperCase();
@@ -52,7 +83,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
         <Link to={articleUrl} className="block relative aspect-video sm:aspect-[21/9] overflow-hidden bg-slate-100 dark:bg-navy-950">
           <img
             src={article.imageUrl}
-            alt={trans.title}
+            alt={displayTitle}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
@@ -64,7 +95,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
           </div>
           <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 text-white">
             <h1 className="font-headline font-bold text-lg sm:text-2xl md:text-3xl leading-snug line-clamp-3 mb-2 group-hover:text-amber-200 transition">
-              {trans.title}
+              {displayTitle}
             </h1>
             <div className="flex items-center gap-3 text-xs text-slate-300">
               {formattedDate && <span>{formattedDate}</span>}
@@ -80,10 +111,10 @@ export const NewsCard: React.FC<NewsCardProps> = ({
             </div>
           </div>
         </Link>
-        {trans.description && (
+        {displayDescription && (
           <div className="p-4 sm:p-5">
             <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
-              {trans.description}
+              {displayDescription}
             </p>
           </div>
         )}
@@ -103,7 +134,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
         >
           <img
             src={article.imageUrl}
-            alt={trans.title}
+            alt={displayTitle}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
@@ -121,7 +152,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
             </div>
             <Link to={articleUrl} className="block">
               <h2 className="font-headline font-semibold text-sm sm:text-base leading-snug text-navy-950 dark:text-white line-clamp-2 group-hover:text-brand-500 transition">
-                {trans.title}
+                {displayTitle}
               </h2>
             </Link>
           </div>
@@ -168,7 +199,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
           </div>
           <Link to={articleUrl} className="block">
             <h2 className="font-headline font-semibold text-xs sm:text-sm leading-snug text-navy-950 dark:text-white line-clamp-2 group-hover:text-brand-500 transition">
-              {trans.title}
+              {displayTitle}
             </h2>
           </Link>
         </div>
@@ -184,7 +215,7 @@ export const NewsCard: React.FC<NewsCardProps> = ({
       <Link to={articleUrl} className="block relative aspect-video overflow-hidden bg-slate-100 dark:bg-navy-950">
         <img
           src={article.imageUrl}
-          alt={trans.title}
+          alt={displayTitle}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -211,12 +242,12 @@ export const NewsCard: React.FC<NewsCardProps> = ({
           </div>
           <Link to={articleUrl} className="block mb-2">
             <h2 className="font-headline font-bold text-base sm:text-lg leading-snug text-navy-950 dark:text-white line-clamp-2 group-hover:text-brand-500 transition">
-              {trans.title}
+              {displayTitle}
             </h2>
           </Link>
-          {trans.description && (
+          {displayDescription && (
             <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
-              {trans.description}
+              {displayDescription}
             </p>
           )}
         </div>

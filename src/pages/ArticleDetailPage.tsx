@@ -15,6 +15,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { getArticleBySlug, getArticles } from '../services/articleService';
 import { getAuthors } from '../services/authorService';
 import { trackArticleView } from '../services/analyticsService';
+import { translateArticleFields } from '../services/translationService';
 import { Article, Author, Language } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { CategoryBar } from '../components/common/CategoryBar';
@@ -55,7 +56,47 @@ export const ArticleDetailPage: React.FC = () => {
           // Check if article translation exists for active language
           const trans = art.translations?.[activeLang];
           if (!trans || !trans.title || trans.status !== 'published') {
-            setTranslationMissing(true);
+            if (activeLang === 'hi' && art.translations?.en?.title) {
+              // Auto-translate to Hindi on the fly for readers
+              translateArticleFields(
+                {
+                  title: art.translations.en.title,
+                  description: art.translations.en.description || '',
+                  content: art.translations.en.content || ''
+                },
+                'en',
+                'hi'
+              )
+                .then((hiFields) => {
+                  if (mounted && hiFields.title) {
+                    setArticle((prev) => {
+                      if (!prev) return prev;
+                      return {
+                        ...prev,
+                        translations: {
+                          ...prev.translations,
+                          hi: {
+                            title: hiFields.title,
+                            description: hiFields.description,
+                            content: hiFields.content,
+                            slug: prev.translations?.hi?.slug || slug || prev.id,
+                            status: 'published',
+                            seoTitle: hiFields.title,
+                            seoDescription: hiFields.description,
+                            publishedAt: prev.translations?.en?.publishedAt || prev.createdAt
+                          }
+                        }
+                      };
+                    });
+                    setTranslationMissing(false);
+                  }
+                })
+                .catch(() => {
+                  if (mounted) setTranslationMissing(true);
+                });
+            } else {
+              setTranslationMissing(true);
+            }
           }
 
           // Fetch author

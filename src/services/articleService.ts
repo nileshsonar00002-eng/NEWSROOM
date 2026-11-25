@@ -9,6 +9,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { stripUndefined, formatFirestoreError } from './firebaseStatus';
+import { translateArticleFields } from './translationService';
 import { Article, Language, ArticleStatus } from '../types';
 
 export interface QueryArticleOptions {
@@ -311,6 +312,43 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
   const enStatus = article.translations?.en?.status || 'published';
   const hiStatus = article.translations?.hi?.status || 'published';
 
+  let enTitle = article.translations?.en?.title?.trim() || '';
+  let enDesc = article.translations?.en?.description?.trim() || '';
+  let enContent = article.translations?.en?.content?.trim() || '';
+
+  let hiTitle = article.translations?.hi?.title?.trim() || '';
+  let hiDesc = article.translations?.hi?.description?.trim() || '';
+  let hiContent = article.translations?.hi?.content?.trim() || '';
+
+  // Automatic cross-language translation if one language is missing
+  if (enTitle && !hiTitle) {
+    try {
+      const transHi = await translateArticleFields(
+        { title: enTitle, description: enDesc, content: enContent },
+        'en',
+        'hi'
+      );
+      hiTitle = transHi.title;
+      hiDesc = transHi.description;
+      hiContent = transHi.content;
+    } catch (e) {
+      console.warn('[Articles] Auto-translation to Hindi warning:', e);
+    }
+  } else if (hiTitle && !enTitle) {
+    try {
+      const transEn = await translateArticleFields(
+        { title: hiTitle, description: hiDesc, content: hiContent },
+        'hi',
+        'en'
+      );
+      enTitle = transEn.title;
+      enDesc = transEn.description;
+      enContent = transEn.content;
+    } catch (e) {
+      console.warn('[Articles] Auto-translation to English warning:', e);
+    }
+  }
+
   const fullData: Article = {
     id,
     categoryId: sanitizeCategory(article.categoryId || 'india'),
@@ -331,32 +369,30 @@ export async function saveArticle(article: Partial<Article>): Promise<string> {
     updatedAt: nowIso,
     translations: {
       en: {
-        title: article.translations?.en?.title || '',
-        description: article.translations?.en?.description || '',
-        content: article.translations?.en?.content || '',
+        title: enTitle,
+        description: enDesc,
+        content: enContent,
         slug:
           article.translations?.en?.slug ||
-          generateSlug(article.translations?.en?.title || 'article'),
+          generateSlug(enTitle || 'article'),
         status: enStatus,
-        seoTitle: article.translations?.en?.seoTitle || article.translations?.en?.title || '',
-        seoDescription:
-          article.translations?.en?.seoDescription || article.translations?.en?.description || '',
+        seoTitle: article.translations?.en?.seoTitle || enTitle,
+        seoDescription: article.translations?.en?.seoDescription || enDesc,
         publishedAt:
           enStatus === 'published'
             ? article.translations?.en?.publishedAt || nowIso
             : null
       },
       hi: {
-        title: article.translations?.hi?.title || '',
-        description: article.translations?.hi?.description || '',
-        content: article.translations?.hi?.content || '',
+        title: hiTitle,
+        description: hiDesc,
+        content: hiContent,
         slug:
           article.translations?.hi?.slug ||
-          generateSlug(article.translations?.hi?.title || 'article-hi'),
+          generateSlug(hiTitle || enTitle || 'article-hi'),
         status: hiStatus,
-        seoTitle: article.translations?.hi?.seoTitle || article.translations?.hi?.title || '',
-        seoDescription:
-          article.translations?.hi?.seoDescription || article.translations?.hi?.description || '',
+        seoTitle: article.translations?.hi?.seoTitle || hiTitle,
+        seoDescription: article.translations?.hi?.seoDescription || hiDesc,
         publishedAt:
           hiStatus === 'published'
             ? article.translations?.hi?.publishedAt || nowIso

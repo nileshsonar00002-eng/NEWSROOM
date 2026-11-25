@@ -21,6 +21,7 @@ import {
   generateSlug,
   checkSlugUnique
 } from '../../services/articleService';
+import { translateArticleFields } from '../../services/translationService';
 import { getCategories } from '../../services/categoryService';
 import { getAuthors } from '../../services/authorService';
 import { uploadImageWithProgress, validateImageFile } from '../../services/storageService';
@@ -38,6 +39,7 @@ export const AdminArticleEditorPage: React.FC = () => {
   const [authors, setAuthors] = useState<Author[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [autoTranslating, setAutoTranslating] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [liveSlug, setLiveSlug] = useState<string | null>(null);
@@ -165,6 +167,58 @@ export const AdminArticleEditorPage: React.FC = () => {
     }
   };
 
+  // Automatic English to Hindi Translation handler
+  const handleAutoTranslateToHindi = async () => {
+    const enTrans = article.translations?.en;
+    if (!enTrans?.title?.trim()) {
+      setErrorMsg('Please enter an English headline first before auto-translating.');
+      return;
+    }
+
+    setAutoTranslating(true);
+    setErrorMsg(null);
+    setSuccessMsg(null);
+
+    try {
+      const res = await translateArticleFields(
+        {
+          title: enTrans.title,
+          description: enTrans.description || '',
+          content: enTrans.content || ''
+        },
+        'en',
+        'hi'
+      );
+
+      const hiSlug = generateSlug(res.title) || generateSlug(enTrans.title);
+
+      setArticle((prev) => ({
+        ...prev,
+        translations: {
+          ...prev.translations!,
+          hi: {
+            title: res.title,
+            description: res.description,
+            content: res.content,
+            slug: hiSlug,
+            status: 'published',
+            seoTitle: res.title,
+            seoDescription: res.description,
+            publishedAt: prev.translations?.hi?.publishedAt || new Date().toISOString()
+          }
+        }
+      }));
+
+      setActiveTab('hi');
+      setSuccessMsg('✨ Successfully auto-translated to Hindi! You can review or edit and click Save.');
+      setTimeout(() => setSuccessMsg(null), 5000);
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Auto-translation failed. Please check your network connection.');
+    } finally {
+      setAutoTranslating(false);
+    }
+  };
+
   // Save / Publish
   const handleSave = async (desiredStatus?: ArticleStatus) => {
     setErrorMsg(null);
@@ -196,32 +250,62 @@ export const AdminArticleEditorPage: React.FC = () => {
 
       const statusToApply: ArticleStatus = desiredStatus || trans.status || 'published';
 
+      let updatedTranslations = { ...article.translations! };
+
+      updatedTranslations[activeTab] = {
+        ...trans,
+        slug: currentSlug,
+        status: statusToApply,
+        publishedAt:
+          statusToApply === 'published'
+            ? trans.publishedAt || new Date().toISOString()
+            : null
+      };
+
+      // If published in English and Hindi headline is empty, auto-translate Hindi in the background
+      if (activeTab === 'en' && !updatedTranslations.hi?.title?.trim()) {
+        try {
+          const hiRes = await translateArticleFields(
+            {
+              title: trans.title,
+              description: trans.description || '',
+              content: trans.content || ''
+            },
+            'en',
+            'hi'
+          );
+          if (hiRes.title) {
+            updatedTranslations.hi = {
+              title: hiRes.title,
+              description: hiRes.description,
+              content: hiRes.content,
+              slug: generateSlug(hiRes.title),
+              status: statusToApply,
+              seoTitle: hiRes.title,
+              seoDescription: hiRes.description,
+              publishedAt: new Date().toISOString()
+            };
+          }
+        } catch (e) {
+          console.warn('[Editor] Auto-translation on save warning:', e);
+        }
+      }
+
       const updatedArticle: Partial<Article> = {
         ...article,
         id: id || article.id,
         tags: parsedTags,
-        translations: {
-          ...article.translations!,
-          [activeTab]: {
-            ...trans,
-            slug: currentSlug,
-            status: statusToApply,
-            publishedAt:
-              statusToApply === 'published'
-                ? trans.publishedAt || new Date().toISOString()
-                : null
-          }
-        }
+        translations: updatedTranslations
       };
 
       const savedId = await saveArticle(updatedArticle);
-      setArticle((prev) => ({ ...prev, id: savedId }));
+      setArticle((prev) => ({ ...prev, id: savedId, translations: updatedTranslations }));
       setLiveSlug(currentSlug);
       setSaving(false);
 
       if (statusToApply === 'published') {
         setSuccessMsg(
-          `Article published live to Main Website in ${activeTab.toUpperCase()}! Your updates are now visible to readers.`
+          `Article published live to Main Website in English & Hindi! Readers will see it automatically when toggling languages.`
         );
       } else {
         setSuccessMsg(`Article saved as draft in ${activeTab.toUpperCase()}!`);
@@ -390,17 +474,30 @@ export const AdminArticleEditorPage: React.FC = () => {
             })}
           </div>
 
-          {currentTrans.slug && (
-            <a
-              href={`/${activeTab}/news/${currentTrans.slug}`}
-              target="_blank"
-              rel="noreferrer"
-              className="px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-navy-800 transition flex items-center gap-1.5 min-h-[40px] shrink-0"
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={autoTranslating}
+              onClick={handleAutoTranslateToHindi}
+              className="px-3.5 py-2 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 border border-brand-500/30 hover:bg-brand-500/20 text-xs font-bold transition flex items-center gap-1.5 shrink-0 min-h-[40px] disabled:opacity-50"
+              title="Automatically translate English headline, summary, and content into Hindi"
             >
-              <Eye className="w-4 h-4" />
-              <span className="hidden sm:inline">Preview Live</span>
-            </a>
-          )}
+              <Sparkles className={`w-3.5 h-3.5 ${autoTranslating ? 'animate-spin text-brand-600' : 'text-brand-500'}`} />
+              <span>{autoTranslating ? 'Translating to Hindi...' : '⚡ Auto-Translate to Hindi (हिंदी में अनुवाद करें)'}</span>
+            </button>
+
+            {currentTrans.slug && (
+              <a
+                href={`/${activeTab}/news/${currentTrans.slug}`}
+                target="_blank"
+                rel="noreferrer"
+                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-600 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-navy-800 transition flex items-center gap-1.5 min-h-[40px] shrink-0"
+              >
+                <Eye className="w-4 h-4" />
+                <span className="hidden sm:inline">Preview Live</span>
+              </a>
+            )}
+          </div>
         </div>
 
         {/* 2. Publication Status Selector for Current Language */}
@@ -459,6 +556,23 @@ export const AdminArticleEditorPage: React.FC = () => {
               }`}
             >
               <div className="space-y-4">
+                {activeTab === 'hi' && !currentTrans.title && (
+                  <div className="p-3.5 bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-800 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="text-xs text-brand-950 dark:text-brand-200">
+                      💡 <strong>Hindi headline is empty.</strong> Automatically translate from your English draft with one click.
+                    </div>
+                    <button
+                      type="button"
+                      disabled={autoTranslating}
+                      onClick={handleAutoTranslateToHindi}
+                      className="px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold flex items-center gap-1.5 shrink-0 transition shadow-sm disabled:opacity-50"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>{autoTranslating ? 'Translating...' : 'Auto-Translate to Hindi'}</span>
+                    </button>
+                  </div>
+                )}
+
                 {/* Headline Input */}
                 <div>
                   <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block mb-1">

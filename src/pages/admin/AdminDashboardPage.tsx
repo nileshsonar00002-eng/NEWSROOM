@@ -17,16 +17,22 @@ import { AdminLayout } from '../../components/admin/AdminLayout';
 import { AdminCard } from '../../components/admin/AdminCard';
 import { getAllArticlesForAdmin } from '../../services/articleService';
 import { getCategories } from '../../services/categoryService';
-import { getAnalyticsSummary, AnalyticsSummary } from '../../services/analyticsService';
+import { getAnalyticsSummary, subscribeToSiteTraffic, AnalyticsSummary, SiteTrafficData } from '../../services/analyticsService';
 import { Article, Category } from '../../types';
 
 export const AdminDashboardPage: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
+  const [siteTraffic, setSiteTraffic] = useState<SiteTrafficData>({ totalVisitors: 0, totalViews: 0 });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Real-time site visitor listener
+    const unsubTraffic = subscribeToSiteTraffic((traffic) => {
+      setSiteTraffic(traffic);
+    });
+
     const loadDashboard = () => {
       Promise.all([
         getAllArticlesForAdmin(),
@@ -36,6 +42,12 @@ export const AdminDashboardPage: React.FC = () => {
         setArticles(arts);
         setCategories(cats);
         setAnalytics(ana);
+        if (ana) {
+          setSiteTraffic((prev) => ({
+            totalVisitors: Math.max(prev.totalVisitors, ana.totalVisitors),
+            totalViews: Math.max(prev.totalViews, ana.totalViews)
+          }));
+        }
         setLoading(false);
       });
     };
@@ -47,6 +59,7 @@ export const AdminDashboardPage: React.FC = () => {
     window.addEventListener('storage', loadDashboard);
 
     return () => {
+      unsubTraffic();
       window.removeEventListener('newsora_articles_updated', loadDashboard);
       window.removeEventListener('newsora_categories_updated', loadDashboard);
       window.removeEventListener('storage', loadDashboard);
@@ -65,7 +78,11 @@ export const AdminDashboardPage: React.FC = () => {
       a.translations?.hi?.status === 'draft'
   ).length;
 
-  const totalViews = articles.reduce((sum, a) => sum + (a.viewCount || 0), 0) + (analytics?.totalViews || 0);
+  const articleViews = articles.reduce((sum, a) => sum + (a.viewCount || 0), 0);
+  const totalRealViews = Math.max(
+    siteTraffic.totalViews,
+    siteTraffic.totalVisitors + articleViews
+  );
 
   const recentArticles = articles.slice(0, 5);
 
@@ -150,11 +167,11 @@ export const AdminDashboardPage: React.FC = () => {
               <Eye className="w-4 h-4 text-emerald-500" />
             </div>
             <div className="font-headline font-black text-2xl sm:text-3xl text-navy-950 dark:text-white mt-2">
-              {loading ? '...' : totalViews.toLocaleString()}
+              {loading ? '...' : totalRealViews.toLocaleString()}
             </div>
-            <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" />
-              +14% this week
+            <div className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-1 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span>{siteTraffic.totalVisitors} real visitors ({articleViews} article views)</span>
             </div>
           </AdminCard>
         </div>

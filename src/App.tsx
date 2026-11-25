@@ -12,6 +12,7 @@ import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { Header } from './components/common/Header';
 import { Footer } from './components/common/Footer';
+import { trackSiteVisitor } from './services/analyticsService';
 
 // Public Pages
 import { HomePage } from './pages/HomePage';
@@ -80,6 +81,12 @@ const LangRouteWrapper: React.FC<{ children: React.ReactNode }> = ({ children })
 
 // Layout for Public Pages (Includes Sticky Header and Footer)
 const PublicLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+
+  React.useEffect(() => {
+    trackSiteVisitor(location.pathname);
+  }, [location.pathname]);
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

@@ -15,6 +15,7 @@ import {
   saveBreakingNews,
   deleteBreakingNews
 } from '../../services/breakingNewsService';
+import { translatePlainText } from '../../services/translationService';
 import { getAllArticlesForAdmin } from '../../services/articleService';
 import { BreakingNewsItem, Article } from '../../types';
 
@@ -56,7 +57,19 @@ export const AdminBreakingNewsPage: React.FC = () => {
     if (!editingItem || (!editingItem.headline?.en && !editingItem.headline?.hi)) return;
     setErrorMsg(null);
     try {
-      await saveBreakingNews(editingItem as BreakingNewsItem);
+      let enHeadline = editingItem.headline?.en?.trim() || '';
+      let hiHeadline = editingItem.headline?.hi?.trim() || '';
+
+      if (enHeadline && !hiHeadline) {
+        hiHeadline = await translatePlainText(enHeadline, 'en', 'hi');
+      } else if (hiHeadline && !enHeadline) {
+        enHeadline = await translatePlainText(hiHeadline, 'hi', 'en');
+      }
+
+      await saveBreakingNews({
+        ...editingItem,
+        headline: { en: enHeadline, hi: hiHeadline }
+      } as BreakingNewsItem);
       setEditingItem(null);
       loadData();
     } catch (err: any) {
