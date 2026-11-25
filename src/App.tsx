@@ -37,7 +37,6 @@ import { AdminArticlesListPage } from './pages/admin/AdminArticlesListPage';
 import { AdminArticleEditorPage } from './pages/admin/AdminArticleEditorPage';
 import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage';
 import { AdminBreakingNewsPage } from './pages/admin/AdminBreakingNewsPage';
-import { AdminAuthorsPage } from './pages/admin/AdminAuthorsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 
 // Protected Route Component for Admin Dashboard
@@ -306,14 +305,6 @@ export const App: React.FC = () => {
                 element={
                   <ProtectedAdminRoute>
                     <AdminBreakingNewsPage />
-                  </ProtectedAdminRoute>
-                }
-              />
-              <Route
-                path="/admin/authors"
-                element={
-                  <ProtectedAdminRoute>
-                    <AdminAuthorsPage />
                   </ProtectedAdminRoute>
                 }
               />

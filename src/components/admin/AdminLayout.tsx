@@ -6,7 +6,6 @@ import {
   PlusCircle,
   FolderTree,
   Flame,
-  Users,
   Settings,
   LogOut,
   ExternalLink,
@@ -81,7 +80,6 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     { to: '/admin/articles/new', icon: PlusCircle, label: 'New Article', highlight: true },
     { to: '/admin/categories', icon: FolderTree, label: 'Categories' },
     { to: '/admin/breaking-news', icon: Flame, label: 'Breaking News' },
-    { to: '/admin/authors', icon: Users, label: 'Authors' },
     { to: '/admin/settings', icon: Settings, label: 'Settings' }
   ];
 

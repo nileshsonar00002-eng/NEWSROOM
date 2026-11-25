@@ -3,7 +3,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   Clock,
   Calendar,
-  User,
   ExternalLink,
   Tag,
   AlertCircle,
@@ -13,10 +12,9 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { getArticleBySlug, getArticles } from '../services/articleService';
-import { getAuthors } from '../services/authorService';
 import { trackArticleView } from '../services/analyticsService';
 import { translateArticleFields } from '../services/translationService';
-import { Article, Author, Language } from '../types';
+import { Article, Language } from '../types';
 import { SEOHead } from '../components/common/SEOHead';
 import { CategoryBar } from '../components/common/CategoryBar';
 import { Breadcrumbs } from '../components/common/Breadcrumbs';
@@ -31,7 +29,6 @@ export const ArticleDetailPage: React.FC = () => {
   const navigate = useNavigate();
 
   const [article, setArticle] = useState<Article | null>(null);
-  const [author, setAuthor] = useState<Author | null>(null);
   const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [translationMissing, setTranslationMissing] = useState(false);
@@ -98,14 +95,6 @@ export const ArticleDetailPage: React.FC = () => {
               setTranslationMissing(true);
             }
           }
-
-          // Fetch author
-          getAuthors().then((authors) => {
-            if (mounted) {
-              const matchedAuthor = authors.find((a) => a.id === art.authorId) || authors[0];
-              setAuthor(matchedAuthor);
-            }
-          });
 
           // Fetch related articles from same category
           getArticles({ categoryId: art.categoryId, limitCount: 4 }).then((rel) => {
@@ -199,7 +188,6 @@ export const ArticleDetailPage: React.FC = () => {
         image={article.imageUrl}
         type="article"
         publishedTime={publishedDate}
-        authorName={author?.name}
         categoryName={article.categoryId}
         tags={article.tags}
         articleSlug={trans?.slug}
@@ -294,30 +282,8 @@ export const ArticleDetailPage: React.FC = () => {
           </p>
         )}
 
-        {/* Author & Publishing Metadata Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-slate-200 dark:border-navy-800 text-xs text-slate-500 dark:text-slate-400 mb-6">
-          <div className="flex items-center gap-3">
-            {author?.avatarUrl ? (
-              <img
-                src={author.avatarUrl}
-                alt={author.name}
-                className="w-10 h-10 rounded-full object-cover border border-slate-300 dark:border-navy-700"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-navy-800 flex items-center justify-center">
-                <User className="w-5 h-5 text-slate-500" />
-              </div>
-            )}
-            <div>
-              <div className="font-bold text-navy-950 dark:text-white text-sm">
-                {author?.name || 'NEWSORA Bureau'}
-              </div>
-              <div className="text-[11px] text-slate-500 dark:text-slate-400">
-                {author?.role || 'Staff Correspondent'}
-              </div>
-            </div>
-          </div>
-
+        {/* Publishing Date Metadata Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-4 py-3 border-y border-slate-200 dark:border-navy-800 text-xs text-slate-500 dark:text-slate-400 mb-6">
           <div className="flex items-center gap-1.5">
             <Calendar className="w-4 h-4 text-slate-400" />
             <span>{formattedDate}</span>

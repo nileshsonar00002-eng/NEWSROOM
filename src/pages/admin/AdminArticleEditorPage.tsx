@@ -23,9 +23,8 @@ import {
 } from '../../services/articleService';
 import { translateArticleFields } from '../../services/translationService';
 import { getCategories } from '../../services/categoryService';
-import { getAuthors } from '../../services/authorService';
 import { uploadImageWithProgress, validateImageFile } from '../../services/storageService';
-import { Article, Category, Author, Language, ArticleStatus } from '../../types';
+import { Article, Category, Language, ArticleStatus } from '../../types';
 
 export const AdminArticleEditorPage: React.FC = () => {
   const { id } = useParams<{ id?: string }>();
@@ -36,7 +35,6 @@ export const AdminArticleEditorPage: React.FC = () => {
 
   // Metadata
   const [categories, setCategories] = useState<Category[]>([]);
-  const [authors, setAuthors] = useState<Author[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [autoTranslating, setAutoTranslating] = useState(false);
@@ -89,9 +87,8 @@ export const AdminArticleEditorPage: React.FC = () => {
   const [tagInput, setTagInput] = useState('News, India');
 
   useEffect(() => {
-    Promise.all([getCategories(), getAuthors()]).then(([cats, auths]) => {
+    getCategories().then((cats) => {
       setCategories(cats);
-      setAuthors(auths);
 
       if (id) {
         getArticleById(id).then((existing) => {
@@ -769,7 +766,7 @@ export const AdminArticleEditorPage: React.FC = () => {
             </AdminCard>
 
             {/* Publishing Settings & Beat */}
-            <AdminCard title="Publishing Beat & Author">
+            <AdminCard title="Publishing Beat & Category">
               <div className="space-y-4">
                 {/* Category Selection */}
                 <div>
@@ -784,24 +781,6 @@ export const AdminArticleEditorPage: React.FC = () => {
                     {categories.map((c) => (
                       <option key={c.id} value={c.slug}>
                         {c.names?.en || c.id} ({c.names?.hi || ''})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Author Selection */}
-                <div>
-                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Author / Correspondent
-                  </label>
-                  <select
-                    value={article.authorId}
-                    onChange={(e) => setArticle({ ...article, authorId: e.target.value })}
-                    className="w-full px-3 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-navy-950 border border-slate-300 dark:border-navy-700 rounded-xl min-h-[44px]"
-                  >
-                    {authors.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.name} ({a.role})
                       </option>
                     ))}
                   </select>
