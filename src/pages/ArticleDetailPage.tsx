@@ -300,7 +300,7 @@ export const ArticleDetailPage: React.FC = () => {
           <img
             src={article.imageUrl}
             alt={trans?.title}
-            className="w-full h-auto max-h-[520px] object-cover"
+            className="w-full h-auto max-h-[700px] object-contain mx-auto"
           />
           {(article.imageCaption || article.imageCredit) && (
             <figcaption className="p-3 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-navy-900/90 flex flex-col sm:flex-row sm:items-center justify-between gap-1 border-t border-slate-200 dark:border-navy-800">

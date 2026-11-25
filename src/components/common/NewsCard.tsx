@@ -80,12 +80,12 @@ export const NewsCard: React.FC<NewsCardProps> = ({
       <article
         className={`group bg-white dark:bg-navy-900 border border-slate-200 dark:border-navy-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition duration-300 ${className}`}
       >
-        <Link to={articleUrl} className="block relative aspect-video sm:aspect-[21/9] overflow-hidden bg-slate-100 dark:bg-navy-950">
+        <Link to={articleUrl} className="block relative aspect-video overflow-hidden bg-navy-950">
           <img
             src={article.imageUrl}
             alt={displayTitle}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
           <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
